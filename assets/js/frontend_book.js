@@ -757,21 +757,21 @@ window.FrontendBook = window.FrontendBook || {};
 
         if (service.duration) {
             $('<span/>', {
-                'text': '[' + EALang.duration + ' ' + service.duration + ' ' + EALang.minutes + ']'
+                'text': '[' + EALang.duration + ': ' + service.duration + ' ' + EALang.minutes + ']'
             })
                 .appendTo($serviceDescription);
         }
 
         if (Number(service.price) > 0) {
             $('<span/>', {
-                'text': '[' + EALang.price + ' ' + service.price + ' ' + service.currency + ']'
+                'text': '[' + EALang.price + ': ' + service.price + ' ' + service.currency + ']'
             })
                 .appendTo($serviceDescription);
         }
 
         if (service.location) {
             $('<span/>', {
-                'text': '[' + EALang.location + ' ' + service.location + ']'
+                'text': '[' + EALang.location + ': ' + service.location + ']'
             })
                 .appendTo($serviceDescription);
         }

@@ -280,6 +280,7 @@
                         </div>
 
                         <div class="col-12 col-md-6">
+                            <!-- we don't need the address, sp don't display it
                             <div class="form-group">
                                 <label for="address" class="control-label">
                                     <?= lang('address') ?>
@@ -298,11 +299,12 @@
                                 </label>
                                 <input type="text" id="zip-code" class="form-control" maxlength="120"/>
                             </div>
+                              -->
                             <div class="form-group">
                                 <label for="notes" class="control-label">
                                     <?= lang('notes') ?>
                                 </label>
-                                <textarea id="notes" maxlength="500" class="form-control" rows="1"></textarea>
+                                <textarea id="notes" maxlength="500" class="form-control" rows="12"></textarea>
                             </div>
                         </div>
                     </div>

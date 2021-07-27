@@ -4,7 +4,7 @@
 </head>
 <body style="font: 13px arial, helvetica, tahoma;">
 <div class="email-container" style="width: 650px; border: 1px solid #eee;">
-    <div id="header" style="background-color: #429a82; height: 45px; padding: 10px 15px;">
+    <div id="header" style="background-color: #a51e37; height: 45px; padding: 10px 15px;">
         <strong id="logo" style="color: white; font-size: 20px; margin-top: 10px; display: inline-block">
             <?= $company_name ?>
         </strong>
@@ -35,6 +35,14 @@
             <tr>
                 <td class="label" style="padding: 3px;font-weight: bold;"><?= lang('timezone') ?></td>
                 <td style="padding: 3px;"><?= $appointment_timezone ?></td>
+            </tr>
+            <tr>
+                <td class="label" style="padding: 3px;font-weight: bold;"><?= lang('mobile_number') ?></td>
+                <td style="padding: 3px;"><a href="<?= $appointment_zoom_link ?>"><?= $appointment_zoom_link ?></a></td>
+            </tr>
+            <tr>
+                <td class="label" style="padding: 3px;font-weight: bold;"><?= lang('notes') ?></td>
+                <td style="padding: 3px;"><?= $appointment_notes ?></td>
             </tr>
         </table>
 

@@ -308,6 +308,7 @@
                             </div>
                         </div>
                     </div>
+                    <span><?= lang('fields_are_required') ?></span>
                 </div>
 
                 <?php if ($display_terms_and_conditions): ?>

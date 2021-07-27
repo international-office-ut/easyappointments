@@ -27,9 +27,10 @@
         <div id="book-appointment-wizard" class="col-12 col-lg-10 col-xl-8">
 
             <!-- FRAME TOP BAR -->
-
+            <div id="company-logo">
+              <img src="<?= base_url('assets/img/ut-logo.png') ?>">
+            </div>
             <div id="header">
-                <span id="company-logo"><img src="<?= base_url('assets/img/ut-logo.png') ?>"></span>
                 <span id="company-name"><?= $company_name ?></span>
 
                 <div id="steps">

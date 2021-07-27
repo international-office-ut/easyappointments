@@ -258,10 +258,8 @@ body {
     padding: 5px;
 }
 
-#header #company-logo img {
-    float: left;
-    height: 55px;
-    margin-right: 10px;
+#company-logo img {
+    width: 100%;
 }
 
 .popover .popover-title {

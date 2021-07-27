@@ -174,10 +174,11 @@ body {
 
 #book-appointment-wizard #available-hours {
     overflow: auto;
-    margin: 15px 0;
+    margin-top: 1px;
+    padding-left: 10px;
     padding-right: 10px;
     width: auto;
-    max-height: 255px;
+    max-height: 280px;
 }
 
 #book-appointment-wizard #available-hours div {
@@ -199,7 +200,18 @@ body {
 }
 
 #book-appointment-wizard #select-timezone {
-    margin-bottom: 15px;
+    text-align: center;
+}
+
+#book-appointment-wizard #select-timezone.form-control {
+    margin-left: auto;
+    margin-right: auto;
+    width: auto;
+}
+
+#book-appointment-wizard #select-timezone label{
+    margin-top: 10px;
+    vertical-align: middle;
 }
 
 #book-appointment-wizard #appointment-details p,

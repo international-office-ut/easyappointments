@@ -130,6 +130,7 @@ $config['language'] = isset($_SERVER['HTTP_ACCEPT_LANGUAGE'], $languages[$langua
 |
 */
 $config['available_languages'] = [
+    /*
     'arabic',
     'bulgarian',
     'catalan',
@@ -137,10 +138,8 @@ $config['available_languages'] = [
     'czech',
     'danish',
     'dutch',
-    'english',
     'finnish',
     'french',
-    'german',
     'greek',
     'hebrew',
     'hindi',
@@ -157,7 +156,10 @@ $config['available_languages'] = [
     'russian',
     'slovak',
     'spanish',
-    'turkish'
+    'turkish',
+    */
+    'english',
+    'german'
 ];
 
 /*

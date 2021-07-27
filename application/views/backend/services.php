@@ -119,7 +119,7 @@
                         <input id="service-duration" class="form-control required" type="number" min="5">
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group"  style="display: none">
                         <label for="service-price">
                             <?= lang('price') ?>
                             <span class="text-danger">*</span>
@@ -127,7 +127,7 @@
                         <input id="service-price" class="form-control required">
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group"  style="display: none">
                         <label for="service-currency">
                             <?= lang('currency') ?>
 

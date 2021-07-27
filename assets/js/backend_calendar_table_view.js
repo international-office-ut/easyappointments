@@ -275,7 +275,7 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
                         }
                     },
                     {
-                        text: 'OK',
+                        text: EALang.cancel_2,
                         click: function () {
                             url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_delete_appointment';
 
@@ -1355,7 +1355,7 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
                                         'class': 'fas fa-trash-alt mr-2'
                                     }),
                                     $('<span/>', {
-                                        'text': EALang.delete
+                                        'text': EALang.cancel_2
                                     })
                                 ]
                             }),

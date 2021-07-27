@@ -409,7 +409,8 @@
     ServicesHelper.prototype.getFilterHtml = function (service) {
         var name = service.name;
 
-        var info = service.duration + ' min - ' + service.price + ' ' + service.currency;
+        //var info = service.duration + ' min - ' + service.price + ' ' + service.currency;
+        var info = service.duration + ' min';
 
         return $('<div/>', {
             'class': 'service-row entry',

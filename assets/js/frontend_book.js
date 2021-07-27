@@ -366,7 +366,7 @@ window.FrontendBook = window.FrontendBook || {};
                         }
                     },
                     {
-                        text: 'OK',
+                        text: EALang.cancel_2,
                         click: function () {
                             if ($('#cancel-reason').val() === '') {
                                 $('#cancel-reason').css('border', '2px solid #DC3545');

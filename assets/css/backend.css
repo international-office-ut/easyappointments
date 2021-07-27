@@ -21,7 +21,7 @@ root {
    -------------------------------------------------------------------- */
 
 #header {
-    background-color: #429a82;
+    background-color: #a51e37;
     box-shadow: none;
     border-radius: 0;
     padding: 0;
@@ -66,11 +66,11 @@ root {
 }
 
 #header #header-menu .nav-item:hover {
-    background: #3a8873;
+    background: #bc6261;
 }
 
 #header #header-menu .nav-item.active {
-    background: #2e6a5b;
+    background: #b4a069;
 }
 
 #footer {
@@ -148,7 +148,7 @@ body .modal .modal-title {
 
 body .modal-header {
     padding: 20px 15px;
-    background: #429a82;
+    background: #a51e37;
 }
 
 body .modal-header h3 {
@@ -255,7 +255,7 @@ body legend {
 
 .backend-page .filter-records .results .entry.selected {
     background-color: #F4F4F4;
-    border-right: 5px solid #429a82;
+    border-right: 5px solid #a51e37;
 }
 
 .backend-page .filter-records .results hr {
@@ -298,7 +298,7 @@ body legend {
 #calendar-page #calendar-toolbar {
     margin-bottom: 15px;
     color: white;
-    background: #353535;
+    background: #32414b;
     padding: 15px 0;
 }
 
@@ -446,7 +446,7 @@ body legend {
 }
 
 #existing-customers-list div:hover {
-    background: #429a82;
+    background: #a51e37;
     font-weight: bold;
     color: #FFF;
     cursor: pointer;

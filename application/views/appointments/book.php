@@ -29,6 +29,7 @@
             <!-- FRAME TOP BAR -->
 
             <div id="header">
+                <span id="company-logo"><img src="<?= base_url('assets/img/ut-logo.png') ?>"></span>
                 <span id="company-name"><?= $company_name ?></span>
 
                 <div id="steps">

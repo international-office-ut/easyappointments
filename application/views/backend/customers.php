@@ -128,7 +128,7 @@
                         <input id="phone-number" class="form-control
                             <?= $require_phone_number === '1' ? 'required' : '' ?>">
                     </div>
-
+                    <!--
                     <div class="form-group">
                         <label class="control-label" for="address">
                             <?= lang('address') ?>
@@ -150,6 +150,7 @@
                         </label>
                         <input id="zip-code" class="form-control">
                     </div>
+                        -->
 
                     <div class="form-group">
                         <label for="language">

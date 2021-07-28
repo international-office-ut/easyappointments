@@ -278,28 +278,25 @@
                                        class="<?= $require_phone_number === '1' ? 'required' : '' ?> form-control"/>
                             </div>
                         </div>
-
                         <div class="col-12 col-md-6">
-                            <!-- we don't need the address, sp don't display it
-                            <div class="form-group">
+                            <div class="form-group" style="display: none">
                                 <label for="address" class="control-label">
                                     <?= lang('address') ?>
                                 </label>
                                 <input type="text" id="address" class="form-control" maxlength="120"/>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" style="display: none">
                                 <label for="city" class="control-label">
                                     <?= lang('city') ?>
                                 </label>
                                 <input type="text" id="city" class="form-control" maxlength="120"/>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" style="display: none">
                                 <label for="zip-code" class="control-label">
                                     <?= lang('zip_code') ?>
                                 </label>
                                 <input type="text" id="zip-code" class="form-control" maxlength="120"/>
                             </div>
-                              -->
                             <div class="form-group">
                                 <label for="notes" class="control-label">
                                     <?= lang('notes') ?>

@@ -382,7 +382,7 @@ class Timezones {
             'Asia/Hovd' => 'Hovd (+7:00)',
             'Asia/Jakarta' => 'Jakarta (+7:00)',
             'Asia/Krasnoyarsk' => 'Krasnoyarsk (+7:00)',
-            'Asia/Phnom_Penh' => 'Phnom_Penh (+7:00)',
+            'Asia/Phnom_Penh' => 'Phnom Penh (+7:00)',
             'Asia/Pontianak' => 'Pontianak (+7:00)',
             'Asia/Saigon' => 'Saigon (+7:00)',
             'Asia/Vientiane' => 'Vientiane (+7:00)',

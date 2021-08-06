@@ -128,15 +128,15 @@
                         <input id="phone-number" class="form-control
                             <?= $require_phone_number === '1' ? 'required' : '' ?>">
                     </div>
-                    <!--
-                    <div class="form-group">
+
+                    <div class="form-group" style="display: none">
                         <label class="control-label" for="address">
                             <?= lang('address') ?>
                         </label>
                         <input id="address" class="form-control">
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" style="display: none">
                         <label class="control-label" for="city">
                             <?= lang('city') ?>
 
@@ -144,13 +144,12 @@
                         <input id="city" class="form-control">
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" style="display: none">
                         <label class="control-label" for="zip-code">
                             <?= lang('zip_code') ?>
                         </label>
                         <input id="zip-code" class="form-control">
                     </div>
-                        -->
 
                     <div class="form-group">
                         <label for="language">

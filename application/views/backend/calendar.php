@@ -227,11 +227,6 @@
                                     </label>
                                     <input id="appointment-location" class="form-control">
                                 </div>
-
-                                <div class="form-group">
-                                    <label for="appointment-notes" class="control-label"><?= lang('notes') ?></label>
-                                    <textarea id="appointment-notes" class="form-control" rows="3"></textarea>
-                                </div>
                             </div>
 
                             <div class="col-12 col-sm-6">
@@ -256,13 +251,13 @@
                                                 -
                                             </span>
                                         </li>
-                                        <li>
-                                            <?= lang('current_user') ?>:
-                                            <span>
-                                                <?= $timezones[$timezone] ?>
-                                            </span>
-                                        </li>
                                     </ul>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-12">
+                                <div class="form-group">
+                                    <label for="appointment-notes" class="control-label"><?= lang('notes') ?></label>
+                                    <textarea id="appointment-notes" class="form-control" rows="3"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -318,7 +313,8 @@
                                     </label>
                                     <input id="email" class="required form-control">
                                 </div>
-
+                            </div>
+                            <div class="col-12 col-sm-6">
                                 <div class="form-group">
                                     <label for="phone-number" class="control-label">
                                         <?= lang('phone_number') ?>
@@ -329,34 +325,50 @@
                                     <input id="phone-number"
                                            class="form-control <?= $require_phone_number === '1' ? 'required' : '' ?>">
                                 </div>
-                            </div>
-                            <div class="col-12 col-sm-6">
+
                                 <div class="form-group">
+                                    <label for="language">
+                                        <?= lang('language') ?>
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <select id="language" class="form-control required"></select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="timezone">
+                                        <?= lang('timezone') ?>
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <?= render_timezone_dropdown('id="timezone" class="form-control required"') ?>
+                                </div>
+
+                                <div class="form-group" style="display: none">
                                     <label for="address" class="control-label">
                                         <?= lang('address') ?>
                                     </label>
                                     <input id="address" class="form-control">
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group" style="display: none">
                                     <label for="city" class="control-label">
                                         <?= lang('city') ?>
                                     </label>
                                     <input id="city" class="form-control">
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group" style="display: none">
                                     <label for="zip-code" class="control-label">
                                         <?= lang('zip_code') ?>
                                     </label>
                                     <input id="zip-code" class="form-control">
                                 </div>
-
+                            </div>
+                            <div class="col-12 col-sm-12">
                                 <div class="form-group">
                                     <label for="customer-notes" class="control-label">
                                         <?= lang('notes') ?>
                                     </label>
-                                    <textarea id="customer-notes" rows="2" class="form-control"></textarea>
+                                    <textarea id="customer-notes" class="form-control" rows="3"></textarea>
                                 </div>
                             </div>
                         </div>

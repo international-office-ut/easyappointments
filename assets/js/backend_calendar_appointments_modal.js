@@ -78,6 +78,8 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
                 address: $dialog.find('#address').val(),
                 city: $dialog.find('#city').val(),
                 zip_code: $dialog.find('#zip-code').val(),
+                language: $dialog.find('#language').val(),
+                timezone: $dialog.find('#timezone').val(),
                 notes: $dialog.find('#customer-notes').val()
             };
 
@@ -217,6 +219,8 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
                 $('#address').val(customer.address);
                 $('#city').val(customer.city);
                 $('#zip-code').val(customer.zip_code);
+                $('#language').val(customer.language);
+                $('#timezone').val(customer.timezone);
                 $('#customer-notes').val(customer.notes);
             }
 
@@ -282,6 +286,8 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
                                 || customer.address.toLowerCase().indexOf(key) !== -1
                                 || customer.city.toLowerCase().indexOf(key) !== -1
                                 || customer.zip_code.toLowerCase().indexOf(key) !== -1
+                                || customer.language.toLowerCase().indexOf(key) !== -1
+                                || customer.timezone.toLowerCase().indexOf(key) !== -1
                                 || customer.notes.toLowerCase().indexOf(key) !== -1) {
                                 $('<div/>', {
                                     'data-id': customer.id,
@@ -351,7 +357,7 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
          */
         $('#new-customer').on('click', function () {
             $('#manage-appointment').find('#customer-id, #first-name, #last-name, #email, '
-                + '#phone-number, #address, #city, #zip-code, #customer-notes').val('');
+                + '#phone-number, #address, #city, #zip-code, ,#language, #timezone, #customer-notes').val('');
         });
     }
 
@@ -388,6 +394,11 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
                 $dialog.find('#select-provider')
                     .append(new Option(provider.first_name + ' ' + provider.last_name, provider.id));
             }
+        });
+
+        // Add the available languages to the language dropdown.
+        availableLanguages.forEach(function (language) {
+            $('#language').append(new Option(language, language));
         });
 
         // Close existing customers-filter frame.

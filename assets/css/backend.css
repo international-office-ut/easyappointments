@@ -609,9 +609,8 @@ body .form-horizontal .controls {
    -------------------------------------------------------------------- */
 
 #customers-page #customer-appointments {
-    min-height: 400px;
-    max-height: 800px;
-    max-width: 330px;
+    min-height: 142px;
+    max-height: 660px;
     width: 100%;
     margin-bottom: 20px;
     overflow-y: auto;
@@ -684,9 +683,8 @@ body .form-horizontal .controls {
 
 #users-page #secretary-providers,
 #users-page #provider-services {
-    max-width: 315px;
     width: 100%;
-    height: 387px;
+    height: 355px;
     overflow-y: auto;
     margin-bottom: 20px;
 }

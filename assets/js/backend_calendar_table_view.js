@@ -704,11 +704,14 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
         var firstWeekday = GlobalVariables.firstWeekday;
         var firstWeekdayNumber = GeneralFunctions.getWeekDayId(firstWeekday);
 
+        var currentTime = moment().format("HH") + ":00:00";
+
         $wrapper.fullCalendar({
             defaultView: 'agendaDay',
             height: getCalendarHeight(),
             editable: true,
             timeFormat: timeFormat,
+            scrollTime: currentTime,
             slotLabelFormat: slotTimeFormat,
             allDaySlot: true,
             columnFormat: columnFormat,

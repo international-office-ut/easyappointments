@@ -1411,15 +1411,19 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
         var firstWeekday = GlobalVariables.firstWeekday;
         var firstWeekdayNumber = GeneralFunctions.getWeekDayId(firstWeekday);
 
+        var currentTime = moment().format("HH") + ":00:00";
+
         // Initialize page calendar
         $('#calendar').fullCalendar({
             defaultView: defaultView,
             height: getCalendarHeight(),
             editable: true,
             firstDay: firstWeekdayNumber,
+            hiddenDays: [ 0 ],
             slotDuration: '00:15:00', 
             snapDuration: '00:15:00',
             slotLabelInterval: '01:00',
+            scrollTime: currentTime,
             timeFormat: timeFormat,
             showNonCurrentDates: false,
             slotLabelFormat: slotTimeFormat,
@@ -1427,6 +1431,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                 day: {
                     titleFormat: 'D. MMMM YYYY',
                     columnFormat: 'dddd',
+
                 },
                 week: {
                     titleFormat: 'D. MMMM YYYY',

@@ -268,7 +268,7 @@
                                     <br>
 
                                     <div class="custom-control custom-switch">
-                                        <input type="checkbox" class="custom-control-input" id="provider-notifications">
+                                        <input type="checkbox" class="custom-control-input" id="provider-notifications" style="display:none">
                                         <label class="custom-control-label" for="provider-notifications">
                                             <?= lang('receive_notifications') ?>
                                         </label>
@@ -555,7 +555,7 @@
                             <br>
 
                             <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="secretary-notifications">
+                                <input type="checkbox" class="custom-control-input" id="secretary-notifications" style="display:none">
                                 <label class="custom-control-label" for="secretary-notifications">
                                     <?= lang('receive_notifications') ?>
                                 </label>
@@ -762,7 +762,7 @@
                             <br>
 
                             <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="admin-notifications">
+                                <input type="checkbox" class="custom-control-input" id="admin-notifications" style="display:none">
                                 <label class="custom-control-label" for="admin-notifications">
                                     <?= lang('receive_notifications') ?>
                                 </label>

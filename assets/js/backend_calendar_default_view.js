@@ -1376,6 +1376,10 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                 columnFormat = 'ddd D/M';
                 break;
 
+            case 'DDMY':
+                columnFormat = 'dddd, D.M.';
+                break;
+
             case 'MDY':
             case 'YMD':
                 columnFormat = 'ddd M/D';
@@ -1418,6 +1422,14 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
             slotLabelInterval: '01:00',
             timeFormat: timeFormat,
             slotLabelFormat: slotTimeFormat,
+            views: {
+                day: {
+                    titleFormat: 'D. MMMM YYYY'
+                },
+                week: {
+                    titleFormat: 'D. MMMM YYYY',
+                }
+            },
             allDayText: EALang.all_day,
             columnFormat: columnFormat,
             header: {

@@ -565,7 +565,11 @@ window.FrontendBook = window.FrontendBook || {};
                         $('<span/>', {
                             'text': EALang.timezone + ': ' + $('#select-timezone option:selected').text()
                         }),
-                        $('<br/>'),
+                        $('<br/>', {
+                            'prop': {
+                                'hidden': !servicePrice
+                            }
+                        }),
                         $('<span/>', {
                             'text': EALang.price + ': ' + servicePrice + ' ' + serviceCurrency,
                             'prop': {
@@ -586,6 +590,7 @@ window.FrontendBook = window.FrontendBook || {};
         var address = GeneralFunctions.escapeHtml($('#address').val());
         var city = GeneralFunctions.escapeHtml($('#city').val());
         var zipCode = GeneralFunctions.escapeHtml($('#zip-code').val());
+        var appointmentNotes = GeneralFunctions.escapeHtml($('#notes').val());
 
         $('#customer-details').empty();
 
@@ -603,7 +608,11 @@ window.FrontendBook = window.FrontendBook || {};
                         $('<span/>', {
                             'text': EALang.email + ': ' + email
                         }),
-                        $('<br/>'),
+                        $('<br/>', {
+                            'prop': {
+                                'hidden': !phoneNumber
+                            }
+                        }),
                         $('<span/>', {
                             'text': EALang.phone_number + ': ' + phoneNumber,
                             'prop': {
@@ -611,6 +620,25 @@ window.FrontendBook = window.FrontendBook || {};
                             }
                         }),
                         $('<br/>'),
+                        $('<br/>', {
+                            'prop': {
+                                'hidden': !appointmentNotes
+                            }
+                        }),
+                        $('<span/>', {
+                            'text': EALang.notes + ':',
+                            'prop': {
+                                'hidden': !appointmentNotes
+                            }
+                        }),
+                        $('<br/>'),
+                        $('<span/>', {
+                            'text': appointmentNotes,
+                            'prop': {
+                                'hidden': !appointmentNotes
+                            }
+                        }),
+                       $('<br/>'),
                         $('<span/>', {
                             'text': address ? EALang.address + ': ' + address : ''
                         }),

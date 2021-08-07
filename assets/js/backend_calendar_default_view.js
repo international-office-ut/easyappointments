@@ -1421,13 +1421,18 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
             snapDuration: '00:15:00',
             slotLabelInterval: '01:00',
             timeFormat: timeFormat,
+            showNonCurrentDates: false,
             slotLabelFormat: slotTimeFormat,
             views: {
                 day: {
-                    titleFormat: 'D. MMMM YYYY'
+                    titleFormat: 'D. MMMM YYYY',
+                    columnFormat: 'dddd',
                 },
                 week: {
                     titleFormat: 'D. MMMM YYYY',
+                },
+                month: {
+                    columnFormat: 'dddd',
                 }
             },
             allDayText: EALang.all_day,

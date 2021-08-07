@@ -4,7 +4,7 @@
             <?php foreach ($entries as $value => $name): ?>
                 <?php if ($value == date_default_timezone_get()): ?>
                     <option selected value="<?= $value ?>"><?= $name ?></option>
-                <?php else:?>
+                <?php else: ?>
                     <option value="<?= $value ?>"><?= $name ?></option>
                 <?php endif ?>
             <?php endforeach ?>

@@ -107,10 +107,10 @@
                                     <?= lang('date_format') ?>
                                 </label>
                                 <select class="form-control" id="date-format" data-field="date_format">
-                                    <option value="DMY">DMY</option>
-                                    <option value="DDMY">DDMY</option>
-                                    <option value="MDY">MDY</option>
-                                    <option value="YMD">YMD</option>
+                                    <option value="DMY">D/M/Y</option>
+                                    <option value="DDMY">D.M.Y</option>
+                                    <option value="MDY">M/D/Y</option>
+                                    <option value="YMD">Y/M/D</option>
                                 </select>
                                 <span class="form-text text-muted">
                                     <?= lang('date_format_hint') ?>

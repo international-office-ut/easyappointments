@@ -718,6 +718,7 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
             firstDay: firstWeekdayNumber,
             slotDuration: '00:15:00',
             snapDuration: '00:15:00',
+            slotLabelInterval: '01:00',
             header: {
                 left: 'listDay,agendaDay',
                 center: '',

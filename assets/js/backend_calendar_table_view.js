@@ -394,9 +394,32 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
                 throw new Error('Invalid date format setting provided: ' + GlobalVariables.dateFormat);
         }
 
+        var weekDayId = GeneralFunctions.getWeekDayId(GlobalVariables.firstWeekday);
+
         $calendarHeader.find('.select-date').datepicker({
-            defaultDate: new Date(),
             dateFormat: dateFormat,
+            defaultDate: Date.today(),
+            firstDay: weekDayId,
+
+            dayNames: [
+                EALang.sunday, EALang.monday, EALang.tuesday, EALang.wednesday,
+                EALang.thursday, EALang.friday, EALang.saturday],
+            dayNamesShort: [EALang.sunday.substr(0, 3), EALang.monday.substr(0, 3),
+                EALang.tuesday.substr(0, 3), EALang.wednesday.substr(0, 3),
+                EALang.thursday.substr(0, 3), EALang.friday.substr(0, 3),
+                EALang.saturday.substr(0, 3)],
+            dayNamesMin: [EALang.sunday.substr(0, 2), EALang.monday.substr(0, 2),
+                EALang.tuesday.substr(0, 2), EALang.wednesday.substr(0, 2),
+                EALang.thursday.substr(0, 2), EALang.friday.substr(0, 2),
+                EALang.saturday.substr(0, 2)],
+            monthNames: [EALang.january, EALang.february, EALang.march, EALang.april,
+                EALang.may, EALang.june, EALang.july, EALang.august, EALang.september,
+                EALang.october, EALang.november, EALang.december],
+            prevText: EALang.previous,
+            nextText: EALang.next,
+            currentText: EALang.now,
+            closeText: EALang.close,
+
             onSelect: function (dateText, instance) {
                 var startDate = new Date(instance.currentYear, instance.currentMonth, instance.currentDay);
                 var endDate = new Date(startDate.getTime()).add({days: parseInt($('#select-filter-item').val()) - 1});

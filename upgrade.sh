@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+cd $SCRIPT_DIR
 sudo -u www-data git pull
 sudo -u www-data rm assets/css/*.min.css
 sudo -u www-data rm assets/js/*.min.js

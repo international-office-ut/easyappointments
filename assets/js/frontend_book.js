@@ -93,8 +93,27 @@ window.FrontendBook = window.FrontendBook || {};
 
         var weekDayId = GeneralFunctions.getWeekDayId(GlobalVariables.firstWeekday);
 
+        var dateFormat;
+
+        switch (GlobalVariables.dateFormat) {
+            case 'DMY':
+                dateFormat = 'dd/mm/yy';
+                break;
+            case 'DDMY':
+                dateFormat = 'dd.mm.yy';
+                break;
+            case 'MDY':
+                dateFormat = 'mm/dd/yy';
+                break;
+            case 'YMD':
+                dateFormat = 'yy/mm/dd';
+                break;
+            default:
+                throw new Error('Invalid GlobalVariables.dateFormat value.');
+        }
+
         $('#select-date').datepicker({
-            dateFormat: 'dd-mm-yy',
+            dateFormat: dateFormat,
             firstDay: weekDayId,
             minDate: 0,
             defaultDate: Date.today(),

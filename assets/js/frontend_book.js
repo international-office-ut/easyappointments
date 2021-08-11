@@ -432,6 +432,11 @@ window.FrontendBook = window.FrontendBook || {};
                 GeneralFunctions.displayMessageBox(EALang.delete_personal_information,
                     EALang.delete_personal_information_prompt, buttons);
             });
+
+            // Hide Elements we don't need
+            $('#steps').fadeOut();
+            $('#wizard-frame-1').slideUp();
+            $('.badge-primary').hide();
         }
 
         /**

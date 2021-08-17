@@ -48,10 +48,12 @@
                 <td class="label" style="padding: 3px;font-weight: bold;"><?= lang('email') ?></td>
                 <td style="padding: 3px;"><?= $customer_email ?></td>
             </tr>
+<?php if (!empty($customer_phone)): ?>
             <tr>
                 <td class="label" style="padding: 3px;font-weight: bold;"><?= lang('phone_number') ?></td>
                 <td style="padding: 3px;"><?= $customer_phone ?></td>
             </tr>
+<?php endif ?>
         </table>
 
         <h2><?= lang('reason') ?></h2>

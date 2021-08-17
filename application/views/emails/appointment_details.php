@@ -36,14 +36,18 @@
                 <td class="label" style="padding: 3px;font-weight: bold;"><?= lang('timezone') ?></td>
                 <td style="padding: 3px;"><?= $appointment_timezone ?></td>
             </tr>
+><?php if (!empty($appointment_zoom_link)): ?>
             <tr>
                 <td class="label" style="padding: 3px;font-weight: bold;"><?= lang('mobile_number') ?></td>
                 <td style="padding: 3px;"><a href="<?= $appointment_zoom_link ?>"><?= $appointment_zoom_link ?></a></td>
             </tr>
+<?php endif ?>
+<?php if (!empty($appointment_notes)): ?>
             <tr>
                 <td class="label" style="padding: 3px;font-weight: bold;"><?= lang('notes') ?></td>
                 <td style="padding: 3px;"><?= $appointment_notes ?></td>
             </tr>
+<?php endif ?>
         </table>
 
         <h2><?= lang('customer_details_title') ?></h2>
@@ -56,10 +60,12 @@
                 <td class="label" style="padding: 3px;font-weight: bold;"><?= lang('email') ?></td>
                 <td style="padding: 3px;"><?= $customer_email ?></td>
             </tr>
+<?php if (!empty($customer_phone)): ?>
             <tr>
                 <td class="label" style="padding: 3px;font-weight: bold;"><?= lang('phone_number') ?></td>
                 <td style="padding: 3px;"><?= $customer_phone ?></td>
             </tr>
+<?php endif ?>
         </table>
 
         <h2><?= lang('appointment_link_title') ?></h2>

@@ -36,7 +36,7 @@
                 <td class="label" style="padding: 3px;font-weight: bold;"><?= lang('timezone') ?></td>
                 <td style="padding: 3px;"><?= $appointment_timezone ?></td>
             </tr>
-><?php if (!empty($appointment_zoom_link)): ?>
+<?php if (!empty($appointment_zoom_link)): ?>
             <tr>
                 <td class="label" style="padding: 3px;font-weight: bold;"><?= lang('mobile_number') ?></td>
                 <td style="padding: 3px;"><a href="<?= $appointment_zoom_link ?>"><?= $appointment_zoom_link ?></a></td>

@@ -61,7 +61,7 @@ class Ics_file {
             ->setSummary($service['name'])
             ->setUid($appointment['id']);
 
-        if (!empty($service['location']))
+        if (!empty($service['location']) && $service['location'] != 'Zoom')
         {
             $location = new Location();
             $location->setName((string)$service['location']);
@@ -75,23 +75,26 @@ class Ics_file {
             lang('name') . ': ' . $provider['first_name'] . ' ' . $provider['last_name'],
             lang('email') .': ' . $provider['email'],
             lang('phone_number') . ': ' . $provider['phone_number'],
-            lang('address') . ': ' . $provider['address'],
-            lang('city') . ': ' . $provider['city'],
-            lang('zip_code') . ': ' . $provider['zip_code'],
             '',
             lang('customer'),
             '',
             lang('name') . ': ' . $customer['first_name'] . ' ' . $customer['last_name'],
             lang('email') .': ' . $customer['email'],
-            lang('phone_number') . ': ' . $customer['phone_number'],
-            lang('address') . ': ' . $customer['address'],
-            lang('city') . ': ' . $customer['city'],
-            lang('zip_code') . ': ' . $customer['zip_code'],
-            '',
-            lang('notes'),
-            '',
-            $appointment['notes'],
         ];
+
+        if (!empty($customer['phone_number']))
+        {
+            array_push($description, lang('phone_number') . ': ' . $customer['phone_number'], '');
+        }
+
+        if (!empty($provider['mobile_number']) && $service['location'] == 'Zoom')
+        {
+            array_push($description, '', lang('mobile_number') . ': ' . $provider['mobile_number'], '');
+        }
+        if (!empty($appointment['notes']))
+        {
+            array_push($description, lang('notes'), '', $appointment['notes']);
+        }
 
         $event->setDescription(implode("\\n", $description));
 
@@ -113,19 +116,10 @@ class Ics_file {
         $alarm = new CalendarAlarm();
         $alarm_datetime = clone $appointment_start;
         $alarm->setTrigger($alarm_datetime->modify('-15 minutes'));
-        $alarm->setSummary('Alarm notification');
-        $alarm->setDescription('This is an event reminder');
-        $alarm->setAction('EMAIL');
-        $alarm->addAttendee($attendee);
-        $event->addAlarm($alarm);
-
-        $alarm = new CalendarAlarm();
-        $alarm_datetime = clone $appointment_start;
-        $alarm->setTrigger($alarm_datetime->modify('-60 minutes'));
-        $alarm->setSummary('Alarm notification');
-        $alarm->setDescription('This is an event reminder');
-        $alarm->setAction('EMAIL');
-        $alarm->addAttendee($attendee);
+        //$alarm->setSummary('Alarm notification');
+        //$alarm->setDescription('This is an event reminder');
+        $alarm->setAction('DISPLAY');
+        //$alarm->addAttendee($attendee);
         $event->addAlarm($alarm);
 
         $attendee = new Attendee(new Formatter());

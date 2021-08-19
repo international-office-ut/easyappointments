@@ -35,6 +35,7 @@
     <script src="<?= asset_url('assets/ext/select2/select2.min.js') ?>"></script>
     <script src="<?= asset_url('assets/ext/fontawesome/js/fontawesome.min.js') ?>"></script>
     <script src="<?= asset_url('assets/ext/fontawesome/js/solid.min.js') ?>"></script>
+    <script src="<?= asset_url('assets/ext/jstz/jstz.min.js') ?>"></script>
 </head>
 
 <body>

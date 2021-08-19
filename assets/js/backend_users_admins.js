@@ -302,6 +302,7 @@
      * Resets the admin form back to its initial state.
      */
     AdminsHelper.prototype.resetForm = function () {
+        var tz = jstz.determine();
         $('#filter-admins .selected').removeClass('selected');
         $('#filter-admins button').prop('disabled', false);
         $('#filter-admins .results').css('color', '');
@@ -313,7 +314,7 @@
             .val('')
             .prop('disabled', true);
         $('#admins .record-details #admin-calendar-view').val('default');
-        $('#admins .record-details #admin-timezone').val('Europe/Berlin');
+        $('#admins .record-details #admin-timezone').val(tz.name());
         $('#edit-admin, #delete-admin').prop('disabled', true);
 
         $('#admins .has-error').removeClass('has-error');

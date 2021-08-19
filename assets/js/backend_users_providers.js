@@ -340,6 +340,7 @@
      * Resets the admin tab form back to its initial state.
      */
     ProvidersHelper.prototype.resetForm = function () {
+        var tz = jstz.determine();
         $('#filter-providers .selected').removeClass('selected');
         $('#filter-providers button').prop('disabled', false);
         $('#filter-providers .results').css('color', '');
@@ -351,7 +352,7 @@
             .val('')
             .prop('disabled', true);
         $('#providers .record-details #provider-calendar-view').val('default');
-        $('#providers .record-details #provider-timezone').val('Europe/Berlin');
+        $('#providers .record-details #provider-timezone').val(tz.name());
         $('#providers .add-break, .add-working-plan-exception, #reset-working-plan').prop('disabled', true);
         BackendUsers.wp.timepickers(true);
         $('#providers .working-plan input:text').timepicker('destroy');

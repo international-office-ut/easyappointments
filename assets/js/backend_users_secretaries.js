@@ -316,6 +316,7 @@
      * Resets the secretary tab form back to its initial state.
      */
     SecretariesHelper.prototype.resetForm = function () {
+        var tz = jstz.determine();
         $('#filter-secretaries .selected').removeClass('selected');
         $('#filter-secretaries button').prop('disabled', false);
         $('#filter-secretaries .results').css('color', '');
@@ -325,7 +326,7 @@
             .val('')
             .prop('disabled', true);
         $('#secretaries .record-details #secretary-calendar-view').val('default');
-        $('#secretaries .record-details #secretary-timezone').val('Europe/Berlin');
+        $('#secretaries .record-details #secretary-timezone').val(tz.name());
         $('#secretaries .add-edit-delete-group').show();
         $('#secretaries .save-cancel-group').hide();
         $('#edit-secretary, #delete-secretary').prop('disabled', true);

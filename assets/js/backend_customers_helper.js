@@ -255,11 +255,12 @@
      * Bring the customer form back to its initial state.
      */
     CustomersHelper.prototype.resetForm = function () {
+        var tz = jstz.determine();
         $('.record-details')
             .find('input, select, textarea')
             .val('')
             .prop('disabled', true);
-        $('.record-details #timezone').val('Europe/Berlin');
+        $('.record-details #timezone').val(tz.name());
 
         $('#language').val('english');
 

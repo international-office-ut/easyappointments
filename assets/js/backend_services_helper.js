@@ -109,7 +109,7 @@
             $('#service-price').val('0');
             $('#service-currency').val('');
             $('#service-category').val('null');
-            $('#service-availabilities-type').val('flexible');
+            $('#service-availabilities-type').val('fixed');
             $('#service-attendants-number').val('1');
         });
 

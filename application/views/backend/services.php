@@ -130,7 +130,6 @@
                     <div class="form-group"  style="display: none">
                         <label for="service-currency">
                             <?= lang('currency') ?>
-
                         </label>
                         <input id="service-currency" class="form-control" maxlength="32">
                     </div>
@@ -145,14 +144,13 @@
                     <div class="form-group">
                         <label for="service-availabilities-type">
                             <?= lang('availabilities_type') ?>
-
                         </label>
                         <select id="service-availabilities-type" class="form-control">
-                            <option value="<?= AVAILABILITIES_TYPE_FLEXIBLE ?>">
-                                <?= lang('flexible') ?>
-                            </option>
                             <option value="<?= AVAILABILITIES_TYPE_FIXED ?>">
                                 <?= lang('fixed') ?>
+                            </option>
+                            <option value="<?= AVAILABILITIES_TYPE_FLEXIBLE ?>">
+                                <?= lang('flexible') ?>
                             </option>
                         </select>
                     </div>

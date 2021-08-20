@@ -653,7 +653,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
         }
 
         $(jsEvent.target).popover({
-            placement: 'top',
+            placement: 'auto',
             title: event.title,
             content: $html,
             html: true,
@@ -665,10 +665,6 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
 
         $(jsEvent.target).popover('toggle');
 
-        // Fix popover position.
-        if ($('.popover').length > 0 && $('.popover').position().top < 200) {
-            $('.popover').css('top', '200px');
-        }
     }
 
     /**
@@ -990,10 +986,13 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
             $(closePopoverButton).parents('.popover').popover('dispose');
         });
 
+        // TODO: Try to fix the repositioning of the new popovers
         // Add new pop overs.
+        /*
         $('.fv-events').each(function (index, eventElement) {
             $(eventElement).popover();
         });
+        */
     }
 
     /**
@@ -1656,20 +1655,21 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
             $('#footer').css('position', 'static');
         }
 
-        // Automatically refresh the calendar page every 10 seconds (without loading animation).
+        // Automatically refresh the calendar page every 5 Minutes (without loading animation).
+        // Popovers are closed since they get not reposisioned correctly.
+        // TODO: Try to fix the repositioning
         var $calendar = $('#calendar');
         var $selectFilterItem = $('#select-filter-item');
-
+        $('.popover').popover('dispose');
         setInterval(function () {
             var calendarView = $calendar.fullCalendar('getView');
-
             refreshCalendarAppointments(
                 $calendar,
                 $selectFilterItem.val(),
                 $selectFilterItem.find('option:selected').attr('type'),
                 calendarView.start,
                 calendarView.end);
-        }, 60000);
+        }, 300000);
     };
 
 })(window.BackendCalendarDefaultView);

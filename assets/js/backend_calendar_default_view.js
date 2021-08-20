@@ -599,9 +599,11 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                     $('<br/>'),
 
                     $('<strong/>', {
+                        'class': 'd-inline-block mr-2',
                         'text': EALang.notes
                     }),
                     $('<span/>', {
+                        'class': 'd-inline-block ml-1',
                         'text': getEventNotes(event)
                     }),
                     $('<br/>'),

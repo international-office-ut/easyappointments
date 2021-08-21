@@ -66,6 +66,8 @@ window.BackendCalendar = window.BackendCalendar || {};
         });
 
         $('#insert-working-plan-exception').on('click', function () {
+            $('.popover').popover('dispose'); // hide popover
+
             var providerId = $('#select-filter-item').val();
 
             var provider = GlobalVariables.availableProviders.find(function (availableProvider) {

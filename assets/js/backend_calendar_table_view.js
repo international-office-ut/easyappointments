@@ -33,6 +33,7 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
         var $calendar = $('#calendar');
 
         $calendar.on('click', '.calendar-header .btn.previous', function () {
+            $('.popover').popover('dispose'); //hide popover
             var dayInterval = $('#select-filter-item').val();
             var currentDate = $('.select-date').datepicker('getDate');
             var startDate = moment(currentDate).subtract(1, 'days');
@@ -42,6 +43,7 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
         });
 
         $calendar.on('click', '.calendar-header .btn.next', function () {
+            $('.popover').popover('dispose'); //hide popover
             var dayInterval = $('#select-filter-item').val();
             var currentDate = $('.select-date').datepicker('getDate');
             var startDate = moment(currentDate).add(1, 'days');
@@ -51,6 +53,7 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
         });
 
         $calendarToolbar.on('change', '#select-filter-item', function () {
+            $('.popover').popover('dispose'); //hide popover
             var dayInterval = $('#select-filter-item').val();
             var currentDate = $('.select-date').datepicker('getDate');
             var startDate = moment(currentDate);
@@ -59,6 +62,7 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
         });
 
         $calendarToolbar.on('click', '#reload-appointments', function () {
+            $('.popover').popover('dispose'); // hide popover
             // Remove all the events from the tables.
             $('.calendar-view .event').remove();
 
@@ -134,6 +138,15 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
          */
         $calendar.on('click', '.close-popover', function () {
             $(this).parents('.popover').popover('dispose');
+        });
+
+        /**
+         * Event: List|Calendar Button "Click"
+         *
+         * Hides the open popover element.
+         */
+        $calendar.on('click', '.fc-button-group', function () {
+            $('.popover').popover('dispose');
         });
 
         /**
@@ -421,6 +434,7 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
             closeText: EALang.close,
 
             onSelect: function (dateText, instance) {
+                $('.popover').popover('dispose'); // hide popover
                 var startDate = new Date(instance.currentYear, instance.currentMonth, instance.currentDay);
                 var endDate = new Date(startDate.getTime()).add({days: parseInt($('#select-filter-item').val()) - 1});
                 createView(startDate, endDate);
@@ -446,6 +460,7 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
             'multiple': 'multiple',
             'on': {
                 'change': function () {
+                    $('.popover').popover('dispose'); // hide popover
                     var startDate = new Date($('.calendar-view .date-column:first').data('date'));
                     var endDate = new Date(startDate.getTime()).add({days: parseInt($('#select-date').val()) - 1});
                     createView(startDate, endDate);
@@ -486,6 +501,7 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
             'multiple': 'multiple',
             'on': {
                 'change': function () {
+                    $('.popover').popover('dispose'); // hide popover
                     var startDate = new Date($('.calendar-view .date-column:first').data('date'));
                     var endDate = new Date(startDate.getTime()).add({days: parseInt($('#select-date').val()) - 1});
                     createView(startDate, endDate);
@@ -1413,7 +1429,7 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
         }
 
         $(jsEvent.target).popover({
-            placement: 'top',
+            placement: 'auto',
             title: event.title,
             content: $html,
             html: true,
@@ -1424,11 +1440,6 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
         lastFocusedEventData = event;
 
         $(jsEvent.target).popover('toggle');
-
-        // Fix popover position.
-        if ($('.popover').length > 0 && $('.popover').position().top < 200) {
-            $('.popover').css('top', '200px');
-        }
     }
 
     /**

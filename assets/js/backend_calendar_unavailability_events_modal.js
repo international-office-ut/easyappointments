@@ -129,6 +129,7 @@ window.BackendCalendarUnavailabilityEventsModal = window.BackendCalendarUnavaila
      * before it becomes visible to the user.
      */
     exports.resetUnavailableDialog = function () {
+        $('.popover').popover('dispose'); // hide popover
         var $dialog = $('#manage-unavailable');
 
         $dialog.find('#unavailable-id').val('');

@@ -137,6 +137,7 @@ window.BackendCalendarWorkingPlanExceptionsModal = window.BackendCalendarWorking
      * before it becomes visible to the user.
      */
     exports.resetWorkingPlanExceptionModal = function () {
+        $('.popover').popover('dispose'); // hide popover
         $('#manage-working-plan-exceptions').find('#working-plan-exception-id').val('');
 
         // Set the default datetime values.

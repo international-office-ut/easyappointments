@@ -706,14 +706,11 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
         var columnFormat = '';
 
         switch (GlobalVariables.dateFormat) {
-            case 'DMY':
-                columnFormat = 'dddd';
-                break;
-
             case 'DDMY':
-                columnFormat = 'dddd';
+                columnFormat = 'dddd, D. MMMM YYYY';
                 break;
 
+            case 'DMY':
             case 'MDY':
             case 'YMD':
                 columnFormat = 'dddd';
@@ -1719,14 +1716,14 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
         var height = window.innerHeight - $('#header').outerHeight() - $('#footer').outerHeight()
             - $('#calendar-toolbar').outerHeight() - $('.calendar-header').outerHeight() - 50;
 
-        if (height < 500) {
-            height = 500;
-        }
-
         var $dateColumn = $('.date-column');
-        var $calendarViewDiv = $('.calendar-view > div');
+        var $calendarViewDateColumn = $('.calendar-view .date-column>*');
 
-        $calendarViewDiv.css('min-width', '1000%');
+        if ($('.date-column > div').length == 1) {
+            $calendarViewDateColumn.css('flex', '0 0 100%');
+        } else if ($('.date-column > div').length == 2) {
+            $calendarViewDateColumn.css('flex', '0 0 49%');
+        }
 
         var width = 0;
 
@@ -1734,7 +1731,7 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
             width += $(dateColumn).outerWidth();
         });
 
-        $calendarViewDiv.css('min-width', width + 200);
+        //$calendarViewDiv.css('min-width', width + 200);
 
         var dateColumnHeight = $dateColumn.outerHeight();
 

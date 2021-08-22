@@ -531,14 +531,14 @@ body .form-horizontal .controls {
 
 #calendar .calendar-view > div {
     width: 100%;
-    min-width: 1000%;
     overflow: auto;
 }
 
 #calendar .calendar-view .date-column {
     overflow: auto;
     float: left;
-    margin-right: 20px;
+    width: 100%;
+    margin-bottom: 50px;
 }
 
 #calendar .fc-unavailable {
@@ -549,7 +549,7 @@ body .form-horizontal .controls {
     overflow: auto;
     float: left;
     margin-right: 10px;
-    width: 500px;
+    width: 100%;
 }
 
 #calendar .calendar-view .date-column .provider-column table thead {
@@ -573,6 +573,10 @@ body .form-horizontal .controls {
     background: #409482;
     color: #fff;
 
+}
+
+#calendar .calendar-view .date-column-title {
+    display: none;
 }
 
 @media (min-width: 768px) {
@@ -624,6 +628,18 @@ body .form-horizontal .controls {
     #calendar .calendar-header label {
         display: inline-block;
         margin: 0 10px;
+    }
+
+    #calendar .calendar-view .date-column {
+        overflow: auto;
+        float: auto;
+        margin-bottom: 5px;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    #calendar .calendar-view .date-column>* {
+        flex: 0 0 32.6%;
     }
 }
 

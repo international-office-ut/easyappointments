@@ -639,7 +639,7 @@ body .form-horizontal .controls {
     }
 
     #calendar .calendar-view .date-column>* {
-        flex: 0 0 32.6%;
+        flex: 1 0 32.6%;
         margin-top: 20px;
     }
 }

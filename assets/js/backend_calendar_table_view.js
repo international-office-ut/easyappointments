@@ -1717,21 +1717,12 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
             - $('#calendar-toolbar').outerHeight() - $('.calendar-header').outerHeight() - 50;
 
         var $dateColumn = $('.date-column');
-        var $calendarViewDateColumn = $('.calendar-view .date-column>*');
-
-        if ($('.date-column > div').length == 1) {
-            $calendarViewDateColumn.css('flex', '0 0 100%');
-        } else if ($('.date-column > div').length == 2) {
-            $calendarViewDateColumn.css('flex', '0 0 49%');
-        }
 
         var width = 0;
 
         $dateColumn.each(function (index, dateColumn) {
             width += $(dateColumn).outerWidth();
         });
-
-        //$calendarViewDiv.css('min-width', width + 200);
 
         var dateColumnHeight = $dateColumn.outerHeight();
 

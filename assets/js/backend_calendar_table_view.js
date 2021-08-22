@@ -1576,6 +1576,8 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
      * on the calendar. We need to update the database with this change. This is done via an ajax call.
      */
     function onEventDrop(event, delta, revertFunc) {
+        $('.popover').popover('dispose'); // Close all open popovers.
+
         if (GlobalVariables.user.privileges.appointments.edit === false) {
             revertFunc();
             Backend.displayNotification(EALang.no_privileges_edit_appointments);

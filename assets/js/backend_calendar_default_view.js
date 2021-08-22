@@ -831,6 +831,8 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
      * @param {function} revertFunc
      */
     function calendarEventDrop(event, delta, revertFunc) {
+        $('.popover').popover('dispose'); // Close all open popovers.
+
         if (GlobalVariables.user.privileges.appointments.edit === false) {
             revertFunc();
             Backend.displayNotification(EALang.no_privileges_edit_appointments);

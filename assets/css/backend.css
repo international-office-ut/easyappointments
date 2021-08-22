@@ -492,7 +492,7 @@ body .form-horizontal .controls {
 }
 
 #calendar .calendar-header {
-    padding-bottom: 15px;
+    padding-bottom: -20px;
 }
 
 #calendar .calendar-header input {
@@ -640,6 +640,7 @@ body .form-horizontal .controls {
 
     #calendar .calendar-view .date-column>* {
         flex: 0 0 32.6%;
+        margin-top: 20px;
     }
 }
 

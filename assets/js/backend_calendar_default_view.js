@@ -653,7 +653,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
         }
 
         $(jsEvent.target).popover({
-            placement: 'auto',
+            placement: 'right',
             title: event.title,
             content: $html,
             html: true,

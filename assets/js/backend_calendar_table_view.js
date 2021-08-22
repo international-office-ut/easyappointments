@@ -1429,7 +1429,7 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
         }
 
         $(jsEvent.target).popover({
-            placement: 'auto',
+            placement: 'bottom',
             title: event.title,
             content: $html,
             html: true,

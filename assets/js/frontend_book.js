@@ -537,11 +537,19 @@ window.FrontendBook = window.FrontendBook || {};
         var serviceId = $('#select-service').val();
         var servicePrice = '';
         var serviceCurrency = '';
+        var serviceLocation = '';
 
         GlobalVariables.availableServices.forEach(function (service, index) {
             if (Number(service.id) === Number(serviceId) && Number(service.price) > 0) {
                 servicePrice = service.price;
                 serviceCurrency = service.currency;
+                return false; // break loop
+            }
+        });
+
+        GlobalVariables.availableServices.forEach(function (service, index) {
+            if (Number(service.id) === Number(serviceId)) {
+                serviceLocation = service.location;
                 return false; // break loop
             }
         });
@@ -569,6 +577,13 @@ window.FrontendBook = window.FrontendBook || {};
                         $('<br/>'),
                         $('<span/>', {
                             'text': EALang.timezone + ': ' + $('#select-timezone option:selected').text()
+                        }),
+                        $('<br/>'),
+                        $('<strong/>', {
+                            'text': EALang.location + ': ' + serviceLocation,
+                            'prop': {
+                                'hidden': !serviceLocation
+                            }
                         }),
                         $('<br/>', {
                             'prop': {

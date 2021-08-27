@@ -225,6 +225,16 @@ body {
     margin-bottom: 12px;
 }
 
+#book-appointment-wizard #service-description label {
+    font-size: 19px;
+    margin-bottom: 12px;
+    font-weight: bold;
+}
+
+#book-appointment-wizard #detailed-description {
+    margin-bottom: -11px;
+}
+
 #book-appointment-wizard #wizard-frame-1 select {
     margin-bottom: 25px;
 }

@@ -805,8 +805,8 @@ window.FrontendBook = window.FrontendBook || {};
             return;
         }
 
-        $('<strong/>', {
-            'text': service.name
+        $('<label/>', {
+            'text': EALang.description,
         })
             .appendTo($serviceDescription);
 
@@ -814,8 +814,11 @@ window.FrontendBook = window.FrontendBook || {};
             $('<br/>')
                 .appendTo($serviceDescription);
 
-            $('<span/>', {
-                'html': GeneralFunctions.escapeHtml(service.description).replaceAll('\n', '<br/>')
+            $('<div/>', {
+                'html': GeneralFunctions.escapeHtml(service.description).replaceAll('\n', '<br/>'),
+                'prop': {
+                    'id': 'detailed-description'
+                }
             })
                 .appendTo($serviceDescription);
         }

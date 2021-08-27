@@ -1663,8 +1663,9 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
         // TODO: Try to fix the repositioning
         var $calendar = $('#calendar');
         var $selectFilterItem = $('#select-filter-item');
-        $('.popover').popover('dispose');
+
         setInterval(function () {
+            $('.popover').popover('dispose');
             var calendarView = $calendar.fullCalendar('getView');
             refreshCalendarAppointments(
                 $calendar,

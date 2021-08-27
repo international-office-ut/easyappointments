@@ -5,7 +5,7 @@
 // @link https://codeigniter.com/user_guide/libraries/email.html
 
 $config['useragent'] = 'Easy!Appointments';
-$config['protocol'] = 'mail'; // or 'mail'
+$config['protocol'] = 'smtp'; // or 'mail'
 $config['mailtype'] = 'html'; // or 'text'
 $config['smtp_debug'] = '0'; // or '1'
 $config['smtp_auth'] = FALSE; // for anonymous relay or TRUE.

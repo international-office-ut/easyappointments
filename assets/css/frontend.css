@@ -268,7 +268,7 @@ body {
 #book-appointment-wizard #service-description {
     overflow-y: auto;
     clear: both;
-    max-height: 153px;
+    max-height: 200px;
     box-shadow: none;
 }
 

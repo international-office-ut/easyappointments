@@ -149,6 +149,8 @@
                                             }
                                         }
 
+                                        ksort($grouped_services);
+
                                         foreach ($grouped_services as $key => $group)
                                         {
                                             $group_label = ($key != 'uncategorized')

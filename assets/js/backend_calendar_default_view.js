@@ -1422,6 +1422,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
             height: getCalendarHeight(),
             editable: true,
             firstDay: firstWeekdayNumber,
+            fixedWeekCount: false,
             //hiddenDays: [ 0 ], // hide sundays
             slotDuration: '00:15:00', 
             snapDuration: '00:15:00',

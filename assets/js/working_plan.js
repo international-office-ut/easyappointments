@@ -354,8 +354,8 @@
             var id = $(this).attr('id');
 
             if ($(this).prop('checked') === true) {
-                $('#' + id + '-start').prop('disabled', false).val('9:00 AM');
-                $('#' + id + '-end').prop('disabled', false).val('6:00 PM');
+                $('#' + id + '-start').prop('disabled', false).val('09:00');
+                $('#' + id + '-end').prop('disabled', false).val('18:00');
             } else {
                 $('#' + id + '-start').prop('disabled', true).val('');
                 $('#' + id + '-end').prop('disabled', true).val('');

@@ -149,7 +149,8 @@ window.FrontendBook = window.FrontendBook || {};
             }
         });
 
-        $('#select-timezone').val(Intl.DateTimeFormat().resolvedOptions().timeZone);
+        //TODO: revert this back to it's original expresseion when timezone handling is fixed. Europe/Berlin hotfixes this
+        $('#select-timezone').val("Europe/Berlin");
 
         // Bind the event handlers (might not be necessary every time we use this class).
         if (defaultEventHandlers) {
@@ -205,6 +206,7 @@ window.FrontendBook = window.FrontendBook || {};
         /**
          * Event: Timezone "Changed"
          */
+        //TODO: This does not work the timezone in the dropdown and the timeslots is different
         $('#select-timezone').on('change', function () {
             var date = $('#select-date').datepicker('getDate');
 

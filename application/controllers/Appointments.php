@@ -332,9 +332,10 @@ class Appointments extends EA_Controller {
                 return;
             }
 
-            // If manage mode is TRUE then the following we should not consider the selected appointment when
-            // calculating the available time periods of the provider.
-            $exclude_appointment_id = $this->input->post('manage_mode') === 'true' ? $this->input->post('appointment_id') : NULL;
+            $exclude_appointment_id = $this->get_exclude_appointment_id(
+                $this->input->post('appointment_hash'),
+                $this->input->post('appointment_id')
+            );
 
             // If the user has selected the "any-provider" option then we will need to search for an available provider
             // that will provide the requested service.
@@ -535,6 +536,28 @@ class Appointments extends EA_Controller {
     }
 
     /**
+     * Returns the appointment ID to be excluded from availability calculations, but only when the request
+     * provides the hash of that appointment. Otherwise NULL is returned so that no record gets excluded.
+     *
+     * @param string|null $appointment_hash
+     * @param int|null $appointment_id
+     * @return int|null
+     */
+    protected function get_exclude_appointment_id($appointment_hash, $appointment_id)
+    {
+        if (empty($appointment_hash) || empty($appointment_id))
+        {
+            return NULL;
+        }
+
+        $appointment_rows = $this->appointments_model->get_batch(['hash' => $appointment_hash]);
+
+        return ( ! empty($appointment_rows) && (int) $appointment_rows[0]['id'] === (int) $appointment_id)
+            ? (int) $appointment_rows[0]['id']
+            : NULL;
+    }
+
+    /**
      * Check whether the provider is still available in the selected appointment date.
      *
      * It might be times where two or more customers select the same appointment date and time. This shouldn't be
@@ -606,8 +629,6 @@ class Appointments extends EA_Controller {
         {
             $provider_id = $this->input->get('provider_id');
             $service_id = $this->input->get('service_id');
-            $appointment_id = $this->input->get_post('appointment_id');
-            $manage_mode = $this->input->get_post('manage_mode');
             $selected_date_string = $this->input->get('selected_date');
             $selected_date = new DateTime($selected_date_string);
             $number_of_days_in_month = (int)$selected_date->format('t');
@@ -617,7 +638,10 @@ class Appointments extends EA_Controller {
                 ? $this->search_providers_by_service($service_id)
                 : [$provider_id];
 
-            $exclude_appointment_id = $manage_mode ? $appointment_id : NULL;
+            $exclude_appointment_id = $this->get_exclude_appointment_id(
+                $this->input->get_post('appointment_hash'),
+                $this->input->get_post('appointment_id')
+            );
 
             // Get the service record.
             $service = $this->services_model->get_row($service_id);

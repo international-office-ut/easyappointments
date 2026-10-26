@@ -63,8 +63,8 @@ window.FrontendBookApi = window.FrontendBookApi || {};
             provider_id: $('#select-provider').val(),
             selected_date: selectedDate,
             service_duration: serviceDuration,
-            manage_mode: FrontendBook.manageMode,
-            appointment_id: appointmentId
+            appointment_id: appointmentId,
+            appointment_hash: FrontendBook.manageMode ? GlobalVariables.appointmentData.hash : null
         };
 
         $.post(url, data)
@@ -251,8 +251,8 @@ window.FrontendBookApi = window.FrontendBookApi || {};
             service_id: serviceId,
             selected_date: encodeURIComponent(selectedDateString),
             csrfToken: GlobalVariables.csrfToken,
-            manage_mode: FrontendBook.manageMode,
-            appointment_id: appointmentId
+            appointment_id: appointmentId,
+            appointment_hash: FrontendBook.manageMode ? GlobalVariables.appointmentData.hash : null
         };
 
         $.ajax({

@@ -168,7 +168,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
         }
 
         if (GlobalVariables.manageMode) {
-            data.exclude_appointment_id = GlobalVariables.appointmentData.id;
+            data.appointment_hash = GlobalVariables.appointmentData.hash;
         }
 
         var url = GlobalVariables.baseUrl + '/index.php/appointments/ajax_register_appointment';

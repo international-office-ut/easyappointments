@@ -433,8 +433,30 @@ class Appointments extends EA_Controller {
             $appointment = $post_data['appointment'];
             $customer = $post_data['customer'];
 
+            // Only trust a posted appointment ID when the request carries the hash of that record. This
+            // prevents third parties from modifying the appointments of other customers.
+            if ($manage_mode)
+            {
+                $appointment_rows = $this->appointments_model
+                    ->get_batch(['hash' => $this->input->post('appointment_hash')]);
+
+                if (empty($appointment_rows) || (int) $appointment_rows[0]['id'] !== (int) $appointment['id'])
+                {
+                    throw new Exception('Invalid appointment hash provided.');
+                }
+
+                $customer['id'] = $appointment_rows[0]['id_users_customer'];
+            }
+            else
+            {
+                // A new booking must never carry the ID of an existing appointment, otherwise the
+                // availability check would exclude this slot and the save would overwrite the record.
+                unset($appointment['id']);
+                unset($customer['id']);
+            }
+
             // Check appointment availability before registering it to the database.
-            $appointment['id_users_provider'] = $this->check_datetime_availability();
+            $appointment['id_users_provider'] = $this->check_datetime_availability($appointment);
 
             if ( ! $appointment['id_users_provider'])
             {
@@ -462,7 +484,7 @@ class Appointments extends EA_Controller {
 
             $this->session->unset_userdata('captcha_phrase');
 
-            if ($this->customers_model->exists($customer))
+            if (empty($customer['id']) && $this->customers_model->exists($customer))
             {
                 $customer['id'] = $this->customers_model->find_record_id($customer);
             }
@@ -525,11 +547,14 @@ class Appointments extends EA_Controller {
      *
      * @throws Exception
      */
-    protected function check_datetime_availability()
+    protected function check_datetime_availability($appointment = NULL)
     {
-        $post_data = $this->input->post('post_data');
+        if ($appointment === NULL)
+        {
+            $post_data = $this->input->post('post_data');
 
-        $appointment = $post_data['appointment'];
+            $appointment = $post_data['appointment'];
+        }
 
         $appointment_start = new DateTime($appointment['start_datetime']);
         $date = $appointment_start->format('Y-m-d');

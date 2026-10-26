@@ -42,6 +42,99 @@ class User extends EA_Controller {
     }
 
     /**
+     * Rate limiting paths point into the storage cache directory.
+     *
+     * @param string $key Unique key of the rate limit record.
+     * @return string
+     */
+    protected function rate_limit_path(string $key): string
+    {
+        return implode(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', 'storage', 'cache', sha1($key) . '.ratelimit']);
+    }
+
+    /**
+     * Returns the rate limit record of the provided key, removing it if it is expired or corrupted.
+     *
+     * @param string $key Unique key of the rate limit record.
+     * @return array|null
+     */
+    protected function rate_limit_read(string $key): ?array
+    {
+        $path = $this->rate_limit_path($key);
+        $contents = @file_get_contents($path);
+
+        if ($contents === FALSE)
+        {
+            return NULL;
+        }
+
+        $record = json_decode($contents, TRUE);
+
+        if ( ! is_array($record) || ! isset($record['hits'], $record['expires']))
+        {
+            @unlink($path);
+
+            return NULL;
+        }
+
+        if ($record['expires'] < time())
+        {
+            @unlink($path);
+
+            return NULL;
+        }
+
+        return $record;
+    }
+
+    /**
+     * Returns whether the provided key has reached its attempts limit.
+     *
+     * @param string $key Unique key of the rate limit record.
+     * @param int $max_attempts Maximum attempts allowed within the window.
+     * @return bool
+     */
+    protected function rate_limit_has_reached_limit(string $key, int $max_attempts): bool
+    {
+        $record = $this->rate_limit_read($key);
+
+        return $record !== NULL && $record['hits'] >= $max_attempts;
+    }
+
+    /**
+     * Registers a new attempt for the provided key, so that the limit gets closer.
+     *
+     * @param string $key Unique key of the rate limit record.
+     * @param int $window Attempts window in seconds.
+     */
+    protected function rate_limit_register_attempt(string $key, int $window): void
+    {
+        $record = $this->rate_limit_read($key);
+
+        if ($record === NULL)
+        {
+            $record = [
+                'hits' => 0,
+                'expires' => time() + $window
+            ];
+        }
+
+        $record['hits']++;
+
+        @file_put_contents($this->rate_limit_path($key), json_encode($record), LOCK_EX);
+    }
+
+    /**
+     * Removes the rate limit record of the provided key.
+     *
+     * @param string $key Unique key of the rate limit record.
+     */
+    protected function rate_limit_clear(string $key): void
+    {
+        @unlink($this->rate_limit_path($key));
+    }
+
+    /**
      * Display the login page.
      *
      * @throws Exception
@@ -117,16 +210,28 @@ class User extends EA_Controller {
                 throw new Exception('Invalid credentials given!');
             }
 
-            $user_data = $this->user_model->check_login($this->input->post('username'), $this->input->post('password'));
+            $client_key = 'login|client|' . $this->input->ip_address();
+            $user_key = 'login|user|' . $this->input->post('username') . '|' . $this->input->ip_address();
+
+            $user_data = ($this->rate_limit_has_reached_limit($client_key, 5)
+                || $this->rate_limit_has_reached_limit($user_key, 5))
+                    ? NULL
+                    : $this->user_model->check_login($this->input->post('username'), $this->input->post('password'));
 
             if ($user_data)
             {
                 $this->session->set_userdata($user_data); // Save data on user's session.
 
+                $this->rate_limit_clear($client_key);
+                $this->rate_limit_clear($user_key);
+
                 $response = AJAX_SUCCESS;
             }
             else
             {
+                $this->rate_limit_register_attempt($client_key, 600);
+                $this->rate_limit_register_attempt($user_key, 600);
+
                 $response = AJAX_FAILURE;
             }
         }
@@ -164,10 +269,21 @@ class User extends EA_Controller {
                     . 'order to get a new password!');
             }
 
-            $new_password = $this->user_model->regenerate_password(
-                $this->input->post('username'),
-                $this->input->post('email')
-            );
+            $recovery_key = 'recovery|client|' . $this->input->ip_address();
+
+            if ($this->rate_limit_has_reached_limit($recovery_key, 3))
+            {
+                $new_password = FALSE;
+            }
+            else
+            {
+                $this->rate_limit_register_attempt($recovery_key, 1800);
+
+                $new_password = $this->user_model->regenerate_password(
+                    $this->input->post('username'),
+                    $this->input->post('email')
+                );
+            }
 
             if ($new_password != FALSE)
             {

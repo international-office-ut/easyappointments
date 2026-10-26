@@ -447,8 +447,9 @@ class Appointments extends EA_Controller {
             $require_captcha = $this->settings_model->get_setting('require_captcha');
             $captcha_phrase = $this->session->userdata('captcha_phrase');
 
-            // Validate the CAPTCHA string.
-            if ($require_captcha === '1' && $captcha_phrase !== $captcha)
+            // Validate the CAPTCHA string and make sure it can be used only once.
+            if ($require_captcha === '1'
+                && ($captcha === NULL || $captcha_phrase === NULL || ! hash_equals($captcha_phrase, $captcha)))
             {
                 $this->output
                     ->set_content_type('application/json')
@@ -458,6 +459,8 @@ class Appointments extends EA_Controller {
 
                 return;
             }
+
+            $this->session->unset_userdata('captcha_phrase');
 
             if ($this->customers_model->exists($customer))
             {

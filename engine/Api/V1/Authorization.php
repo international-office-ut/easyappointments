@@ -54,7 +54,9 @@ class Authorization {
     {
         $this->CI->load->model('user_model');
 
-        if ( ! $this->CI->user_model->check_login($username->get(), $password->get()))
+        $user_data = $this->CI->user_model->check_login($username->get(), $password->get());
+
+        if ( ! $user_data || $user_data['role_slug'] !== DB_SLUG_ADMIN)
         {
             throw new Exception('The provided credentials do not match any admin user!', 401, 'Unauthorized');
         }

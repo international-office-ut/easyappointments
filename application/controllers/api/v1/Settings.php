@@ -30,6 +30,13 @@ class Settings extends API_V1_Controller {
     protected $parser;
 
     /**
+     * Settings that must never be exposed or modified through the API.
+     *
+     * @var array
+     */
+    protected $protected_settings = ['api_token', 'require_captcha'];
+
+    /**
      * Class Constructor
      */
     public function __construct()
@@ -49,6 +56,10 @@ class Settings extends API_V1_Controller {
         try
         {
             $settings = $this->settings_model->get_settings();
+
+            $settings = array_values(array_filter($settings, function (array $entry) {
+                return ! in_array(strtolower($entry['name']), $this->protected_settings, TRUE);
+            }));
 
             if ($name !== NULL)
             {
@@ -93,6 +104,19 @@ class Settings extends API_V1_Controller {
     }
 
     /**
+     * Ensures that the provided setting name is not protected.
+     *
+     * @throws \EA\Engine\Api\V1\Exception
+     */
+    protected function assert_setting_is_not_protected($name)
+    {
+        if (in_array(strtolower((string) $name), $this->protected_settings, TRUE))
+        {
+            throw new \EA\Engine\Api\V1\Exception('The requested setting is protected!', 403, 'Forbidden');
+        }
+    }
+
+    /**
      * PUT API Method
      *
      * @param string $name The setting name to be inserted/updated.
@@ -101,6 +125,8 @@ class Settings extends API_V1_Controller {
     {
         try
         {
+            $this->assert_setting_is_not_protected($name);
+
             $request = new Request();
             $value = $request->get_body()['value'];
             $this->settings_model->set_setting($name, $value);
@@ -129,6 +155,8 @@ class Settings extends API_V1_Controller {
     {
         try
         {
+            $this->assert_setting_is_not_protected($name);
+
             $this->settings_model->remove_setting($name);
 
             $response = new Response([

@@ -172,6 +172,47 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="service-appointment-mode">
+                            <?= lang('appointment_mode') ?>
+                        </label>
+                        <select id="service-appointment-mode" class="form-control">
+                            <option value=""><?= lang('mode_provider_default') ?></option>
+                            <option value="<?= APPOINTMENT_MODE_ONLINE ?>"><?= lang('mode_online') ?></option>
+                            <option value="<?= APPOINTMENT_MODE_ON_PREMISE ?>"><?= lang('mode_on_premise') ?></option>
+                            <option value="<?= APPOINTMENT_MODE_BOTH ?>"><?= lang('mode_both') ?></option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <?= lang('weekday_mode_overrides') ?>
+                        </label>
+                        <table class="service-weekday-modes table table-sm table-borderless">
+                            <tbody>
+                            <?php
+                            $weekday_names = ['sunday', 'monday', 'tuesday', 'wednesday',
+                                'thursday', 'friday', 'saturday'];
+
+                            for ($weekday = 0; $weekday <= 6; $weekday++): ?>
+                                <tr>
+                                    <td class="align-middle">
+                                        <?= lang($weekday_names[$weekday]) ?>
+                                    </td>
+                                    <td>
+                                        <select class="weekday-mode form-control" data-weekday="<?= $weekday ?>">
+                                            <option value="">—</option>
+                                            <option value="<?= APPOINTMENT_MODE_ONLINE ?>"><?= lang('mode_online') ?></option>
+                                            <option value="<?= APPOINTMENT_MODE_ON_PREMISE ?>"><?= lang('mode_on_premise') ?></option>
+                                            <option value="<?= APPOINTMENT_MODE_BOTH ?>"><?= lang('mode_both') ?></option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            <?php endfor ?>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="form-group">
                         <label for="service-description">
                             <?= lang('description') ?>
                         </label>

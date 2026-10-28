@@ -978,7 +978,8 @@ class Backend_api extends EA_Controller {
                 'price LIKE "%' . $key . '%" OR currency LIKE "%' . $key . '%" OR ' .
                 'description LIKE "%' . $key . '%")';
 
-            $response = $this->services_model->get_batch($where);
+            $response = $this->services_model
+                ->attach_weekday_modes($this->services_model->get_batch($where));
         }
         catch (Exception $exception)
         {

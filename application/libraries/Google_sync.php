@@ -145,11 +145,13 @@ class Google_sync {
     public function add_appointment($appointment, $provider, $service, $customer, $settings)
     {
         $this->CI->load->helper('general');
+        $this->CI->load->helper('appointment_location');
 
         $event = new Google_Service_Calendar_Event();
         $event->setSummary(($service != NULL) ? $service['name'] : 'Unavailable');
         $event->setDescription($appointment['notes']);
-        $event->setLocation(isset($appointment['location']) ? $appointment['location'] : $settings['company_name']);
+        $event->setLocation(get_appointment_location_value($appointment['location'] ?? NULL, $service, (array)$provider)
+            ?: $settings['company_name']);
 
         $timezone = new DateTimeZone($provider['timezone']);
 
@@ -200,13 +202,15 @@ class Google_sync {
     public function update_appointment($appointment, $provider, $service, $customer, $settings)
     {
         $this->CI->load->helper('general');
+        $this->CI->load->helper('appointment_location');
 
         $event = $this->service->events->get($provider['settings']['google_calendar'],
             $appointment['id_google_calendar']);
 
         $event->setSummary($service['name']);
         $event->setDescription($appointment['notes']);
-        $event->setLocation(isset($appointment['location']) ? $appointment['location'] : $settings['company_name']);
+        $event->setLocation(get_appointment_location_value($appointment['location'] ?? NULL, $service, (array)$provider)
+            ?: $settings['company_name']);
 
         $timezone = new DateTimeZone($provider['timezone']);
 

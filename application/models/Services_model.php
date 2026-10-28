@@ -38,6 +38,9 @@ class Services_model extends EA_Model {
     {
         $this->validate($service);
 
+        $weekday_modes = $service['weekday_modes'] ?? NULL;
+        unset($service['weekday_modes']);
+
         if ( ! isset($service['id']))
         {
             $service['id'] = $this->insert($service);
@@ -47,7 +50,48 @@ class Services_model extends EA_Model {
             $this->update($service);
         }
 
+        $this->save_weekday_modes($service['id'], $weekday_modes);
+
         return (int)$service['id'];
+    }
+
+    /**
+     * Save the weekday mode overrides of a service.
+     *
+     * Existing overrides are deleted and replaced with the new ones. Passing NULL keeps the
+     * currently stored overrides untouched.
+     *
+     * @param int $service_id Service record id.
+     * @param array|null $weekday_modes Map of weekday indexes (0 = Sunday ... 6 = Saturday) to
+     * the corresponding appointment mode value.
+     */
+    public function save_weekday_modes(int $service_id, ?array $weekday_modes)
+    {
+        if ($weekday_modes === NULL)
+        {
+            return;
+        }
+
+        $this->db->delete('service_weekday_modes', ['id_services' => $service_id]);
+
+        foreach ($weekday_modes as $weekday => $mode)
+        {
+            if ($mode === NULL || $mode === '')
+            {
+                continue;
+            }
+
+            if ( ! in_array($mode, [APPOINTMENT_MODE_ONLINE, APPOINTMENT_MODE_ON_PREMISE, APPOINTMENT_MODE_BOTH]))
+            {
+                continue;
+            }
+
+            $this->db->insert('service_weekday_modes', [
+                'id_services' => $service_id,
+                'weekday' => (int)$weekday,
+                'mode' => $mode
+            ]);
+        }
     }
 
     /**
@@ -118,6 +162,18 @@ class Services_model extends EA_Model {
         {
             throw new Exception('Service availabilities type must be either ' . AVAILABILITIES_TYPE_FLEXIBLE
                 . ' or ' . AVAILABILITIES_TYPE_FIXED . ' (given ' . $service['availabilities_type'] . ')');
+        }
+
+        // Appointment mode must have a correct value (empty means that the provider default applies).
+        if (isset($service['appointment_mode']) && $service['appointment_mode'] !== NULL
+            && $service['appointment_mode'] !== ''
+            && $service['appointment_mode'] !== APPOINTMENT_MODE_ONLINE
+            && $service['appointment_mode'] !== APPOINTMENT_MODE_ON_PREMISE
+            && $service['appointment_mode'] !== APPOINTMENT_MODE_BOTH)
+        {
+            throw new Exception('Service appointment mode must be either ' . APPOINTMENT_MODE_ONLINE
+                . ', ' . APPOINTMENT_MODE_ON_PREMISE . ' or ' . APPOINTMENT_MODE_BOTH
+                . ' (given ' . $service['appointment_mode'] . ')');
         }
 
         if ($service['attendants_number'] !== NULL && ( ! is_numeric($service['attendants_number'])
@@ -355,7 +411,8 @@ class Services_model extends EA_Model {
     public function get_available_services()
     {
         $this->db->distinct();
-        return $this->db
+
+        $services = $this->db
             ->select('services.*, service_categories.name AS category_name, '
                 . 'service_categories.id AS category_id')
             ->from('services')
@@ -365,6 +422,51 @@ class Services_model extends EA_Model {
                 'service_categories.id = services.id_service_categories', 'left')
             ->order_by('name ASC')
             ->get()->result_array();
+
+        return $this->attach_weekday_modes($services);
+    }
+
+    /**
+     * Attach the weekday mode overrides to each service record.
+     *
+     * @param array $services Service records.
+     * @return array
+     */
+    public function attach_weekday_modes(array $services)
+    {
+        $service_ids = [];
+
+        foreach ($services as $service)
+        {
+            if ( ! empty($service['id']))
+            {
+                $service_ids[] = (int)$service['id'];
+            }
+        }
+
+        $weekday_modes_by_service = [];
+
+        if ( ! empty($service_ids))
+        {
+            $rows = $this->db
+                ->where_in('id_services', $service_ids)
+                ->get('service_weekday_modes')
+                ->result_array();
+
+            foreach ($rows as $row)
+            {
+                $weekday_modes_by_service[(int)$row['id_services']][(int)$row['weekday']] = $row['mode'];
+            }
+        }
+
+        foreach ($services as &$service)
+        {
+            $service['weekday_modes'] = $weekday_modes_by_service[(int)($service['id'] ?? 0)] ?? [];
+        }
+
+        unset($service);
+
+        return $services;
     }
 
     /**

@@ -159,6 +159,28 @@ class Providers_model extends EA_Model {
                 . '" or "' . CALENDAR_VIEW_TABLE . '", given: ' . $provider['settings']['calendar_view']);
         }
 
+        // Validate appointment mode (empty values will make the customer choose between both modes).
+        if (isset($provider['settings']['appointment_mode'])
+            && $provider['settings']['appointment_mode'] !== ''
+            && $provider['settings']['appointment_mode'] !== APPOINTMENT_MODE_ONLINE
+            && $provider['settings']['appointment_mode'] !== APPOINTMENT_MODE_ON_PREMISE
+            && $provider['settings']['appointment_mode'] !== APPOINTMENT_MODE_BOTH)
+        {
+            throw new Exception('The appointment mode setting must be either "' . APPOINTMENT_MODE_ONLINE
+                . '", "' . APPOINTMENT_MODE_ON_PREMISE . '" or "' . APPOINTMENT_MODE_BOTH . '", given: '
+                . $provider['settings']['appointment_mode']);
+        }
+
+        // Online appointments require a Zoom link (the mobile number was the legacy workaround).
+        if (isset($provider['settings']['appointment_mode'])
+            && $provider['settings']['appointment_mode'] === APPOINTMENT_MODE_ONLINE
+            && empty($provider['settings']['zoom_link'])
+            && empty($provider['mobile_number']))
+        {
+            throw new Exception('The "' . APPOINTMENT_MODE_ONLINE . '" appointment mode requires '
+                . 'a Zoom link to be configured for the provider.');
+        }
+
         // When inserting a record the email address must be unique.
         $provider_id = (isset($provider['id'])) ? $provider['id'] : '';
 

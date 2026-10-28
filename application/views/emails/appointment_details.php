@@ -38,7 +38,7 @@
             </tr>
 <?php if ($zoom_appointment): ?>
             <tr>
-                <td class="label" style="padding: 3px;font-weight: bold;"><?= lang('mobile_number') ?></td>
+                <td class="label" style="padding: 3px;font-weight: bold;"><?= lang('location') ?></td>
                 <td style="padding: 3px;"><a href="<?= $appointment_zoom_link ?>"><?= $appointment_zoom_link ?></a></td>
             </tr>
 <?php elseif (!empty($appointment_zoom_link)): ?>

@@ -88,6 +88,10 @@ define('CALENDAR_VIEW_TABLE', 'table');
 define('AVAILABILITIES_TYPE_FLEXIBLE', 'flexible');
 define('AVAILABILITIES_TYPE_FIXED', 'fixed');
 
+define('APPOINTMENT_MODE_ONLINE', 'ONLINE');
+define('APPOINTMENT_MODE_ON_PREMISE', 'ON_PREMISE');
+define('APPOINTMENT_MODE_BOTH', 'BOTH');
+
 define('EVENT_MINIMUM_DURATION', 5); // Minutes
 
 /* End of file constants.php */

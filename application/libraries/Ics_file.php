@@ -46,6 +46,9 @@ class Ics_file {
      */
     public function get_stream($appointment, $service, $provider, $customer)
     {
+        $CI = get_instance();
+        $CI->load->helper('appointment_location');
+
         $appointment_timezone =  new DateTimeZone($provider['timezone']);
 
         $appointment_start = new DateTime($appointment['start_datetime'], $appointment_timezone);
@@ -61,10 +64,12 @@ class Ics_file {
             ->setSummary($service['name'])
             ->setUid($appointment['id']);
 
-        if (!empty($service['location']) && $service['location'] != 'Zoom')
+        $location_value = get_appointment_location_value($appointment['location'] ?? NULL, $service, $provider);
+
+        if ($location_value)
         {
             $location = new Location();
-            $location->setName((string)$service['location']);
+            $location->setName((string)$location_value);
             $event->addLocation($location);
         }
 
@@ -87,10 +92,6 @@ class Ics_file {
             array_push($description, lang('phone_number') . ': ' . $customer['phone_number'], '');
         }
 
-        if (!empty($provider['mobile_number']) && $service['location'] == 'Zoom')
-        {
-            array_push($description, '', lang('mobile_number') . ': ' . $provider['mobile_number'], '');
-        }
         if (!empty($appointment['notes']))
         {
             array_push($description, lang('notes'), '', $appointment['notes']);

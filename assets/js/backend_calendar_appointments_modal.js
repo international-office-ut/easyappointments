@@ -55,12 +55,18 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
             var startDatetime = $dialog.find('#start-datetime').datetimepicker('getDate').toString('yyyy-MM-dd HH:mm:ss');
             var endDatetime = $dialog.find('#end-datetime').datetimepicker('getDate').toString('yyyy-MM-dd HH:mm:ss');
 
+            var location = $dialog.find('#appointment-location').val() || '';
+
+            if (location === 'custom') {
+                location = $dialog.find('#appointment-location-custom').val();
+            }
+
             var appointment = {
                 id_services: $dialog.find('#select-service').val(),
                 id_users_provider: $dialog.find('#select-provider').val(),
                 start_datetime: startDatetime,
                 end_datetime: endDatetime,
-                location: $dialog.find('#appointment-location').val(),
+                location: location,
                 notes: $dialog.find('#appointment-notes').val(),
                 is_unavailable: false
             };
@@ -359,6 +365,21 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
             $('#manage-appointment').find('#customer-id, #first-name, #last-name, #email, '
                 + '#phone-number, #address, #city, #zip-code, ,#language, #timezone, #customer-notes').val('');
         });
+
+        /**
+         * Event: Location Type "Change"
+         *
+         * Show the free-form location input only when the user selects the "custom" option.
+         */
+        $('#manage-appointment').on('change', '#appointment-location', function () {
+            var $custom = $('#appointment-location-custom');
+
+            if ($(this).val() === 'custom') {
+                $custom.val('').show().focus();
+            } else {
+                $custom.val('').hide();
+            }
+        });
     }
 
     /**
@@ -372,6 +393,9 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
 
         // Empty form fields.
         $dialog.find('input, textarea').val('');
+        $dialog.find('#appointment-location')
+            .val('')
+            .trigger('change');
         $dialog.find('.modal-message').fadeOut();
 
         // Prepare service and provider select boxes.
@@ -552,6 +576,27 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
             if (start > end) {
                 $dialog.find('#start-datetime, #end-datetime').closest('.form-group').addClass('has-error');
                 throw new Error(EALang.start_date_before_end_error);
+            }
+
+            // The custom location value is required when it was selected.
+            if ($dialog.find('#appointment-location').val() === 'custom'
+                && !$dialog.find('#appointment-location-custom').val()) {
+                $dialog.find('#appointment-location-custom').closest('.form-group').addClass('has-error');
+                throw new Error(EALang.fields_are_required);
+            }
+
+            // Online appointments require a Zoom link (the mobile number was the legacy workaround).
+            if ($dialog.find('#appointment-location').val() === 'ONLINE') {
+                var providerId = $dialog.find('#select-provider').val();
+
+                var provider = GlobalVariables.availableProviders.find(function (availableProvider) {
+                    return Number(availableProvider.id) === Number(providerId);
+                });
+
+                if (!GeneralFunctions.providerHasZoomLink(provider)) {
+                    $dialog.find('#appointment-location').closest('.form-group').addClass('has-error');
+                    throw new Error(EALang.zoom_link_required);
+                }
             }
 
             return true;

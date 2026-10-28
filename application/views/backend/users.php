@@ -265,6 +265,25 @@
                                         <?= render_timezone_dropdown('id="provider-timezone" class="form-control required"') ?>
                                     </div>
 
+                                    <div class="form-group">
+                                        <label for="provider-appointment-mode">
+                                            <?= lang('appointment_mode') ?>
+                                        </label>
+                                        <select id="provider-appointment-mode" class="form-control">
+                                            <option value="<?= APPOINTMENT_MODE_BOTH ?>"><?= lang('mode_both') ?></option>
+                                            <option value="<?= APPOINTMENT_MODE_ONLINE ?>"><?= lang('mode_online') ?></option>
+                                            <option value="<?= APPOINTMENT_MODE_ON_PREMISE ?>"><?= lang('mode_on_premise') ?></option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="provider-zoom-link">
+                                            <?= lang('zoom_link') ?>
+                                        </label>
+                                        <input id="provider-zoom-link" class="form-control" maxlength="512"
+                                               placeholder="https://...">
+                                    </div>
+
                                     <br>
 
                                     <div class="custom-control custom-switch">

@@ -26,6 +26,7 @@ class Appointments extends EA_Controller {
 
         $this->load->helper('installation');
         $this->load->helper('google_analytics');
+        $this->load->helper('appointment_location');
         $this->load->model('appointments_model');
         $this->load->model('providers_model');
         $this->load->model('admins_model');
@@ -83,7 +84,16 @@ class Appointments extends EA_Controller {
                     'first_name' => $provider['first_name'],
                     'last_name' => $provider['last_name'],
                     'services' => $provider['services'],
-                    'timezone' => $provider['timezone']
+                    'timezone' => $provider['timezone'],
+                    'mobile_number' => $provider['mobile_number'],
+                    'address' => $provider['address'],
+                    'zip_code' => $provider['zip_code'],
+                    'city' => $provider['city'],
+                    // Appointment mode settings only (never expose credentials like username, password or salt).
+                    'settings' => [
+                        'appointment_mode' => $provider['settings']['appointment_mode'] ?? NULL,
+                        'zoom_link' => $provider['settings']['zoom_link'] ?? NULL,
+                    ],
                 ];
                 $available_providers[$index] = $stripped_data;
             }
@@ -493,6 +503,14 @@ class Appointments extends EA_Controller {
             if (empty($appointment['location']) && ! empty($service['location']))
             {
                 $appointment['location'] = $service['location'];
+            }
+
+            // Online appointments only make sense when the provider has a Zoom link configured.
+            if (($appointment['location'] ?? NULL) === APPOINTMENT_MODE_ONLINE
+                && ! provider_has_zoom_link($provider))
+            {
+                throw new Exception('The provider does not have a Zoom link configured, '
+                    . 'online appointments are not available.');
             }
 
             // Save customer language (the language which is used to render the booking page).

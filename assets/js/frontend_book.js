@@ -463,6 +463,13 @@ window.FrontendBook = window.FrontendBook || {};
             $('.captcha-image').attr('src', GlobalVariables.baseUrl + '/index.php/captcha?' + Date.now());
         });
 
+        /**
+         * Event: Appointment Mode Radio "Changed"
+         */
+        $('input[name="appointment_mode"]').on('change', function () {
+            FrontendBook.updateConfirmFrame();
+        });
+
 
         $('#select-date').on('mousedown', '.ui-datepicker-calendar td', function (event) {
             setTimeout(function () {
@@ -521,6 +528,87 @@ window.FrontendBook = window.FrontendBook || {};
     }
 
     /**
+     * Resolve the effective appointment mode of the current booking selection.
+     *
+     * The weekday override of the selected service wins over the service mode, which wins
+     * over the provider default. Missing values fall back to "BOTH" so that the customer
+     * can choose. Manage-mode appointments with legacy free-form location values keep
+     * their original value.
+     *
+     * @return {String} Returns "ONLINE", "ON_PREMISE", "BOTH" or a legacy raw location value.
+     */
+    function getEffectiveAppointmentMode() {
+        var serviceId = $('#select-service').val();
+        var providerId = $('#select-provider').val();
+        var selectedDate = $('#select-date').datepicker('getDate');
+
+        var service = GlobalVariables.availableServices.find(function (availableService) {
+            return Number(availableService.id) === Number(serviceId);
+        });
+
+        var provider = GlobalVariables.availableProviders.find(function (availableProvider) {
+            return Number(availableProvider.id) === Number(providerId);
+        });
+
+        if (FrontendBook.manageMode && GlobalVariables.appointmentData
+            && GlobalVariables.appointmentData.location
+            && ['ONLINE', 'ON_PREMISE'].indexOf(GlobalVariables.appointmentData.location) === -1) {
+            return String(GlobalVariables.appointmentData.location);
+        }
+
+        var weekdayModes = (service && service.weekday_modes) || {};
+        var weekday = selectedDate ? selectedDate.getDay() : null;
+        var weekdayMode = weekday !== null ? weekdayModes[weekday] : null;
+        var serviceMode = service ? service.appointment_mode : null;
+        var providerMode = provider && provider.settings ? provider.settings.appointment_mode : null;
+
+        var mode = weekdayMode || serviceMode || providerMode || 'BOTH';
+
+        // Online appointments only make sense when the selected provider has a Zoom link.
+        if (mode === 'ONLINE' && provider && !GeneralFunctions.providerHasZoomLink(provider)) {
+            mode = 'ON_PREMISE';
+        }
+
+        return mode;
+    }
+
+    /**
+     * Resolve the display value of an appointment location.
+     *
+     * @param {String} mode The appointment mode value.
+     * @param {String} serviceLocation The location of the selected service.
+     * @return {String} Returns the mode label for online appointments (the Zoom link is only
+     * sent via email) and the service or provider location for on-site appointments.
+     */
+    function getLocationDisplayValue(mode, serviceLocation) {
+        if (mode === 'ONLINE') {
+            return EALang.mode_online || 'Online';
+        }
+
+        if (mode === 'ON_PREMISE') {
+            var providerId = $('#select-provider').val();
+
+            var provider = GlobalVariables.availableProviders.find(function (availableProvider) {
+                return Number(availableProvider.id) === Number(providerId);
+            });
+
+            if (serviceLocation) {
+                return serviceLocation;
+            }
+
+            if (provider) {
+                return [provider.address, provider.zip_code, provider.city]
+                    .filter(function (value) {
+                        return value;
+                    })
+                    .join(' ');
+            }
+        }
+
+        return mode; // Legacy free-form value.
+    }
+
+    /**
      * Every time this function is executed, it updates the confirmation page with the latest
      * customer settings and input for the appointment booking.
      */
@@ -537,6 +625,7 @@ window.FrontendBook = window.FrontendBook || {};
         }
 
         var serviceId = $('#select-service').val();
+        var providerId = $('#select-provider').val();
         var servicePrice = '';
         var serviceCurrency = '';
         var serviceLocation = '';
@@ -555,6 +644,53 @@ window.FrontendBook = window.FrontendBook || {};
                 return false; // break loop
             }
         });
+
+        var appointmentMode = getEffectiveAppointmentMode();
+        var isHandledMode = ['ONLINE', 'ON_PREMISE', 'BOTH'].indexOf(appointmentMode) !== -1;
+
+        if (!isHandledMode) {
+            // Legacy free-form location value (addresses, URLs) is kept as it is.
+            $('#appointment-mode-wrapper').hide();
+            $('input[name="appointment_mode"]').prop('checked', false)
+                .closest('.custom-control').show();
+        } else if (appointmentMode === 'BOTH') {
+            $('#appointment-mode-wrapper').show();
+
+            var provider = GlobalVariables.availableProviders.find(function (availableProvider) {
+                return Number(availableProvider.id) === Number(providerId);
+            });
+
+            var hasZoomLink = GeneralFunctions.providerHasZoomLink(provider);
+
+            // Without a Zoom link the online option is not offered.
+            $('#appointment-mode-online').closest('.custom-control').toggle(hasZoomLink);
+
+            if (!$('input[name="appointment_mode"]:checked').length) {
+                var storedLocation = GlobalVariables.appointmentData
+                && GlobalVariables.appointmentData.location ? GlobalVariables.appointmentData.location : 'ONLINE';
+
+                if (!hasZoomLink && storedLocation === 'ONLINE') {
+                    storedLocation = 'ON_PREMISE';
+                }
+
+                $('input[name="appointment_mode"][value="' + storedLocation + '"]').prop('checked', true);
+            }
+
+            if ($('input[name="appointment_mode"]:checked').val() === 'ONLINE' && !hasZoomLink) {
+                $('input[name="appointment_mode"][value="ON_PREMISE"]').prop('checked', true);
+            }
+        } else {
+            $('#appointment-mode-wrapper').hide();
+            $('input[name="appointment_mode"]').prop('checked', false)
+                .closest('.custom-control').show();
+            $('input[name="appointment_mode"][value="' + appointmentMode + '"]').prop('checked', true);
+        }
+
+        var selectedMode = isHandledMode
+            ? ($('input[name="appointment_mode"]:checked').val() || appointmentMode)
+            : appointmentMode;
+
+        var locationValue = getLocationDisplayValue(selectedMode, serviceLocation);
 
         $('#appointment-details').empty();
 
@@ -582,9 +718,9 @@ window.FrontendBook = window.FrontendBook || {};
                         }),
                         $('<br/>'),
                         $('<strong/>', {
-                            'text': EALang.location + ': ' + serviceLocation,
+                            'text': EALang.location + ': ' + locationValue,
                             'prop': {
-                                'hidden': !serviceLocation
+                                'hidden': !locationValue
                             }
                         }),
                         $('<br/>', {
@@ -701,7 +837,8 @@ window.FrontendBook = window.FrontendBook || {};
             notes: $('#notes').val(),
             is_unavailable: false,
             id_users_provider: $('#select-provider').val(),
-            id_services: $('#select-service').val()
+            id_services: $('#select-service').val(),
+            location: selectedMode
         };
 
         data.manage_mode = FrontendBook.manageMode;

@@ -158,7 +158,9 @@
                     working_plan: JSON.stringify(BackendUsers.wp.get()),
                     working_plan_exceptions: JSON.stringify(BackendUsers.wp.getWorkingPlanExceptions()),
                     notifications: $('#provider-notifications').prop('checked'),
-                    calendar_view: $('#provider-calendar-view').val()
+                    calendar_view: $('#provider-calendar-view').val(),
+                    appointment_mode: $('#provider-appointment-mode').val() || null,
+                    zoom_link: $('#provider-zoom-link').val()
                 }
             };
 
@@ -326,6 +328,14 @@
                 throw new Error(EALang.username_already_exists);
             }
 
+            // Online appointments require a Zoom link.
+            if ($('#provider-appointment-mode').val() === 'ONLINE'
+                && !$('#provider-zoom-link').val()
+                && !$('#provider-mobile-number').val()) {
+                $('#provider-zoom-link').closest('.form-group').addClass('has-error');
+                throw new Error(EALang.zoom_link_required);
+            }
+
             return true;
         } catch (error) {
             $('#providers .form-message')
@@ -352,6 +362,8 @@
             .val('')
             .prop('disabled', true);
         $('#providers .record-details #provider-calendar-view').val('default');
+        $('#providers .record-details #provider-appointment-mode').val('BOTH');
+        $('#providers .record-details #provider-zoom-link').val('');
         $('#providers .record-details #provider-timezone').val(tz.name());
         $('#providers .add-break, .add-working-plan-exception, #reset-working-plan').prop('disabled', true);
         BackendUsers.wp.timepickers(true);
@@ -395,6 +407,8 @@
         $('#provider-username').val(provider.settings.username);
         $('#provider-calendar-view').val(provider.settings.calendar_view);
         $('#provider-notifications').prop('checked', Boolean(Number(provider.settings.notifications)));
+        $('#provider-appointment-mode').val(provider.settings.appointment_mode || 'BOTH');
+        $('#provider-zoom-link').val(provider.settings.zoom_link || '');
 
         // Add dedicated provider link.
         var dedicatedUrl = GlobalVariables.baseUrl + '/index.php?provider=' + encodeURIComponent(provider.id);

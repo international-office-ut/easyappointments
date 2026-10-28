@@ -143,6 +143,48 @@ window.GeneralFunctions = window.GeneralFunctions || {};
     };
 
     /**
+     * Apply an appointment location value to the manage appointment dialog.
+     *
+     * The location field is an enum select ("ONLINE", "ON_PREMISE") with a "custom" option
+     * for legacy free-form values (addresses, URLs etc.).
+     *
+     * @param {jQuery} $dialog The manage appointment dialog element.
+     * @param {String} location The raw appointments.location value.
+     */
+    exports.applyAppointmentLocation = function ($dialog, location) {
+        var $select = $dialog.find('#appointment-location');
+        var $custom = $dialog.find('#appointment-location-custom');
+        var knownValues = ['', 'ONLINE', 'ON_PREMISE', 'custom'];
+
+        if (location && knownValues.indexOf(location) === -1) {
+            $select.val('custom');
+            $custom.val(location).show();
+        } else {
+            $select.val(location || '');
+            $custom.val('').hide();
+        }
+    };
+
+    /**
+     * Check whether a provider has a Zoom link configured.
+     *
+     * The previously used workaround stored the link in the "mobile number" field, so that
+     * value counts as a fallback until it has been migrated to the dedicated setting.
+     *
+     * @param {Object} provider Provider record, including its settings.
+     * @return {Boolean} Returns the check result.
+     */
+    exports.providerHasZoomLink = function (provider) {
+        if (!provider) {
+            return false;
+        }
+
+        var settings = provider.settings || {};
+
+        return Boolean(settings.zoom_link || provider.mobile_number);
+    };
+
+    /**
      * Convert date to ISO date string.
      *
      * This function creates a RFC 3339 date string. This string is needed by the Google Calendar API

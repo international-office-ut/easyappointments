@@ -361,6 +361,29 @@
                         <div id="appointment-details" class="col-12 col-md-6"></div>
                         <div id="customer-details" class="col-12 col-md-6"></div>
                     </div>
+
+                    <div class="row frame-content" id="appointment-mode-wrapper" style="display:none;">
+                        <div class="col-12 col-md-6">
+                            <h4>
+                                <?= lang('appointment_mode') ?>
+                            </h4>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" id="appointment-mode-online" name="appointment_mode"
+                                       class="custom-control-input" value="ONLINE">
+                                <label class="custom-control-label" for="appointment-mode-online">
+                                    <?= lang('mode_online') ?>
+                                </label>
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" id="appointment-mode-on-premise" name="appointment_mode"
+                                       class="custom-control-input" value="ON_PREMISE">
+                                <label class="custom-control-label" for="appointment-mode-on-premise">
+                                    <?= lang('mode_on_premise') ?>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
                     <?php if ($this->settings_model->get_setting('require_captcha') === '1'): ?>
                         <div class="row frame-content">
                             <div class="col-12 col-md-6">

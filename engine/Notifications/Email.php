@@ -57,6 +57,7 @@ class Email {
     public function __construct(\CI_Controller $CI, array $config)
     {
         $this->CI = $CI;
+        $this->CI->load->helper('appointment_location');
         $this->config = $config;
     }
 
@@ -147,8 +148,8 @@ class Email {
             'appointment_start_date' => $appointment_start->format($date_format . ' ' . $time_format),
             'appointment_end_date' => $appointment_end->format($date_format . ' ' . $time_format),
             'appointment_timezone' => $timezones[empty($timezone) ? $provider['timezone'] : $timezone],
-            'appointment_zoom_link' => $service['location']=='Zoom' ? $provider['mobile_number'] : $service['location'],
-            'zoom_appointment' => $service['location']=='Zoom' ? TRUE : FALSE,
+            'appointment_zoom_link' => get_appointment_location_value($appointment['location'] ?? NULL, $service, $provider),
+            'zoom_appointment' => is_appointment_location_online($appointment['location'] ?? NULL),
             'appointment_notes' => $appointment['notes'],
             'appointment_link' => $appointment_link_address->get(),
             'company_link' => $settings['company_link'],

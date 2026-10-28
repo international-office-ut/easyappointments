@@ -225,7 +225,14 @@
                                     <label for="appointment-location" class="control-label">
                                         <?= lang('location') ?>
                                     </label>
-                                    <input id="appointment-location" class="form-control">
+                                    <select id="appointment-location" class="form-control">
+                                        <option value=""><?= lang('location') ?></option>
+                                        <option value="<?= APPOINTMENT_MODE_ONLINE ?>"><?= lang('mode_online') ?></option>
+                                        <option value="<?= APPOINTMENT_MODE_ON_PREMISE ?>"><?= lang('mode_on_premise') ?></option>
+                                        <option value="custom"><?= lang('other') ?></option>
+                                    </select>
+                                    <input id="appointment-location-custom" class="form-control mt-1"
+                                           style="display:none" maxlength="1000">
                                 </div>
                             </div>
 

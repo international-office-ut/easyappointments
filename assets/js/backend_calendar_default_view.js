@@ -128,7 +128,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                 $dialog.find('#address').val(customer.address);
                 $dialog.find('#city').val(customer.city);
                 $dialog.find('#zip-code').val(customer.zip_code);
-                $dialog.find('#appointment-location').val(appointment.location);
+                GeneralFunctions.applyAppointmentLocation($dialog, appointment.location);
                 $dialog.find('#appointment-notes').val(appointment.notes);
                 $dialog.find('#customer-notes').val(customer.notes);
                 $dialog.modal('show');
@@ -1642,7 +1642,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
             $dialog.find('#address').val(customer.address);
             $dialog.find('#city').val(customer.city);
             $dialog.find('#zip-code').val(customer.zip_code);
-            $dialog.find('#appointment-location').val(appointment.location);
+            GeneralFunctions.applyAppointmentLocation($dialog, appointment.location);
             $dialog.find('#appointment-notes').val(appointment.notes);
             $dialog.find('#customer-notes').val(customer.notes);
 

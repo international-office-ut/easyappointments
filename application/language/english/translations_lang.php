@@ -126,7 +126,7 @@ $lang['categories'] = 'Categories';
 $lang['admins'] = 'Admins';
 $lang['providers'] = 'Providers';
 $lang['secretaries'] = 'Secretaries';
-$lang['mobile_number'] = 'Zoom Link';
+$lang['mobile_number'] = 'Mobile Number';
 $lang['mobile'] = 'Mobile';
 $lang['state'] = 'State';
 $lang['username'] = 'Username';
@@ -330,4 +330,15 @@ $lang['list'] = 'List';
 $lang['default'] = 'Default';
 $lang['table'] = 'Table';
 $lang['date'] = 'Date';
+
+$lang['appointment_mode'] = 'Appointment Type';
+$lang['mode_online'] = 'Online';
+$lang['mode_on_premise'] = 'On Site';
+$lang['mode_both'] = 'Online or On Site';
+$lang['mode_provider_default'] = 'Provider Default';
+$lang['weekday_mode_overrides'] = 'Weekday Overrides';
+$lang['zoom_link'] = 'Zoom Link';
+$lang['other'] = 'Other';
+$lang['zoom_link_required'] = 'The Zoom link is missing. Online appointments require a configured Zoom link.';
+
 // End

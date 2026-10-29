@@ -230,6 +230,26 @@ body legend {
         height: calc(100vh - 128px);
         overflow-y: auto;
     }
+
+    /* Independent scrolling: the sidebar and the record details columns scroll on their own
+       instead of moving with the page scroll. */
+    .backend-page.content-scroll > .row,
+    .backend-page.content-scroll .tab-pane > .row {
+        height: calc(100vh - 128px);
+    }
+
+    .backend-page.content-scroll .row > .filter-records,
+    .backend-page.content-scroll .row > .record-details {
+        height: calc(100vh - 128px);
+        overflow-y: auto;
+    }
+}
+
+/* Desktop: the list panels occupy the available window height (inside the row column). */
+@media (min-width: 768px) {
+    .backend-page.content-scroll .filter-records {
+        height: 100%;
+    }
 }
 
 .backend-page .filter-records {

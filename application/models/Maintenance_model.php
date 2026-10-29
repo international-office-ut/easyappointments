@@ -14,9 +14,11 @@
 /**
  * Maintenance Model
  *
- * Data retention purges: appointments, customers without appointments and provider blocks
- * (unavailable periods) that are older than the configured retention period. The removal
- * happens directly in the database without triggering notifications or other side effects.
+ * Data retention purges: appointments, provider blocks (rows with `is_unavailable` flag),
+ * and customers without appointments that are older than the configured retention period.
+ * All purges run as direct SQL deletes (no notifications, no side effects). The where
+ * clauses are applied directly on the delete statements: collecting thousands of record
+ * ids first would blow up CI's query builder (regex length limits).
  *
  * @property CI_DB_query_builder $db
  */
@@ -36,21 +38,17 @@ class Maintenance_model extends EA_Model {
             return 0;
         }
 
-        $rows = $this->db
-            ->select('id')
-            ->from('appointments')
-            ->where('end_datetime <', $this->cutoff_date($months))
-            ->get()
-            ->result_array();
+        $this->appointments_where($months);
 
         if ($dry_run)
         {
-            return count($rows);
+            return $this->db->count_all_results('appointments');
         }
 
-        $this->remove_rows('appointments', $rows);
+        $this->appointments_where($months);
+        $this->db->delete('appointments');
 
-        return count($rows);
+        return $this->db->affected_rows();
     }
 
     /**
@@ -71,26 +69,21 @@ class Maintenance_model extends EA_Model {
             return 0;
         }
 
-        $rows = $this->db
-            ->select('id')
-            ->from('appointments')
-            ->where('is_unavailable', TRUE)
-            ->where('end_datetime <', $this->cutoff_date($months))
-            ->get()
-            ->result_array();
+        $this->provider_blocks_where($months);
 
         if ($dry_run)
         {
-            return count($rows);
+            return $this->db->count_all_results('appointments');
         }
 
-        $this->remove_rows('appointments', $rows);
+        $this->provider_blocks_where($months);
+        $this->db->delete('appointments');
 
-        return count($rows);
+        return $this->db->affected_rows();
     }
 
     /**
-     * Purge customer users that have no appointments anymore.
+     * Purge customer users that have no appointments (anymore).
      *
      * Customers are user records with the customer role; their related rows (settings etc.)
      * are removed by the database cascades. Run the appointment purge first, so that
@@ -107,46 +100,57 @@ class Maintenance_model extends EA_Model {
             return 0;
         }
 
-        $rows = $this->db
-            ->select('users.id')
-            ->from('users')
-            ->join('roles', 'roles.id = users.id_roles', 'inner')
-            ->where('roles.slug', DB_SLUG_CUSTOMER)
-            ->where('NOT EXISTS (SELECT ap.id FROM ' . $this->db->dbprefix('appointments')
-                . ' ap WHERE ap.id_users_customer = ' . $this->db->dbprefix('users') . '.id)', NULL, FALSE)
-            ->get()
-            ->result_array();
+        $this->customers_where();
 
         if ($dry_run)
         {
-            return count($rows);
+            return $this->db->count_all_results('users');
         }
 
-        $this->remove_rows('users', $rows);
+        $this->customers_where();
+        $this->db->delete('users');
 
-        return count($rows);
+        return $this->db->affected_rows();
     }
 
     /**
-     * Remove the records of the provided table by their ids.
+     * Build the where clause for outdated appointment records.
      *
-     * @param string $table Target table name.
-     * @param array $rows Result rows containing the id column.
+     * @param int $months Retention period in months.
      *
      * @return void
      */
-    protected function remove_rows(string $table, array $rows): void
+    protected function appointments_where(int $months): void
     {
-        $ids = array_column($rows, 'id');
+        $this->db->where('end_datetime <', $this->cutoff_date($months));
+    }
 
-        if (empty($ids))
-        {
-            return;
-        }
-
+    /**
+     * Build the where clause for outdated provider block records.
+     *
+     * @param int $months Retention period in months.
+     *
+     * @return void
+     */
+    protected function provider_blocks_where(int $months): void
+    {
         $this->db
-            ->where_in('id', $ids)
-            ->delete($table);
+            ->where('is_unavailable', TRUE)
+            ->where('end_datetime <', $this->cutoff_date($months));
+    }
+
+    /**
+     * Build the where clause for customer rows without appointments.
+     *
+     * @return void
+     */
+    protected function customers_where(): void
+    {
+        $this->db
+            ->where("id_roles = (SELECT id FROM `" . $this->db->dbprefix('roles')
+                . "` WHERE slug = '" . DB_SLUG_CUSTOMER . "')", NULL, FALSE)
+            ->where("NOT EXISTS (SELECT ap.id FROM `" . $this->db->dbprefix('appointments')
+                . "` ap WHERE ap.id_users_customer = `" . $this->db->dbprefix('users') . "`.id)", NULL, FALSE);
     }
 
     /**

@@ -19,6 +19,15 @@ class Config {
     const DEBUG_MODE    = TRUE;
     const ALTCHA_HMAC_KEY = '';  // Required when CAPTCHA is enabled; openssl rand -hex 32
 
+    // EMAIL (SMTP): server-specific credentials live here, not in the tracked email.php
+    const EMAIL_PROTOCOL = 'smtp'; // or 'mail'
+    const SMTP_HOST      = 'smtp.example.com';
+    const SMTP_PORT      = 587;
+    const SMTP_AUTH      = FALSE;   // set TRUE when the server requires authentication
+    const SMTP_USER      = '';      // leave empty for anonymous relay
+    const SMTP_PASS      = '';
+    const SMTP_CRYPTO    = 'tls';   // '', 'ssl' or 'tls'
+
     // Related: keep "platform-check" disabled in composer.json, because the pinned PHP version
     // (8.3.6) and the eventual Ubuntu security patch release (e.g. 8.3.14) would otherwise
     // break the composer vendor autoload on servers that update PHP via `apt upgrade`.

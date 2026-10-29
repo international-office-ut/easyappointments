@@ -35,6 +35,18 @@ class Config {
     const DEBUG_MODE    = FALSE;
     const ALTCHA_HMAC_KEY = '';  // Required when CAPTCHA is enabled; openssl rand -hex 32
 
+    // ------------------------------------------------------------------------
+    // EMAIL (SMTP)
+    // ------------------------------------------------------------------------
+
+    const EMAIL_PROTOCOL = 'smtp'; // or 'mail'
+    const SMTP_HOST      = 'smtp.example.com';
+    const SMTP_PORT      = 587;
+    const SMTP_AUTH      = FALSE;   // set TRUE when the server requires authentication
+    const SMTP_USER      = '';      // leave empty for anonymous relay
+    const SMTP_PASS      = '';
+    const SMTP_CRYPTO    = 'tls';   // '', 'ssl' or 'tls'
+
 
     // ------------------------------------------------------------------------
     // DATABASE SETTINGS

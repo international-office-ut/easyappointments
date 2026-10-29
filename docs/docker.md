@@ -19,6 +19,10 @@ class Config {
     const DEBUG_MODE    = TRUE;
     const ALTCHA_HMAC_KEY = '';  // Required when CAPTCHA is enabled; openssl rand -hex 32
 
+    // Related: keep "platform-check" disabled in composer.json, because the pinned PHP version
+    // (8.3.6) and the eventual Ubuntu security patch release (e.g. 8.3.14) would otherwise
+    // break the composer vendor autoload on servers that update PHP via `apt upgrade`.
+
     // ------------------------------------------------------------------------
     // DATABASE SETTINGS
     // ------------------------------------------------------------------------

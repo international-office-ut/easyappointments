@@ -595,21 +595,16 @@ window.FrontendBook = window.FrontendBook || {};
      *
      * @param {String} mode The appointment mode value.
      * @param {String} serviceLocation The location of the selected service.
+     * @param {Object} provider The selected provider record (or NULL).
      * @return {String} Returns the mode label for online appointments (the Zoom link is only
      * sent via email) and the service or provider location for on-site appointments.
      */
-    function getLocationDisplayValue(mode, serviceLocation) {
+    function getLocationDisplayValue(mode, serviceLocation, provider) {
         if (mode === 'ONLINE') {
             return EALang.mode_online || 'Online';
         }
 
         if (mode === 'ON_PREMISE') {
-            var providerId = $('#select-provider').val();
-
-            var provider = GlobalVariables.availableProviders.find(function (availableProvider) {
-                return Number(availableProvider.id) === Number(providerId);
-            });
-
             if (serviceLocation) {
                 return serviceLocation;
             }
@@ -708,7 +703,7 @@ window.FrontendBook = window.FrontendBook || {};
 
         $('#appointment-mode-hint').toggle(isHandledMode && selectedMode === 'ONLINE');
 
-        var locationValue = getLocationDisplayValue(selectedMode, serviceLocation);
+        var locationValue = getLocationDisplayValue(selectedMode, serviceLocation, provider);
 
         $('#appointment-details').empty();
 

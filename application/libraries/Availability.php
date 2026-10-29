@@ -570,7 +570,9 @@ class Availability {
 
         $book_advance_timeout = $this->CI->settings_model->get_setting('book_advance_timeout');
 
-        $threshold = new DateTime('+' . $book_advance_timeout . ' minutes', $provider_timezone);
+        $threshold = new DateTime('now', $provider_timezone);
+
+        $threshold->modify('+' . $book_advance_timeout . ' minutes');
 
         foreach ($available_hours as $index => $value)
         {

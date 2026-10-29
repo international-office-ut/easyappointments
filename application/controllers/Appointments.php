@@ -126,11 +126,20 @@ class Appointments extends EA_Controller {
                 }
 
                 // If the requested appointment begin date is lower than book_advance_timeout. Display a message to the
-                // customer.
-                $startDate = strtotime($results[0]['start_datetime']);
-                $limit = strtotime('+' . $book_advance_timeout . ' minutes', strtotime('now'));
+                // customer. Both values are compared in the provider timezone, so that a provider timezone change
+                // does not corrupt the comparison.
+                $appointment = $results[0];
+                $provider = $this->providers_model->get_row($appointment['id_users_provider']);
 
-                if ($startDate < $limit)
+                $provider_timezone = new DateTimeZone($provider['timezone']);
+
+                $appointment_start = new DateTime($appointment['start_datetime'], $provider_timezone);
+
+                $limit = new DateTime('now', $provider_timezone);
+
+                $limit->modify('+' . $book_advance_timeout . ' minutes');
+
+                if ($appointment_start < $limit)
                 {
                     $hours = floor($book_advance_timeout / 60);
                     $minutes = ($book_advance_timeout % 60);
@@ -146,8 +155,6 @@ class Appointments extends EA_Controller {
                     return;
                 }
 
-                $appointment = $results[0];
-                $provider = $this->providers_model->get_row($appointment['id_users_provider']);
                 $customer = $this->customers_model->get_row($appointment['id_users_customer']);
 
                 $customer_token = md5(uniqid(mt_rand(), TRUE));

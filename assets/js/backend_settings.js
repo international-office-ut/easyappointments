@@ -186,6 +186,22 @@ window.BackendSettings = window.BackendSettings || {};
          *
          * Store the setting changes into the database.
          */
+        /**
+         * Event: Retention (Legal Contents) Input "Keydown"
+         *
+         * Prevents the form submit (which would jump back to the general tab) and triggers
+         * the save instead, so pressing enter in the retention field stores the value.
+         */
+        $('#legal-contents').on('keydown', 'input, textarea', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+
+                if (!$(this).is('textarea')) {
+                    $('.legal-contents .save-settings').trigger('click');
+                }
+            }
+        });
+
         $('.save-settings').on('click', function () {
             var data = settings.get();
             settings.save(data);

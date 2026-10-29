@@ -552,8 +552,18 @@ window.FrontendBook = window.FrontendBook || {};
 
         if (FrontendBook.manageMode && GlobalVariables.appointmentData
             && GlobalVariables.appointmentData.location
-            && ['ONLINE', 'ON_PREMISE'].indexOf(GlobalVariables.appointmentData.location) === -1) {
+            && ['ONLINE', 'ON_PREMISE', 'Zoom'].indexOf(GlobalVariables.appointmentData.location) === -1) {
             return String(GlobalVariables.appointmentData.location);
+        }
+
+        // Legacy "Zoom" location means an online appointment (the location value was the mode
+        // encoding in older Easy!Appointments versions).
+        if (GlobalVariables.appointmentData && GlobalVariables.appointmentData.location === 'Zoom') {
+            if ( ! provider || !GeneralFunctions.providerHasZoomLink(provider)) {
+                return 'ON_PREMISE';
+            }
+
+            return 'ONLINE';
         }
 
         var weekdayModes = (service && service.weekday_modes) || {};
@@ -648,49 +658,47 @@ window.FrontendBook = window.FrontendBook || {};
         var appointmentMode = getEffectiveAppointmentMode();
         var isHandledMode = ['ONLINE', 'ON_PREMISE', 'BOTH'].indexOf(appointmentMode) !== -1;
 
-        if (!isHandledMode) {
-            // Legacy free-form location value (addresses, URLs) is kept as it is.
-            $('#appointment-mode-wrapper').hide();
-            $('input[name="appointment_mode"]').prop('checked', false)
-                .closest('.custom-control').show();
-        } else if (appointmentMode === 'BOTH') {
+        var provider = GlobalVariables.availableProviders.find(function (availableProvider) {
+            return Number(availableProvider.id) === Number(providerId);
+        });
+
+        var hasZoomLink = GeneralFunctions.providerHasZoomLink(provider);
+
+        if (isHandledMode)
+        {
             $('#appointment-mode-wrapper').show();
 
-            var provider = GlobalVariables.availableProviders.find(function (availableProvider) {
-                return Number(availableProvider.id) === Number(providerId);
-            });
-
-            var hasZoomLink = GeneralFunctions.providerHasZoomLink(provider);
+            var canChoose = appointmentMode === 'BOTH' && hasZoomLink;
 
             // Without a Zoom link the online option is not offered.
             $('#appointment-mode-online').closest('.custom-control').toggle(hasZoomLink);
 
-            if (!$('input[name="appointment_mode"]:checked').length) {
-                var storedLocation = GlobalVariables.appointmentData
-                && GlobalVariables.appointmentData.location ? GlobalVariables.appointmentData.location : 'ONLINE';
+            // Radio buttons are only editable when the customer can actually decide.
+            $('input[name="appointment_mode"]').prop('disabled', !canChoose);
 
-                if (!hasZoomLink && storedLocation === 'ONLINE') {
-                    storedLocation = 'ON_PREMISE';
-                }
+            if ( ! canChoose)
+            {
+                // The mode is fixed by configuration (or by the missing Zoom link), so the customer
+                // cannot change it and sees it as locked.
+                var lockedMode = (appointmentMode === 'BOTH') ? 'ON_PREMISE' : appointmentMode;
 
-                $('input[name="appointment_mode"][value="' + storedLocation + '"]').prop('checked', true);
+                $('input[name="appointment_mode"][value="' + lockedMode + '"]')
+                    .prop('checked', true);
             }
-
-            if ($('input[name="appointment_mode"]:checked').val() === 'ONLINE' && !hasZoomLink) {
-                $('input[name="appointment_mode"][value="ON_PREMISE"]').prop('checked', true);
-            }
-        } else {
+        }
+        else
+        {
+            // Legacy free-form location value (addresses, URLs) is kept in the summary.
             $('#appointment-mode-wrapper').hide();
             $('input[name="appointment_mode"]').prop('checked', false)
                 .closest('.custom-control').show();
-            $('input[name="appointment_mode"][value="' + appointmentMode + '"]').prop('checked', true);
         }
 
         var selectedMode = isHandledMode
             ? ($('input[name="appointment_mode"]:checked').val() || appointmentMode)
             : appointmentMode;
 
-        $('#appointment-mode-hint').toggle(selectedMode === 'ONLINE');
+        $('#appointment-mode-hint').toggle(isHandledMode && selectedMode === 'ONLINE');
 
         var locationValue = getLocationDisplayValue(selectedMode, serviceLocation);
 

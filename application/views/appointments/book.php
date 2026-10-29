@@ -362,8 +362,8 @@
                         <div id="customer-details" class="col-12 col-md-6"></div>
                     </div>
 
-                    <div class="row frame-content" id="appointment-mode-wrapper" style="display:none;">
-                        <div class="col-12 col-md-6">
+                    <div class="row frame-content">
+                        <div class="col-12 col-md-6" id="appointment-mode-wrapper" style="display:none;">
                             <h4>
                                 <?= lang('appointment_mode') ?>
                             </h4>
@@ -385,11 +385,9 @@
                                 <small><?= lang('zoom_link_email_hint') ?></small>
                             </div>
                         </div>
-                    </div>
 
-                    <?php if ($this->settings_model->get_setting('require_captcha') === '1'): ?>
-                        <div class="row frame-content">
-                            <div class="col-12 col-md-6">
+                        <?php if ($this->settings_model->get_setting('require_captcha') === '1'): ?>
+                            <div class="col-12 col-md-6 offset-md-6">
                                 <h4 class="captcha-title">
                                     CAPTCHA
                                     <button class="btn btn-link text-dark text-decoration-none py-0">
@@ -400,8 +398,8 @@
                                 <input class="captcha-text form-control" type="text" value=""/>
                                 <span id="captcha-hint" class="help-block" style="opacity:0">&nbsp;</span>
                             </div>
-                        </div>
-                    <?php endif; ?>
+                        <?php endif; ?>
+                    </div>
                 </div>
 
                 <div class="command-buttons">

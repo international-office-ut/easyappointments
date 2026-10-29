@@ -272,7 +272,7 @@ body legend {
     .working-plan-column p,
     .breaks-column p,
     .working-plan-exceptions-column p {
-        min-height: 2.6em; /* two lines */
+        min-height: 3em; /* two lines at Bootstrap's 1.5 line-height */
     }
 }
 

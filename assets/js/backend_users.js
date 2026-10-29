@@ -212,7 +212,7 @@ window.BackendUsers = window.BackendUsers || {};
                 'secretary': Backend.DB_SLUG_SECRETARY
             };
 
-            var $parentForm = $email.parents().eq(3);
+            var $parentForm = $email.closest('.record-details');
             var userId = $parentForm.find('.record-id').val();
 
             if ($email.val() === '' || userId) {

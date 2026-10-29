@@ -148,7 +148,14 @@ class Providers_model extends EA_Model {
 
         if ( ! isset($provider['id']) && ! isset($provider['settings']['password']))
         {
-            throw new Exception('The user password cannot be empty for new users.');
+            // A new provider row that belongs to an existing identity (same email on another
+            // role) inherits the password from that identity, so an empty password is fine.
+            $this->load->model('identities_model');
+
+            if ( ! $this->identities_model->exists_in_other_role($provider['email'], DB_SLUG_PROVIDER))
+            {
+                throw new Exception('The user password cannot be empty for new users.');
+            }
         }
 
         // Validate calendar view mode.

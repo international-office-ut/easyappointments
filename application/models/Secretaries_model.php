@@ -126,7 +126,14 @@ class Secretaries_model extends EA_Model {
 
         if ( ! isset($secretary['id']) && ! isset($secretary['settings']['password']))
         {
-            throw new Exception('The user password cannot be empty for new users.');
+            // A new secretary row that belongs to an existing identity (same email on another
+            // role) inherits the password from that identity, so an empty password is fine.
+            $this->load->model('identities_model');
+
+            if ( ! $this->identities_model->exists_in_other_role($secretary['email'], DB_SLUG_SECRETARY))
+            {
+                throw new Exception('The user password cannot be empty for new users.');
+            }
         }
 
         // Validate calendar view mode.

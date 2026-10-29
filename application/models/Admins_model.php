@@ -118,7 +118,14 @@ class Admins_model extends EA_Model {
 
         if ( ! isset($admin['id']) && ! isset($admin['settings']['password']))
         {
-            throw new Exception('The user password cannot be empty for new users.');
+            // A new admin row that belongs to an existing identity (same email on another
+            // role) inherits the password from that identity, so an empty password is fine.
+            $this->load->model('identities_model');
+
+            if ( ! $this->identities_model->exists_in_other_role($admin['email'], DB_SLUG_ADMIN))
+            {
+                throw new Exception('The user password cannot be empty for new users.');
+            }
         }
 
         // Validate calendar view mode.

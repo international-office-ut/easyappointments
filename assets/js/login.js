@@ -12,7 +12,7 @@ $(function () {
     function hideRoleWrapper() {
         $roleWrapper.hide();
         $roleSelect.empty();
-        $loginButton.prop('disabled', false);
+        $loginButton.prop('disabled', false).show();
     }
 
     /**
@@ -58,7 +58,7 @@ $(function () {
                     });
 
                     $roleWrapper.show();
-                    $loginButton.prop('disabled', true);
+                    $loginButton.prop('disabled', true).hide();
                 } else if (response === GlobalVariables.AJAX_SUCCESS) {
                     hideRoleWrapper();
                     window.location.href = GlobalVariables.destUrl;

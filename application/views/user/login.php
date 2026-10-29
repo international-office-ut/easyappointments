@@ -68,7 +68,7 @@
         </div>
 
         <div class="form-group">
-            <button type="submit" id="login" class="btn btn-primary">
+            <button type="submit" id="login" class="btn btn-primary btn-block mt-2">
                 <i class="fas fa-sign-in-alt mr-2"></i>
                 <?= lang('login') ?>
             </button>

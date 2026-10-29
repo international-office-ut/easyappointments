@@ -266,6 +266,13 @@ body legend {
         margin-bottom: 0;
         max-width: none;
     }
+
+    /* The settings page has no independent columns: its tab content scrolls inside the
+       fixed frame instead (otherwise e.g. the privacy-policy editor would be clipped
+       below the fold and impossible to edit). */
+    #settings-page.content-scroll {
+        overflow-y: auto;
+    }
 }
 
 .backend-page .filter-records {

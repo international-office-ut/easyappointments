@@ -366,7 +366,7 @@
             var providerWeekdayModes = this.getWeekdayModes();
 
             if (providerWeekdayModes
-                && providerWeekdayModes.indexOf('ONLINE') !== -1
+                && Object.values(providerWeekdayModes).indexOf('ONLINE') !== -1
                 && !$('#provider-zoom-link').val()
                 && !$('#provider-mobile-number').val()) {
                 $('#provider-zoom-link').closest('.form-group').addClass('has-error');

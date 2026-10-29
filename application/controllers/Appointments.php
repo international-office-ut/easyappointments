@@ -25,7 +25,6 @@ class Appointments extends EA_Controller {
         parent::__construct();
 
         $this->load->helper('installation');
-        $this->load->helper('google_analytics');
         $this->load->helper('appointment_location');
         $this->load->model('appointments_model');
         $this->load->model('providers_model');
@@ -235,7 +234,6 @@ class Appointments extends EA_Controller {
                 throw new Exception('Appointment could not be deleted from the database.');
             }
 
-            $this->synchronization->sync_appointment_deleted($appointment, $provider);
             $this->notifications->notify_appointment_deleted($appointment, $service, $provider, $customer, $settings);
         }
         catch (Exception $exception)
@@ -547,7 +545,6 @@ class Appointments extends EA_Controller {
                 'time_format' => $this->settings_model->get_setting('time_format')
             ];
 
-            $this->synchronization->sync_appointment_saved($appointment, $service, $provider, $customer, $settings, $manage_mode);
             $this->notifications->notify_appointment_saved($appointment, $service, $provider, $customer, $settings, $manage_mode);
 
             $response = [

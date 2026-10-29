@@ -263,15 +263,15 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
          * Load the appointments that correspond to the select filter item and display them on the calendar.
          */
         $('#select-filter-item').on('change', function () {
-            // If current value is service, then the sync buttons must be disabled.
+            // If current value is service, then the add buttons must be disabled.
             if ($('#select-filter-item option:selected').attr('type') === FILTER_TYPE_SERVICE) {
-                $('#google-sync, #enable-sync, #insert-appointment, #insert-dropdown').prop('disabled', true);
+                $('#insert-appointment, #insert-dropdown').prop('disabled', true);
                 $('#calendar').fullCalendar('option', {
                     selectable: false,
                     editable: false,
                 });
             } else {
-                $('#google-sync, #enable-sync, #insert-appointment, #insert-dropdown').prop('disabled', false);
+                $('#insert-appointment, #insert-dropdown').prop('disabled', false);
                 $('#calendar').fullCalendar('option', {
                     selectable: true,
                     editable: true,
@@ -285,17 +285,6 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
 
                 if (provider && provider.timezone) {
                     $('.provider-timezone').text(GlobalVariables.timezones[provider.timezone]);
-                }
-
-                // If the user has already the sync enabled then apply the proper style changes.
-                if ($('#select-filter-item option:selected').attr('google-sync') === 'true') {
-                    $('#enable-sync').removeClass('btn-light').addClass('btn-secondary enabled');
-                    $('#enable-sync span').text(EALang.disable_sync);
-                    $('#google-sync').prop('disabled', false);
-                } else {
-                    $('#enable-sync').removeClass('btn-secondary enabled').addClass('btn-light');
-                    $('#enable-sync span').text(EALang.enable_sync);
-                    $('#google-sync').prop('disabled', true);
                 }
             }
         });
@@ -1555,12 +1544,9 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                 'label': EALang.providers,
                 'type': 'providers-group',
                 'html': GlobalVariables.availableProviders.map(function (availableProvider) {
-                    var hasGoogleSync = availableProvider.settings.google_sync === '1' ? 'true' : 'false';
-
                     return $('<option/>', {
                         'value': availableProvider.id,
                         'type': FILTER_TYPE_PROVIDER,
-                        'google-sync': hasGoogleSync,
                         'text': availableProvider.first_name + ' ' + availableProvider.last_name
                     })
                 })

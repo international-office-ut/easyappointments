@@ -38,8 +38,7 @@ class Appointments implements ParsersInterface {
             'notes' => $response['notes'],
             'customerId' => $response['id_users_customer'] !== NULL ? (int)$response['id_users_customer'] : NULL,
             'providerId' => $response['id_users_provider'] !== NULL ? (int)$response['id_users_provider'] : NULL,
-            'serviceId' => $response['id_services'] !== NULL ? (int)$response['id_services'] : NULL,
-            'googleCalendarId' => $response['id_google_calendar'] !== NULL ? (int)$response['id_google_calendar'] : NULL
+            'serviceId' => $response['id_services'] !== NULL ? (int)$response['id_services'] : NULL
         ];
 
         if (isset($response['provider']))
@@ -124,11 +123,6 @@ class Appointments implements ParsersInterface {
         if (array_key_exists('serviceId', $request))
         {
             $decoded_request['id_services'] = $request['serviceId'];
-        }
-
-        if (array_key_exists('googleCalendarId', $request))
-        {
-            $decoded_request['id_google_calendar'] = $request['googleCalendarId'];
         }
 
         $decoded_request['is_unavailable'] = FALSE;

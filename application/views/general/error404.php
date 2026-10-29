@@ -53,6 +53,5 @@
     </div>
 </div>
 
-<?php google_analytics_script() ?>
 </body>
 </html>

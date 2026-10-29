@@ -20,7 +20,6 @@ class Errors extends EA_Controller {
     public function __construct()
     {
         parent::__construct();
-        $this->load->helper('google_analytics');
         $this->load->model('settings_model');
     }
 

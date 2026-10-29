@@ -28,14 +28,7 @@ class Config {
     const DB_PASSWORD   = 'root';
 
     // ------------------------------------------------------------------------
-    // GOOGLE CALENDAR SYNC
-    // ------------------------------------------------------------------------
     
-    const GOOGLE_SYNC_FEATURE   = FALSE; // You can optionally enable the Google Sync feature. 
-    const GOOGLE_PRODUCT_NAME   = '';
-    const GOOGLE_CLIENT_ID      = '';
-    const GOOGLE_CLIENT_SECRET  = '';
-    const GOOGLE_API_KEY        = '';
 }
 ```
 

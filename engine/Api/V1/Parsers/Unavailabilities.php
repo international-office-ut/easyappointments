@@ -36,9 +36,6 @@ class Unavailabilities implements ParsersInterface {
             'notes' => $response['notes'],
             'providerId' => array_key_exists('id_users_provider', $response)
                 ? (int)$response['id_users_provider']
-                : NULL,
-            'googleCalendarId' => array_key_exists('id_google_calendar', $response)
-                ? (int)$response['id_google_calendar']
                 : NULL
         ];
 
@@ -85,12 +82,7 @@ class Unavailabilities implements ParsersInterface {
             $decodedRequest['id_users_provider'] = $request['providerId'];
         }
 
-        if (array_key_exists('googleCalendarId', $request))
-        {
-            $decodedRequest['id_google_calendar'] = $request['googleCalendarId'];
-        }
-
-        $decodedRequest['is_unavailable'] = TRUE;
+        $decoded_request['is_unavailable'] = TRUE;
 
         $request = $decodedRequest;
     }

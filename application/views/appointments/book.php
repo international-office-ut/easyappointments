@@ -502,6 +502,5 @@
     });
 </script>
 
-<?php google_analytics_script(); ?>
 </body>
 </html>

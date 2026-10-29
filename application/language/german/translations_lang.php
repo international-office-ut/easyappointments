@@ -41,7 +41,6 @@ $lang["appointment_removed_from_schedule"] =
     "Der folgende Termin wurde erfolgreich storniert und aus der Terminplanung entfernt.";
 $lang["appointment_details_was_sent_to_you"] =
     "Eine E-Mail mit den Termindaten ist an Sie gesendet worden.";
-$lang["add_to_google_calendar"] = "Zum Google-Kalender hinzufügen";
 $lang["appointment_booked"] = "Ihr Termin ist erfolgreich gebucht worden.";
 $lang["thank_you_for_appointment"] =
     "Vielen Dank für die Terminauswahl mit uns. Weiter unten können Sie Ihre Termindaten sehen. Änderungen können durch Klicken auf den Termin-Link durchgeführt werden.";
@@ -55,10 +54,6 @@ $lang["end"] = "Ende";
 $lang["name"] = "Name";
 $lang["appointment_link_title"] = "Termin-Link";
 $lang["success"] = "Erfolg.";
-$lang["appointment_added_to_google_calendar"] =
-    "Ihr Termin ist zu Ihrem Google-Kalender Konto hinzugefügt worden.";
-$lang["view_appointment_in_google_calendar"] =
-    "Bitte klicken Sie hier, um Ihren Termin im Google-Kalender zu sehen.";
 $lang["appointment_added_to_your_plan"] =
     "Ein neuer Termin ist zu Ihrer Planung hinzugefügt worden.";
 $lang["appointment_link_description"] =
@@ -74,11 +69,6 @@ $lang["calendar"] = "Kalender";
 $lang["users"] = "Nutzer";
 $lang["settings"] = "Einstellungen";
 $lang["log_out"] = "Abmelden";
-$lang["synchronize"] = "Synchronisieren";
-$lang["enable_sync"] = "Synchronisation einschalten";
-$lang["disable_sync"] = "Synchronisation ausschalten";
-$lang["disable_sync_prompt"] =
-    "Sind Sie sicher, dass Sie die Kalendersynchronisation abschalten wollen?";
 $lang["reload"] = "Neu laden";
 $lang["appointment"] = "Termin";
 $lang["unavailable"] = "Nicht verfügbar";
@@ -95,8 +85,6 @@ $lang["manage_appointment_record_hint"] =
     "Verwalten Sie alle Termineintragungen der zur Verfügung stehenden Anbieter und Dienstleistungen.";
 $lang["select_filter_item_hint"] =
     "Wählen Sie einen Anbieter oder eine Dienstleistung und sehen Sie die Termine im Kalender an.";
-$lang["enable_appointment_sync_hint"] =
-    "Beginnen Sie die Terminsynchronisationen mit dem Google-Kalender des Dienstleisters.";
 $lang["manage_customers_hint"] =
     "Verwalten Sie die registrierten Kunden und sehen Sie die vergangenen Buchungen ein.";
 $lang["manage_services_hint"] =
@@ -110,8 +98,6 @@ $lang["unavailable_periods_hint"] =
 $lang["new_appointment_hint"] =
     "Bestimmen Sie einen neuen Termin und sichern Sie ihn in der Datenbank.";
 $lang["reload_appointments_hint"] = "Kalendertermine neu laden.";
-$lang["trigger_google_sync_hint"] =
-    "Starten Sie den Synchronisationsprozess von Google-Kalender.";
 $lang["appointment_updated"] = "Die Termine sind erfolgreich erneuert worden.";
 $lang["undo"] = "Rückgängig";
 $lang["appointment_details_changed"] = "Die Termindetails haben sich geändert.";
@@ -215,7 +201,7 @@ $lang["book_advance_timeout_hint"] =
     "Legen Sie eine Zeitbegrenzung (in Minuten) fest, während der die Kunden eine Terminbuchung oder eine Terminänderung durchführen können.";
 $lang["timeout_minutes"] = "Zeitbegrenzung (Minuten)";
 $lang["about_app_info"] =
-    "Easy!Appointments ist eine extrem anpassungsfähige Internet-Applikation, die es Ihren Kunden ermöglicht, einen Termin mit Ihnen über das Internet zu vereinbaren. Darüberhinaus gibt es Ihnen die Möglichkeit, Ihre Daten mit dem Google-Kalender zu synchronisieren, so dass Sie diese mit anderen Dienstleistungsprogrammen nutzen können.";
+    "Easy!Appointments ist eine extrem anpassungsfähige Internet-Applikation, die es Ihren Kunden ermöglicht, einen Termin mit Ihnen über das Internet zu vereinbaren. ";
 $lang["current_version"] = "Laufende Version";
 $lang["support"] = "Unterstützung";
 $lang["about_app_support"] =
@@ -317,17 +303,7 @@ $lang["select_time"] = "Zeit wählen";
 $lang["time"] = "Zeit";
 $lang["hour"] = "Uhr";
 $lang["minute"] = "Minute";
-$lang["google_sync_completed"] = "Google-Synchronisation erfolgreich beendet.";
-$lang["google_sync_failed"] =
-    "Google-Synchronisation fehlgeschlagen: Server-Verbindung konnte nicht hergestellt werden.";
-$lang["select_google_calendar"] = "Wählen Sie Google Kalender";
-$lang["select_google_calendar_prompt"] =
-    "Wählen Sie den Kalender, mit dem Sie Ihre Termine synchronisieren möchten. Wenn Sie das nicht wollen, wird ein Standard-Kalender verwendet.";
-$lang["google_calendar_selected"] =
-    "Google-Kalender wurde erfolgreich ausgewählt.";
 $lang["oops_something_went_wrong"] = "Oops! Etwas ist schiefgelaufen.";
-$lang["could_not_add_to_google_calendar"] =
-    "Ihr Termin konnte nicht im Google-Kalender-Konto hinzugefügt werden.";
 $lang["ea_update_success"] =
     "Easy!Appointments wurde erfolgreich aktualisiert.";
 $lang["require_captcha"] = "CAPTCHA erfordern";
@@ -349,8 +325,6 @@ $lang["time_format_hint"] =
     "Ändern Sie das Zeitanzeigeformat (H - Stunden, M - Minuten).";
 $lang["first_weekday"] = "Erster Tag der Woche";
 $lang["first_weekday_hint"] = "Wählen Sie den ersten Tag der Kalenderwoche.";
-$lang["google_analytics_code_hint"] =
-    "Fügen Sie Ihre Google Analytics-ID hinzu, das auf der Buchungsseite enthalten wird.";
 $lang["availabilities_type"] = "Terminart";
 $lang["flexible"] = "Flexibel";
 $lang["fixed"] = "Fest";

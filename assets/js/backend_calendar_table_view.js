@@ -1773,8 +1773,5 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
         $('#insert-working-plan-exception').hide();
 
         bindEventHandlers();
-
-        // Hide Google Calendar Sync buttons cause they can not be used within this view.
-        $('#enable-sync, #google-sync').hide();
     };
 })(window.BackendCalendarTableView);

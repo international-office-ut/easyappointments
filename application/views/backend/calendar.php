@@ -7,7 +7,6 @@
 <script src="<?= asset_url('assets/js/backend_calendar.js') ?>"></script>
 <script src="<?= asset_url('assets/js/backend_calendar_default_view.js') ?>"></script>
 <script src="<?= asset_url('assets/js/backend_calendar_table_view.js') ?>"></script>
-<script src="<?= asset_url('assets/js/backend_calendar_google_sync.js') ?>"></script>
 <script src="<?= asset_url('assets/js/backend_calendar_appointments_modal.js') ?>"></script>
 <script src="<?= asset_url('assets/js/backend_calendar_unavailability_events_modal.js') ?>"></script>
 <script src="<?= asset_url('assets/js/backend_calendar_api.js') ?>"></script>
@@ -50,21 +49,6 @@
         </div>
 
         <div id="calendar-actions" class="col-12 col-sm-7">
-            <?php if (($role_slug == DB_SLUG_ADMIN || $role_slug == DB_SLUG_PROVIDER)
-                && config('google_sync_feature') == TRUE): ?>
-                <button id="google-sync" class="btn btn-primary"
-                        data-tippy-content="<?= lang('trigger_google_sync_hint') ?>">
-                    <i class="fas fa-sync-alt"></i>
-                    <span><?= lang('synchronize') ?></span>
-                </button>
-
-                <button id="enable-sync" class="btn btn-light" data-toggle="button"
-                        data-tippy-content="<?= lang('enable_appointment_sync_hint') ?>">
-                    <i class="fas fa-calendar-alt mr-2"></i>
-                    <span><?= lang('enable_sync') ?></span>
-                </button>
-            <?php endif ?>
-
             <?php if ($privileges[PRIV_APPOINTMENTS]['add'] == TRUE): ?>
                 <div class="btn-group">
                     <button class="btn btn-light" id="insert-appointment">
@@ -472,37 +456,6 @@
                 <button id="save-unavailable" class="btn btn-primary">
                     <i class="fas fa-check-square mr-2"></i>
                     <?= lang('save') ?>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- SELECT GOOGLE CALENDAR MODAL -->
-
-<div id="select-google-calendar" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title"><?= lang('select_google_calendar') ?></h3>
-                <button class="close" data-dismiss="modal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="google-calendar" class="control-label">
-                        <?= lang('select_google_calendar_prompt') ?>
-                    </label>
-                    <select id="google-calendar" class="form-control"></select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline-secondary" data-dismiss="modal">
-                    <i class="fas fa-ban mr-2"></i>
-                    <?= lang('cancel') ?>
-                </button>
-                <button id="select-calendar" class="btn btn-primary">
-                    <i class="fas fa-check-square mr-2"></i>
-                    <?= lang('select') ?>
                 </button>
             </div>
         </div>

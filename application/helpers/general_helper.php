@@ -16,7 +16,7 @@
  *
  * For example used in XML/Atom
  *
- * @link http://stackoverflow.com/questions/5671433/php-time-to-google-calendar-dates-time-format
+ * @link http://stackoverflow.com/questions/5671433/php-time-to-calendar-dates-time-format
  *
  * @param integer $timestamp
  *

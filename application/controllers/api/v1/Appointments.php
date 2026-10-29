@@ -132,7 +132,6 @@ class Appointments extends API_V1_Controller {
                 'time_format' => $this->settings_model->get_setting('time_format')
             ];
 
-            $this->synchronization->sync_appointment_saved($appointment, $service, $provider, $customer, $settings, FALSE);
             $this->notifications->notify_appointment_saved($appointment, $service, $provider, $customer, $settings, FALSE);
 
             // Fetch the new object from the database and return it to the client.
@@ -182,7 +181,6 @@ class Appointments extends API_V1_Controller {
                 'time_format' => $this->settings_model->get_setting('time_format')
             ];
 
-            $this->synchronization->sync_appointment_saved($updated_appointment, $service, $provider, $customer, $settings, TRUE);
             $this->notifications->notify_appointment_saved($updated_appointment, $service, $provider, $customer, $settings, TRUE);
 
 
@@ -220,7 +218,6 @@ class Appointments extends API_V1_Controller {
 
             $this->appointments_model->delete($id);
 
-            $this->synchronization->sync_appointment_deleted($appointment, $provider);
             $this->notifications->notify_appointment_deleted($appointment, $service, $provider, $customer, $settings);
 
             $response = new Response([

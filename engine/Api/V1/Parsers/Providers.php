@@ -53,22 +53,9 @@ class Providers implements ParsersInterface {
             $encoded_response['settings'] = [
                 'username' => $response['settings']['username'],
                 'notifications' => filter_var($response['settings']['notifications'], FILTER_VALIDATE_BOOLEAN),
-                'calendarView' => $response['settings']['calendar_view'],
-                'googleSync' => array_key_exists('google_sync', $response['settings'])
-                    ? filter_var($response['settings']['google_sync'], FILTER_VALIDATE_BOOLEAN)
-                    : NULL,
-                'googleCalendar' => array_key_exists('google_calendar', $response['settings'])
-                    ? $response['settings']['google_calendar']
-                    : NULL,
-                'googleToken' => array_key_exists('google_token', $response['settings'])
-                    ? $response['settings']['google_token']
-                    : NULL,
-                'syncFutureDays' => array_key_exists('sync_future_days', $response['settings'])
-                    ? (int)$response['settings']['sync_future_days']
-                    : NULL,
-                'syncPastDays' => array_key_exists('sync_past_days', $response['settings'])
-                    ? (int)$response['settings']['sync_past_days']
-                    : NULL,
+                'appointmentMode' => $response['settings']['appointment_mode'] ?? NULL,
+                'zoomLink' => $response['settings']['zoom_link'] ?? NULL,
+                'weekdayModes' => $response['settings']['weekday_modes'] ?? NULL,
                 'workingPlan' => array_key_exists('working_plan', $response['settings'])
                     ? json_decode($response['settings']['working_plan'], TRUE)
                     : NULL,
@@ -182,32 +169,6 @@ class Providers implements ParsersInterface {
             {
                 $decoded_request['settings']['notifications'] = filter_var($request['settings']['notifications'],
                     FILTER_VALIDATE_BOOLEAN);
-            }
-
-            if (array_key_exists('googleSync', $request['settings']))
-            {
-                $decoded_request['settings']['google_sync'] = filter_var($request['settings']['googleSync'],
-                    FILTER_VALIDATE_BOOLEAN);
-            }
-
-            if (array_key_exists('googleCalendar', $request['settings']))
-            {
-                $decoded_request['settings']['google_calendar'] = $request['settings']['googleCalendar'];
-            }
-
-            if (array_key_exists('googleToken', $request['settings']))
-            {
-                $decoded_request['settings']['google_token'] = $request['settings']['googleToken'];
-            }
-
-            if (array_key_exists('syncFutureDays', $request['settings']))
-            {
-                $decoded_request['settings']['sync_future_days'] = $request['settings']['syncFutureDays'];
-            }
-
-            if (array_key_exists('syncPastDays', $request['settings']))
-            {
-                $decoded_request['settings']['sync_past_days'] = $request['settings']['syncPastDays'];
             }
 
             if (array_key_exists('workingPlan', $request['settings']))

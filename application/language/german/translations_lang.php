@@ -107,6 +107,9 @@ $lang["save"] = "Speichern";
 $lang["new"] = "Neu";
 $lang["select"] = "Auswahl";
 $lang["hide"] = "Verbergen";
+$lang["working_plan_description"] =
+    'Legen Sie die täglichen Arbeitszeiten und die Terminart für jeden Tag fest.';
+$lang["type"] = "Typ";
 $lang["type_to_filter_customers"] = "Eingeben, um Kunden zu filtern.";
 $lang["clear_fields_add_existing_customer_hint"] =
     "Löschen Sie die Felder und geben Sie einen neuen Kunden-Hinweis ein.";

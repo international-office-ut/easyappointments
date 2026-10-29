@@ -305,6 +305,11 @@
                             <div class="row">
                                 <div class="working-plan-column col-12 col-lg-6 col-xl-4">
                                     <h3><?= lang('working_plan') ?></h3>
+
+                                    <p>
+                                        <?= lang('working_plan_description') ?>
+                                    </p>
+
                                     <button id="reset-working-plan" class="btn btn-primary"
                                             data-tippy-content="<?= lang('reset_working_plan') ?>">
                                         <i class="fas fa-redo-alt mr-2"></i>
@@ -315,7 +320,7 @@
                                             <th><?= lang('day') ?></th>
                                             <th><?= lang('start') ?></th>
                                             <th><?= lang('end') ?></th>
-                                            <th><?= lang('appointment_mode') ?></th>
+                                            <th><?= lang('type') ?></th>
                                         </tr>
                                         </thead>
                                         <tbody><!-- Dynamic Content --></tbody>

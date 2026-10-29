@@ -109,6 +109,9 @@ $lang["save"] = "Save";
 $lang["new"] = "New";
 $lang["select"] = "Select";
 $lang["hide"] = "Hide";
+$lang["working_plan_description"] =
+    'Set the daily working hours and the appointment type for each day.';
+$lang["type"] = "Type";
 $lang["type_to_filter_customers"] = "Type to filter customers.";
 $lang["clear_fields_add_existing_customer_hint"] =
     "Clear the fields and enter a new customer.";

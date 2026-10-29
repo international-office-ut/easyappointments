@@ -690,6 +690,8 @@ window.FrontendBook = window.FrontendBook || {};
             ? ($('input[name="appointment_mode"]:checked').val() || appointmentMode)
             : appointmentMode;
 
+        $('#appointment-mode-hint').toggle(selectedMode === 'ONLINE');
+
         var locationValue = getLocationDisplayValue(selectedMode, serviceLocation);
 
         $('#appointment-details').empty();

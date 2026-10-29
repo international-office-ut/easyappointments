@@ -381,6 +381,9 @@
                                     <?= lang('mode_on_premise') ?>
                                 </label>
                             </div>
+                            <div id="appointment-mode-hint" class="text-muted" style="display:none;">
+                                <small><?= lang('zoom_link_email_hint') ?></small>
+                            </div>
                         </div>
                     </div>
 

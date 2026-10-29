@@ -340,5 +340,6 @@ $lang['weekday_mode_overrides'] = 'Weekday Overrides';
 $lang['zoom_link'] = 'Zoom Link';
 $lang['other'] = 'Other';
 $lang['zoom_link_required'] = 'The Zoom link is missing. Online appointments require a configured Zoom link.';
+$lang['zoom_link_email_hint'] = 'The Zoom link will be sent to you by email after the booking.';
 
 // End

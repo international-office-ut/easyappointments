@@ -336,3 +336,4 @@ $lang['weekday_mode_overrides'] = 'Wochentag-Überschreibungen';
 $lang['zoom_link'] = 'Zoom-Link';
 $lang['other'] = 'Andere';
 $lang['zoom_link_required'] = 'Der Zoom-Link fehlt. Online-Termine erfordern einen konfigurierten Zoom-Link.';
+$lang['zoom_link_email_hint'] = 'Der Zoom-Link wird Ihnen nach der Buchung per E-Mail zugesendet.';

@@ -311,7 +311,7 @@
                     </legend>
 
                     <div class="row">
-                        <div class="col-12 col-sm-11 col-md-10 col-lg-9">
+                        <div class="col-12 col-md-6 col-xl-4">
                             <h4><?= lang('cookie_notice') ?></h4>
 
                             <div class="form-group">
@@ -327,20 +327,18 @@
                                 <label><?= lang('cookie_notice_content') ?></label>
                                 <textarea id="cookie-notice-content" cols="30" rows="10" class="form-group"></textarea>
                             </div>
+                        </div>
 
-                            <br>
-
+                        <div class="col-12 col-md-6 col-xl-4">
                             <h4><?= lang('terms_and_conditions') ?></h4>
 
                             <div class="form-group">
-                                <div class="form-group">
-                                    <div class="custom-control custom-checkbox">
-                                        <input class="custom-control-input" type="checkbox"
-                                               id="display-terms-and-conditions">
-                                        <label class="custom-control-label" for="display-terms-and-conditions">
-                                            <?= lang('display_terms_and_conditions') ?>
-                                        </label>
-                                    </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input class="custom-control-input" type="checkbox"
+                                           id="display-terms-and-conditions">
+                                    <label class="custom-control-label" for="display-terms-and-conditions">
+                                        <?= lang('display_terms_and_conditions') ?>
+                                    </label>
                                 </div>
                             </div>
 
@@ -349,17 +347,17 @@
                                 <textarea id="terms-and-conditions-content" cols="30" rows="10"
                                           class="form-group"></textarea>
                             </div>
+                        </div>
 
+                        <div class="col-12 col-md-6 col-xl-4">
                             <h4><?= lang('privacy_policy') ?></h4>
 
                             <div class="form-group">
-                                <div class="form-group">
-                                    <div class="custom-control custom-checkbox">
-                                        <input class="custom-control-input" type="checkbox" id="display-privacy-policy">
-                                        <label class="custom-control-label" for="display-privacy-policy">
-                                            <?= lang('display_privacy_policy') ?>
-                                        </label>
-                                    </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input class="custom-control-input" type="checkbox" id="display-privacy-policy">
+                                    <label class="custom-control-label" for="display-privacy-policy">
+                                        <?= lang('display_privacy_policy') ?>
+                                    </label>
                                 </div>
                             </div>
 
@@ -367,9 +365,11 @@
                                 <label><?= lang('privacy_policy_content') ?></label>
                                 <textarea id="privacy-policy-content" cols="30" rows="10" class="form-group"></textarea>
                             </div>
+                        </div>
+                    </div>
 
-                            <hr>
-
+                    <div class="row mt-4">
+                        <div class="col-12 col-md-6 col-xl-4">
                             <h4><?= lang('data_retention') ?></h4>
 
                             <div class="form-group">
@@ -382,6 +382,10 @@
                                     <?= lang('data_retention_hint') ?>
                                 </span>
                             </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-xl-4">
+                            <h4>Maintenance</h4>
 
                             <div class="form-group">
                                 <button id="purge-records" class="btn btn-outline-secondary">

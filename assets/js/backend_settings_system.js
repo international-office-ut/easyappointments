@@ -82,6 +82,12 @@
             });
         });
 
+        // Data retention setting (legal contents tab).
+        settings.push({
+            name: 'record_retention_months',
+            value: $('#data-retention-months').val() || '3'
+        });
+
         settings.push({
             name: 'customer_notifications',
             value: $('#customer-notifications').prop('checked') ? '1' : '0'

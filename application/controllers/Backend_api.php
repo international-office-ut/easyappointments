@@ -1157,6 +1157,73 @@ class Backend_api extends EA_Controller {
     }
 
     /**
+     * Trigger the maintenance cleanup based on the data retention setting.
+     *
+     * The routine removes appointments, unavailable periods and customers that are older than
+     * the record retention period. Add the "dry" parameter when a run should only report the
+     * numbers without deleting anything.
+     */
+    public function ajax_maintain()
+    {
+        try
+        {
+            if ($this->privileges[PRIV_SYSTEM_SETTINGS]['edit'] == FALSE)
+            {
+                throw new Exception('You do not have the required privileges for this task.');
+            }
+
+            $this->load->model('maintenance_model');
+
+            $dry_run = filter_var($this->input->post('dry_run'), FILTER_VALIDATE_BOOLEAN);
+
+            $months = (int)$this->settings_model->get_setting('record_retention_months');
+
+            $this->db->trans_begin();
+
+            $appointments = $this->maintenance_model->purge_appointments($months, $dry_run);
+            $unavailables = $this->maintenance_model->purge_unavailables($months, $dry_run);
+            $customers = $this->maintenance_model->purge_customers_without_appointments($dry_run);
+
+            if ($dry_run)
+            {
+                $this->db->trans_rollback();
+            }
+
+            if ($this->db->trans_status() === FALSE && ! $dry_run)
+            {
+                $this->db->trans_rollback();
+                throw new Exception('Could not execute the maintenance cleanup.');
+            }
+
+            if ( ! $dry_run)
+            {
+                $this->db->trans_complete();
+            }
+
+            $response = [
+                'dry_run' => $dry_run,
+                'retention_months' => $months,
+                'appointments' => $appointments,
+                'unavailables' => $unavailables,
+                'customers' => $customers
+            ];
+        }
+        catch (Exception $exception)
+        {
+            $this->output->set_status_header(500);
+
+            $response = [
+                'message' => $exception->getMessage(),
+                'trace' => config('debug') ? $exception->getTrace() : []
+            ];
+        }
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($response));
+    }
+
+    /**
      * Delete a provider record from the database.
      */
     public function ajax_delete_provider()

@@ -37,6 +37,7 @@ class Console extends EA_Controller {
         $this->load->model('providers_model');
         $this->load->model('services_model');
         $this->load->model('settings_model');
+        $this->load->model('maintenance_model');
     }
 
     /**
@@ -188,6 +189,37 @@ class Console extends EA_Controller {
     }
 
     /**
+     * Trigger the maintenance cleanup based on the record retention period.
+     *
+     * Appointments, customers without appointments and provider blocks (unavailable periods)
+     * that are older than the retention period get removed to keep the record set within the
+     * data retention policy. Use the optional "dry" argument to preview without deleting.
+     *
+     * Usage:
+     *
+     * php index.php console maintain
+     * php index.php console maintain dry
+     */
+    public function maintain()
+    {
+        $dry_run = isset($GLOBALS['argv'][3]) && in_array($GLOBALS['argv'][3], ['dry', '--dry-run']);
+
+        $months = (int)$this->settings_model->get_setting('record_retention_months');
+
+        $appointments = $this->maintenance_model->purge_appointments($months, $dry_run);
+        $unavailables = $this->maintenance_model->purge_unavailables($months, $dry_run);
+        $customers = $this->maintenance_model->purge_customers_without_appointments($dry_run);
+
+        $mode = $dry_run ? 'DRY RUN' : 'CLEANUP';
+
+        $this->output->set_output(PHP_EOL
+            . '⇾ Maintenance ' . $mode . ' (retention period: ' . $months . ' months)' . PHP_EOL
+            . '  Appointments: ' . $appointments . PHP_EOL
+            . '  Unavailables: ' . $unavailables . PHP_EOL
+            . '  Customers: ' . $customers . PHP_EOL . PHP_EOL);
+    }
+
+    /**
      * Show help information about the console capabilities.
      *
      * Use this method to see the available commands.
@@ -213,6 +245,7 @@ class Console extends EA_Controller {
             '⇾ php index.php console seed',
             '⇾ php index.php console install',
             '⇾ php index.php console backup',
+            '⇾ php index.php console maintain',
             '',
             '',
         ];

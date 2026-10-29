@@ -367,6 +367,28 @@
                                 <label><?= lang('privacy_policy_content') ?></label>
                                 <textarea id="privacy-policy-content" cols="30" rows="10" class="form-group"></textarea>
                             </div>
+
+                            <hr>
+
+                            <h4><?= lang('data_retention') ?></h4>
+
+                            <div class="form-group">
+                                <label for="data-retention-months">
+                                    <?= lang('retention_months') ?>
+                                </label>
+                                <input id="data-retention-months" data-field="record_retention_months"
+                                       class="form-control" type="number" min="0" max="120">
+                                <span class="form-text text-muted">
+                                    <?= lang('data_retention_hint') ?>
+                                </span>
+                            </div>
+
+                            <div class="form-group">
+                                <button id="purge-records" class="btn btn-outline-secondary">
+                                    <i class="fas fa-broom mr-2"></i>
+                                    <?= lang('purge_records') ?>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </fieldset>

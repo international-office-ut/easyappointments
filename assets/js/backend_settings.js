@@ -101,6 +101,10 @@ window.BackendSettings = window.BackendSettings || {};
             if (setting.name === 'privacy_policy_content') {
                 $('#privacy-policy-content').trumbowyg('html', setting.value);
             }
+
+            if (setting.name === 'record_retention_months') {
+                $('#data-retention-months').val(setting.value);
+            }
         });
 
         exports.wp = new WorkingPlan();
@@ -255,6 +259,68 @@ window.BackendSettings = window.BackendSettings || {};
 
             GeneralFunctions.displayMessageBox(EALang.working_plan, EALang.overwrite_existing_working_plans, buttons);
         });
+
+        /**
+         * Event: Purge Records Button "Click"
+         *
+         * Runs the maintenance cleanup with the configured data retention period. A dry run is
+         * implied by the dialog until the user confirms the purge.
+         */
+        $('#purge-records').on('click', function () {
+            runMaintenancePurge(true);
+        });
+    }
+
+    /**
+     * Run the maintenance purge (post data with the requested mode).
+     *
+     * @param {Boolean} dryRun When TRUE nothing is deleted and only the number of affected
+     * records is reported.
+     */
+    function runMaintenancePurge(dryRun) {
+        var url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_maintain';
+
+        var data = {
+            csrfToken: GlobalVariables.csrfToken,
+            dry_run: dryRun ? '1' : '0'
+        };
+
+        $.post(url, data)
+            .done(function (response) {
+                var message = (dryRun ? EALang.maintenance_dry_run : EALang.maintenance_done)
+                    + ' (' + response.retention_months + ') '
+                    + EALang.maintenance_result
+                        .replace('{$appointments}', response.appointments)
+                        .replace('{$unavailables}', response.unavailables)
+                        .replace('{$customers}', response.customers);
+
+                if (dryRun) {
+                    // Show the dry-run numbers and ask whether the cleanup should run now.
+                    GeneralFunctions.displayMessageBox(EALang.purge_records, message, [
+                        {
+                            text: EALang.purge_records,
+                            click: function () {
+                                $('#message-box').dialog('close');
+
+                                runMaintenancePurge(false);
+                            }
+                        },
+                        {
+                            text: EALang.cancel,
+                            click: function () {
+                                $('#message-box').dialog('close');
+                            }
+                        }
+                    ]);
+                } else {
+                    Backend.displayNotification(message);
+                }
+            })
+            .fail(function (jqXHR) {
+                Backend.displayNotification(jqXHR.responseJSON && jqXHR.responseJSON.message
+                    ? jqXHR.responseJSON.message
+                    : EALang.oops_something_went_wrong);
+            });
     }
 
 })(window.BackendSettings);

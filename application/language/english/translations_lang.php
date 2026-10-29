@@ -227,6 +227,15 @@ $lang["login_failed"] = "Login failed. Please use the correct username and passw
 $lang["select_role"] = "Continue as ...";
 $lang["identity_attach_hint"] =
     'Attach this role to the existing person "{$name}" ({$role}). Login credentials are shared.';
+$lang["data_retention"] = "Data Retention";
+$lang["retention_months"] = "Retention Period (months)";
+$lang["data_retention_hint"] =
+    'Appointments, unavailable periods and customers without any (remaining) appointments that are older than this period are removed to respect the data retention policy.';
+$lang["purge_records"] = "Purge Records Now";
+$lang["maintenance_dry_run"] = "Dry Run Preview";
+$lang["maintenance_done"] = "Maintenance Cleanup";
+$lang["maintenance_result"] =
+    'Appointments: {$appointments}, Unavailables: {$unavailables}, Customers: {$customers}';
 $lang["type_username_and_email_for_new_password"] =
     "Type your username and your email address to get your new password.";
 $lang["enter_email_here"] = "Enter your email here ...";

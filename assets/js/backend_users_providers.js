@@ -441,7 +441,7 @@
         }
 
         Object.keys(modes).forEach(function (weekday) {
-            $('.provider-weekday-modes .weekday-mode[data-weekday="' + weekday + '"]').val(modes[weekday]);
+            $('#providers .working-plan .weekday-mode[data-weekday="' + weekday + '"]').val(modes[weekday]);
         });
     };
 

@@ -1181,7 +1181,7 @@ class Backend_api extends EA_Controller {
             $this->db->trans_begin();
 
             $appointments = $this->maintenance_model->purge_appointments($months, $dry_run);
-            $unavailables = $this->maintenance_model->purge_unavailables($months, $dry_run);
+            $provider_blocks = $this->maintenance_model->purge_provider_blocks($months, $dry_run);
             $customers = $this->maintenance_model->purge_customers_without_appointments($dry_run);
 
             if ($dry_run)
@@ -1204,7 +1204,7 @@ class Backend_api extends EA_Controller {
                 'dry_run' => $dry_run,
                 'retention_months' => $months,
                 'appointments' => $appointments,
-                'unavailables' => $unavailables,
+                'provider_blocks' => $provider_blocks,
                 'customers' => $customers
             ];
         }

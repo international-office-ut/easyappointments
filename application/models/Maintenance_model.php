@@ -54,24 +54,27 @@ class Maintenance_model extends EA_Model {
     }
 
     /**
-     * Purge provider blocks (unavailable periods) that end before the cutoff date.
+     * Purge provider blocks ("unavailable" appointment rows) that end before the cutoff date.
+     *
+     * Blocked periods are stored inside the appointments table with the `is_unavailable`
+     * flag set, so the purge targets those rows in the same way as the appointment purge.
      *
      * @param int $months Retention period in months.
      * @param bool $dry_run When TRUE the results are only reported and nothing is removed.
      *
      * @return int Returns the number of affected records.
      */
-    public function purge_unavailables(int $months, bool $dry_run = FALSE): int
+    public function purge_provider_blocks(int $months, bool $dry_run = FALSE): int
     {
-        // Some installations may not have the unavailables table.
-        if ( ! $this->db->table_exists('unavailables'))
+        if ( ! $this->db->table_exists('appointments'))
         {
             return 0;
         }
 
         $rows = $this->db
             ->select('id')
-            ->from('unavailables')
+            ->from('appointments')
+            ->where('is_unavailable', TRUE)
             ->where('end_datetime <', $this->cutoff_date($months))
             ->get()
             ->result_array();
@@ -81,7 +84,7 @@ class Maintenance_model extends EA_Model {
             return count($rows);
         }
 
-        $this->remove_rows('unavailables', $rows);
+        $this->remove_rows('appointments', $rows);
 
         return count($rows);
     }

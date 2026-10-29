@@ -236,7 +236,7 @@ $lang["purge_records"] = "Datensätze jetzt bereinigen";
 $lang["maintenance_dry_run"] = "Testlauf";
 $lang["maintenance_done"] = "Wartungsbereinigung";
 $lang["maintenance_result"] =
-    'Termine: {$appointments}, Nichtverfügbarkeiten: {$unavailables}, Kunden: {$customers}';
+    'Termine: {$appointments}, Nichtverfügbarkeiten: {$provider_blocks}, Kunden: {$customers}';
 $lang["type_username_and_email_for_new_password"] =
     "Geben Sie Ihren Nutzernamen und Ihre E-Mail-Adresse ein, um Ihr neues Passwort zu erhalten.";
 $lang["enter_email_here"] = "Geben Sie Ihre E-Mail-Adresse hier ein ...";

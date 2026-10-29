@@ -207,7 +207,7 @@ class Console extends EA_Controller {
         $months = (int)$this->settings_model->get_setting('record_retention_months');
 
         $appointments = $this->maintenance_model->purge_appointments($months, $dry_run);
-        $unavailables = $this->maintenance_model->purge_unavailables($months, $dry_run);
+        $provider_blocks = $this->maintenance_model->purge_provider_blocks($months, $dry_run);
         $customers = $this->maintenance_model->purge_customers_without_appointments($dry_run);
 
         $mode = $dry_run ? 'DRY RUN' : 'CLEANUP';
@@ -215,7 +215,7 @@ class Console extends EA_Controller {
         $this->output->set_output(PHP_EOL
             . '⇾ Maintenance ' . $mode . ' (retention period: ' . $months . ' months)' . PHP_EOL
             . '  Appointments: ' . $appointments . PHP_EOL
-            . '  Unavailables: ' . $unavailables . PHP_EOL
+            . '  Provider blocks: ' . $provider_blocks . PHP_EOL
             . '  Customers: ' . $customers . PHP_EOL . PHP_EOL);
     }
 

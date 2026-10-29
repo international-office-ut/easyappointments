@@ -235,7 +235,7 @@ $lang["purge_records"] = "Purge Records Now";
 $lang["maintenance_dry_run"] = "Dry Run Preview";
 $lang["maintenance_done"] = "Maintenance Cleanup";
 $lang["maintenance_result"] =
-    'Appointments: {$appointments}, Unavailables: {$unavailables}, Customers: {$customers}';
+    'Appointments: {$appointments}, Provider blocks: {$provider_blocks}, Customers: {$customers}';
 $lang["type_username_and_email_for_new_password"] =
     "Type your username and your email address to get your new password.";
 $lang["enter_email_here"] = "Enter your email here ...";

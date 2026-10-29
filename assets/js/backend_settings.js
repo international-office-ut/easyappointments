@@ -291,7 +291,7 @@ window.BackendSettings = window.BackendSettings || {};
                     + ' (' + response.retention_months + ') '
                     + EALang.maintenance_result
                         .replace('{$appointments}', response.appointments)
-                        .replace('{$unavailables}', response.unavailables)
+                        .replace('{$provider_blocks}', response.provider_blocks)
                         .replace('{$customers}', response.customers);
 
                 if (dryRun) {

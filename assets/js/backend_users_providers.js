@@ -94,6 +94,7 @@
             // Apply default working plan
             BackendUsers.wp.setup(GlobalVariables.workingPlan);
             BackendUsers.wp.timepickers(false);
+            this.syncWeekdayModeStates();
         }.bind(this));
 
         /**
@@ -110,7 +111,8 @@
             $('#providers').find('.add-break, .edit-break, .delete-break, .add-working-plan-exception, .edit-working-plan-exception, .delete-working-plan-exception, #reset-working-plan').prop('disabled', false);
             $('#providers input:checkbox').prop('disabled', false);
             BackendUsers.wp.timepickers(false);
-        });
+            this.syncWeekdayModeStates();
+        }.bind(this));
 
         /**
          * Event: Delete Provider Button "Click"
@@ -219,6 +221,18 @@
             $('.work-start, .work-end').val('');
             BackendUsers.wp.setup(GlobalVariables.workingPlan);
             BackendUsers.wp.timepickers(false);
+            this.displayWeekdayModes(null); // a reset working plan clears the day overrides too
+        }.bind(this));
+
+        /**
+         * Event: Working Plan Day Checkbox "Change"
+         *
+         * Days without working hours cannot have an appointment mode override.
+         */
+        $('#providers').on('change', '.working-plan .form-check-input', function () {
+            var dayId = $(this).attr('id');
+
+            $('#providers .record-details #' + dayId + '-mode').prop('disabled', !$(this).prop('checked'));
         });
     };
 
@@ -359,6 +373,21 @@
     };
 
     /**
+     * Sync the weekday-override select states with the working days of the plan.
+     *
+     * Days without working hours cannot have an appointment mode override, so their select
+     * fields are disabled.
+     */
+    ProvidersHelper.prototype.syncWeekdayModeStates = function () {
+        $('#providers .working-plan .form-check-input').each(function (index, checkbox) {
+            var dayId = $(checkbox).attr('id');
+
+            $('#providers .record-details #' + dayId + '-mode')
+                .prop('disabled', !$(checkbox).prop('checked'));
+        });
+    };
+
+    /**
      * Read the weekday appointment mode overrides of the provider form.
      *
      * @return {Object|null} Returns the weekday modes map or NULL when no override is set.
@@ -366,11 +395,12 @@
     ProvidersHelper.prototype.getWeekdayModes = function () {
         var weekdayModes = {};
 
-        $('#providers .provider-weekday-modes .weekday-mode').each(function (index, select) {
+        $('#providers .working-plan .weekday-mode').each(function (index, select) {
             var weekday = $(select).attr('data-weekday');
             var mode = $(select).val();
+            var dayId = $(select).attr('id') ? $(select).attr('id').replace('-mode', '') : null;
 
-            if (weekday && mode) {
+            if (weekday && mode && (!dayId || $('#' + dayId).prop('checked'))) {
                 weekdayModes[weekday] = mode;
             }
         });
@@ -385,7 +415,7 @@
      * settings.
      */
     ProvidersHelper.prototype.displayWeekdayModes = function (weekdayModes) {
-        $('.provider-weekday-modes .weekday-mode').val('');
+        $('#providers .working-plan .weekday-mode').val('');
 
         try {
             var modes = weekdayModes ? JSON.parse(weekdayModes) : {};
@@ -465,7 +495,6 @@
         $('#provider-notifications').prop('checked', Boolean(Number(provider.settings.notifications)));
         $('#provider-appointment-mode').val(provider.settings.appointment_mode || 'BOTH');
         $('#provider-zoom-link').val(provider.settings.zoom_link || '');
-        this.displayWeekdayModes(provider.settings.weekday_modes);
 
         // Add dedicated provider link.
         var dedicatedUrl = GlobalVariables.baseUrl + '/index.php?provider=' + encodeURIComponent(provider.id);
@@ -515,7 +544,9 @@
         // Display working plan
         var workingPlan = $.parseJSON(provider.settings.working_plan);
         BackendUsers.wp.setup(workingPlan);
+        this.displayWeekdayModes(provider.settings.weekday_modes);
         $('.working-plan').find('input').prop('disabled', true);
+        $('#providers .working-plan .weekday-mode').prop('disabled', true);
         $('.breaks').find('.edit-break, .delete-break').prop('disabled', true);
         $('#providers .working-plan-exceptions tbody').empty();
         var workingPlanExceptions = $.parseJSON(provider.settings.working_plan_exceptions);

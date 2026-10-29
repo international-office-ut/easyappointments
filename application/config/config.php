@@ -318,7 +318,7 @@ $config["cache_path"] = __DIR__ . "/../../storage/cache/";
 | new release.
 |
 */
-$config["cache_busting_token"] = "ZV980";
+$config["cache_busting_token"] = "ZV981";
 
 /*
 |--------------------------------------------------------------------------

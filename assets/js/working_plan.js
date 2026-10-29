@@ -21,7 +21,17 @@
      *
      * @class WorkingPlan
      */
-    var WorkingPlan = function () {
+    var WorkingPlan = function (config) {
+        config = config || {};
+
+        /**
+         * Whether the day rows include the appointment type override select. Only the provider
+         * working plan needs it; the system settings plan has no provider context.
+         *
+         * @type {Boolean}
+         */
+        this.weekdayModes = Boolean(config.weekdayModes);
+
         /**
          * This flag is used when trying to cancel row editing. It is
          * true only whenever the user presses the cancel button.
@@ -57,9 +67,9 @@
         $.each(workingPlanSorted, function (index, workingDay) {
             var day = this.convertValueToDay(index);
 
-            var dayDisplayName = GeneralFunctions.upperCaseFirstLetter(day)
+            var dayDisplayName = GeneralFunctions.upperCaseFirstLetter(day);
 
-            $('<tr/>', {
+            var $dayRow = $('<tr/>', {
                 'html': [
                     $('<td/>', {
                         'html': [
@@ -98,13 +108,34 @@
                         ]
                     })
                 ]
-            })
+            });
+
+            if (this.weekdayModes) {
+                $dayRow.append($('<td/>', {
+                    'html': [
+                        $('<select/>', {
+                            'id': index + '-mode',
+                            'class': 'weekday-mode form-control form-control-sm',
+                            'data-weekday': GeneralFunctions.getWeekDayId(dayDisplayName),
+                            'html': [
+                                new Option('—', ''),
+                                new Option(EALang.mode_online || 'Online', 'ONLINE'),
+                                new Option(EALang.mode_on_premise || 'On Site', 'ON_PREMISE'),
+                                new Option(EALang.mode_both || 'BOTH - Online or On Site', 'BOTH')
+                            ]
+                        })
+                    ]
+                }));
+            }
+
+            $dayRow
                 .appendTo('.working-plan tbody');
 
             if (workingDay) {
                 $('#' + index).prop('checked', true);
                 $('#' + index + '-start').val(Date.parse(workingDay.start).toString(timeFormat).toLowerCase());
                 $('#' + index + '-end').val(Date.parse(workingDay.end).toString(timeFormat).toLowerCase());
+                $('#providers .record-details #' + index + '-mode').prop('disabled', false);
 
                 // Sort day's breaks according to the starting hour
                 workingDay.breaks.sort(function (break1, break2) {
@@ -179,6 +210,7 @@
                 $('#' + index).prop('checked', false);
                 $('#' + index + '-start').prop('disabled', true);
                 $('#' + index + '-end').prop('disabled', true);
+                $('#providers .record-details #' + index + '-mode').prop('disabled', true);
             }
         }.bind(this));
 

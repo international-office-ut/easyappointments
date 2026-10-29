@@ -284,39 +284,6 @@
                                                placeholder="https://...">
                                     </div>
 
-                                    <div class="form-group">
-                                        <label>
-                                            <?= lang('weekday_mode_overrides') ?>
-                                        </label>
-                                        <table class="provider-weekday-modes table table-sm table-borderless">
-                                            <tbody>
-                                            <?php
-                                            $weekday_names = ['sunday', 'monday', 'tuesday', 'wednesday',
-                                                'thursday', 'friday', 'saturday'];
-
-                                            for ($weekday = 0; $weekday <= 6; $weekday++): ?>
-                                                <tr>
-                                                    <td class="align-middle">
-                                                        <?= lang($weekday_names[$weekday]) ?>
-                                                    </td>
-                                                    <td>
-                                                        <select class="weekday-mode form-control"
-                                                                data-weekday="<?= $weekday ?>">
-                                                            <option value="">—</option>
-                                                            <option value="<?= APPOINTMENT_MODE_ONLINE ?>"><?= lang('mode_online') ?></option>
-                                                            <option value="<?= APPOINTMENT_MODE_ON_PREMISE ?>"><?= lang('mode_on_premise') ?></option>
-                                                            <option value="<?= APPOINTMENT_MODE_BOTH ?>"><?= lang('mode_both') ?></option>
-                                                        </select>
-                                                    </td>
-                                                </tr>
-                                            <?php endfor ?>
-                                            </tbody>
-                                        </table>
-                                        <small class="text-muted">
-                                            <?= lang('provider_weekday_mode_overrides_hint') ?>
-                                        </small>
-                                    </div>
-
                                     <br>
 
                                     <div class="custom-control custom-switch">
@@ -346,10 +313,15 @@
                                     <th><?= lang('day') ?></th>
                                     <th><?= lang('start') ?></th>
                                     <th><?= lang('end') ?></th>
+                                    <th><?= lang('appointment_mode') ?></th>
                                 </tr>
                                 </thead>
                                 <tbody><!-- Dynamic Content --></tbody>
                             </table>
+
+                            <small class="text-muted">
+                                <?= lang('provider_weekday_mode_overrides_hint') ?>
+                            </small>
 
                             <br>
 

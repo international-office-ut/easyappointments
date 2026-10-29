@@ -585,22 +585,11 @@ window.FrontendBook = window.FrontendBook || {};
 
         var providerMode = providerSettings.appointment_mode;
 
-        // First specific value wins: service weekday override, then the service mode, then the
-        // per-day provider override, then the provider default. "BOTH" entries are treated as
-        // "not set", so that broader rules can still apply; otherwise the customer gets to decide.
-        var mode = null;
-
-        [weekdayMode, serviceMode, providerWeekdayMode, providerMode]
-            .some(function (candidate) {
-                if (candidate && candidate !== 'BOTH') {
-                    mode = candidate;
-                    return true;
-                }
-
-                return false;
-            });
-
-        mode = mode || 'BOTH';
+        // First set value wins: service weekday override, then the service mode, then the
+        // per-day provider override, then the provider default. Explicit "BOTH" entries are
+        // deliberate declarations ("customer chooses") and do not let broader rules through;
+        // missing values everywhere fall back to "BOTH".
+        var mode = weekdayMode || serviceMode || providerWeekdayMode || providerMode || 'BOTH';
 
         // Online appointments only make sense when the selected provider has a Zoom link.
         if (mode === 'ONLINE' && provider && !GeneralFunctions.providerHasZoomLink(provider)) {

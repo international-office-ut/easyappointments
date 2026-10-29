@@ -110,11 +110,13 @@ if ( ! function_exists('resolve_appointment_mode'))
     /**
      * Resolve the effective appointment mode of a specific weekday.
      *
-     * The weekday override of the service wins over the service mode, which wins over the
-     * provider default. Empty values fall back to "BOTH" so that the customer can choose.
+     * The weekday override of the service wins over the service mode, then the per-day override
+     * of the provider wins over the provider default. Values that are not set fall through, so
+     * that broader rules can still apply; missing values everywhere fall back to "BOTH" so that
+     * the customer can choose.
      *
      * @param array $service Service record, including a "weekday_modes" map.
-     * @param array $provider_settings The provider settings record (may be empty).
+     * @param array $provider_settings The provider settings record (weekday modes as JSON string).
      * @param int $weekday Weekday index (0 = Sunday ... 6 = Saturday).
      * @return string Returns one of the APPOINTMENT_MODE_* values.
      */
@@ -124,7 +126,21 @@ if ( ! function_exists('resolve_appointment_mode'))
         $service_mode = $service['appointment_mode'] ?? NULL;
         $provider_mode = $provider_settings['appointment_mode'] ?? NULL;
 
-        foreach ([$weekday_mode, $service_mode, $provider_mode] as $mode)
+        $provider_weekday_modes = [];
+
+        if ( ! empty($provider_settings['weekday_modes']))
+        {
+            $provider_weekday_modes = json_decode((string)$provider_settings['weekday_modes'], TRUE) ?: [];
+
+            if ( ! is_array($provider_weekday_modes))
+            {
+                $provider_weekday_modes = [];
+            }
+        }
+
+        $provider_weekday_mode = $provider_weekday_modes[$weekday] ?? NULL;
+
+        foreach ([$weekday_mode, $service_mode, $provider_weekday_mode, $provider_mode] as $mode)
         {
             if ($mode !== NULL && $mode !== '')
             {

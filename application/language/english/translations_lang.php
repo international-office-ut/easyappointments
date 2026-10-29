@@ -423,5 +423,7 @@ $lang["zoom_link_required"] =
     "The Zoom link is missing. Online appointments require a configured Zoom link.";
 $lang["zoom_link_email_hint"] =
     "The link will be sent to you by email after the booking.";
+$lang["provider_weekday_mode_overrides_hint"] =
+    "Applies to services without their own appointment type or weekday overrides.";
 
 // End

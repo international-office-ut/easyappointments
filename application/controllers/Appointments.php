@@ -93,6 +93,7 @@ class Appointments extends EA_Controller {
                     'settings' => [
                         'appointment_mode' => $provider['settings']['appointment_mode'] ?? NULL,
                         'zoom_link' => $provider['settings']['zoom_link'] ?? NULL,
+                        'weekday_modes' => $provider['settings']['weekday_modes'] ?? NULL,
                     ],
                 ];
                 $available_providers[$index] = $stripped_data;
@@ -503,6 +504,22 @@ class Appointments extends EA_Controller {
             if (empty($appointment['location']) && ! empty($service['location']))
             {
                 $appointment['location'] = $service['location'];
+            }
+
+            // The assigned provider's per-day rules may differ from the customer's selection
+            // (e.g. the "any provider" flow resolves the provider only at this point), so the
+            // effective appointment mode is re-resolved server-side before saving.
+            if (in_array($appointment['location'] ?? NULL,
+                [APPOINTMENT_MODE_ONLINE, APPOINTMENT_MODE_ON_PREMISE], TRUE))
+            {
+                $selected_weekday = (int)date('w', strtotime(substr($appointment['start_datetime'], 0, 10)));
+                $effective_mode = resolve_appointment_mode($service, $provider['settings'] ?? [], $selected_weekday);
+
+                if (in_array($effective_mode,
+                    [APPOINTMENT_MODE_ONLINE, APPOINTMENT_MODE_ON_PREMISE], TRUE))
+                {
+                    $appointment['location'] = $effective_mode;
+                }
             }
 
             // Online appointments only make sense when the provider has a Zoom link configured.

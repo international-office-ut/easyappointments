@@ -570,9 +570,37 @@ window.FrontendBook = window.FrontendBook || {};
         var weekday = selectedDate ? selectedDate.getDay() : null;
         var weekdayMode = weekday !== null ? weekdayModes[weekday] : null;
         var serviceMode = service ? service.appointment_mode : null;
-        var providerMode = provider && provider.settings ? provider.settings.appointment_mode : null;
 
-        var mode = weekdayMode || serviceMode || providerMode || 'BOTH';
+        var providerSettings = (provider && provider.settings) || {};
+        var providerWeekdayMode = null;
+
+        try {
+            var providerWeekdayModes = providerSettings.weekday_modes
+                ? JSON.parse(providerSettings.weekday_modes) : {};
+
+            providerWeekdayMode = weekday !== null ? providerWeekdayModes[weekday] : null;
+        } catch (error) {
+            providerWeekdayMode = null;
+        }
+
+        var providerMode = providerSettings.appointment_mode;
+
+        // First specific value wins: service weekday override, then the service mode, then the
+        // per-day provider override, then the provider default. "BOTH" entries are treated as
+        // "not set", so that broader rules can still apply; otherwise the customer gets to decide.
+        var mode = null;
+
+        [weekdayMode, serviceMode, providerWeekdayMode, providerMode]
+            .some(function (candidate) {
+                if (candidate && candidate !== 'BOTH') {
+                    mode = candidate;
+                    return true;
+                }
+
+                return false;
+            });
+
+        mode = mode || 'BOTH';
 
         // Online appointments only make sense when the selected provider has a Zoom link.
         if (mode === 'ONLINE' && provider && !GeneralFunctions.providerHasZoomLink(provider)) {

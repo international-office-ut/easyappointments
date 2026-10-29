@@ -160,7 +160,8 @@
                     notifications: $('#provider-notifications').prop('checked'),
                     calendar_view: $('#provider-calendar-view').val(),
                     appointment_mode: $('#provider-appointment-mode').val() || null,
-                    zoom_link: $('#provider-zoom-link').val()
+                    zoom_link: $('#provider-zoom-link').val(),
+                    weekday_modes: this.getWeekdayModes()
                 }
             };
 
@@ -336,6 +337,17 @@
                 throw new Error(EALang.zoom_link_required);
             }
 
+            // Online weekday overrides also require a Zoom link.
+            var providerWeekdayModes = this.getWeekdayModes();
+
+            if (providerWeekdayModes
+                && providerWeekdayModes.indexOf('ONLINE') !== -1
+                && !$('#provider-zoom-link').val()
+                && !$('#provider-mobile-number').val()) {
+                $('#provider-zoom-link').closest('.form-group').addClass('has-error');
+                throw new Error(EALang.zoom_link_required);
+            }
+
             return true;
         } catch (error) {
             $('#providers .form-message')
@@ -344,6 +356,50 @@
                 .show();
             return false;
         }
+    };
+
+    /**
+     * Read the weekday appointment mode overrides of the provider form.
+     *
+     * @return {Object|null} Returns the weekday modes map or NULL when no override is set.
+     */
+    ProvidersHelper.prototype.getWeekdayModes = function () {
+        var weekdayModes = {};
+
+        $('#providers .provider-weekday-modes .weekday-mode').each(function (index, select) {
+            var weekday = $(select).attr('data-weekday');
+            var mode = $(select).val();
+
+            if (weekday && mode) {
+                weekdayModes[weekday] = mode;
+            }
+        });
+
+        return Object.keys(weekdayModes).length ? weekdayModes : null;
+    };
+
+    /**
+     * Apply weekday appointment mode overrides to the provider form.
+     *
+     * @param {String|null} weekdayModes JSON encoded weekday modes map of the provider records
+     * settings.
+     */
+    ProvidersHelper.prototype.displayWeekdayModes = function (weekdayModes) {
+        $('.provider-weekday-modes .weekday-mode').val('');
+
+        try {
+            var modes = weekdayModes ? JSON.parse(weekdayModes) : {};
+        } catch (error) {
+            return;
+        }
+
+        if (typeof modes !== 'object' || modes === null) {
+            return;
+        }
+
+        Object.keys(modes).forEach(function (weekday) {
+            $('.provider-weekday-modes .weekday-mode[data-weekday="' + weekday + '"]').val(modes[weekday]);
+        });
     };
 
     /**
@@ -409,6 +465,7 @@
         $('#provider-notifications').prop('checked', Boolean(Number(provider.settings.notifications)));
         $('#provider-appointment-mode').val(provider.settings.appointment_mode || 'BOTH');
         $('#provider-zoom-link').val(provider.settings.zoom_link || '');
+        this.displayWeekdayModes(provider.settings.weekday_modes);
 
         // Add dedicated provider link.
         var dedicatedUrl = GlobalVariables.baseUrl + '/index.php?provider=' + encodeURIComponent(provider.id);

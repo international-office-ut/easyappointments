@@ -164,6 +164,8 @@
                     appointment_mode: $('#provider-appointment-mode').val() || null,
                     zoom_link: $('#provider-zoom-link').val(),
                     weekday_modes: this.getWeekdayModes()
+                        ? JSON.stringify(this.getWeekdayModes())
+                        : null
                 }
             };
 

@@ -228,9 +228,9 @@ $lang["select_role"] = "Continue as ...";
 $lang["identity_attach_hint"] =
     'Attach this role to the existing person "{$name}" ({$role}). Login credentials are shared.';
 $lang["data_retention"] = "Data Retention";
-$lang["retention_months"] = "Retention Period (months)";
+$lang["retention_days"] = "Retention Period (days)";
 $lang["data_retention_hint"] =
-    'Appointments, unavailable periods and customers without any (remaining) appointments that are older than this period are removed to respect the data retention policy.';
+    'Appointments, unavailable periods and customers without any (remaining) appointments that are older than this many days are removed to respect the data retention policy.';
 $lang["purge_records"] = "Purge Records Now";
 $lang["maintenance_dry_run"] = "Dry Run Preview";
 $lang["maintenance_done"] = "Maintenance Cleanup";

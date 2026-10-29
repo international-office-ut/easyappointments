@@ -15,10 +15,10 @@
  * Maintenance Model
  *
  * Data retention purges: appointments, provider blocks (rows with `is_unavailable` flag),
- * and customers without appointments that are older than the configured retention period.
- * All purges run as direct SQL deletes (no notifications, no side effects). The where
- * clauses are applied directly on the delete statements: collecting thousands of record
- * ids first would blow up CI's query builder (regex length limits).
+ * and customers without appointments that are older than the configured retention period
+ * in days. All purges run as direct SQL deletes (no notifications, no side effects). The
+ * where clauses are applied directly on the delete statements: collecting thousands of
+ * record ids first would blow up CI's query builder (regex length limits).
  *
  * @property CI_DB_query_builder $db
  */
@@ -26,26 +26,26 @@ class Maintenance_model extends EA_Model {
     /**
      * Purge appointments that end before the cutoff date.
      *
-     * @param int $months Retention period in months.
+     * @param int $days Retention period in days.
      * @param bool $dry_run When TRUE the results are only reported and nothing is removed.
      *
      * @return int Returns the number of affected records.
      */
-    public function purge_appointments(int $months, bool $dry_run = FALSE): int
+    public function purge_appointments(int $days, bool $dry_run = FALSE): int
     {
         if ( ! $this->db->table_exists('appointments'))
         {
             return 0;
         }
 
-        $this->appointments_where($months);
+        $this->appointments_where($days);
 
         if ($dry_run)
         {
             return $this->db->count_all_results('appointments');
         }
 
-        $this->appointments_where($months);
+        $this->appointments_where($days);
         $this->db->delete('appointments');
 
         return $this->db->affected_rows();
@@ -57,26 +57,26 @@ class Maintenance_model extends EA_Model {
      * Blocked periods are stored inside the appointments table with the `is_unavailable`
      * flag set, so the purge targets those rows in the same way as the appointment purge.
      *
-     * @param int $months Retention period in months.
+     * @param int $days Retention period in days.
      * @param bool $dry_run When TRUE the results are only reported and nothing is removed.
      *
      * @return int Returns the number of affected records.
      */
-    public function purge_provider_blocks(int $months, bool $dry_run = FALSE): int
+    public function purge_provider_blocks(int $days, bool $dry_run = FALSE): int
     {
         if ( ! $this->db->table_exists('appointments'))
         {
             return 0;
         }
 
-        $this->provider_blocks_where($months);
+        $this->provider_blocks_where($days);
 
         if ($dry_run)
         {
             return $this->db->count_all_results('appointments');
         }
 
-        $this->provider_blocks_where($months);
+        $this->provider_blocks_where($days);
         $this->db->delete('appointments');
 
         return $this->db->affected_rows();
@@ -116,27 +116,27 @@ class Maintenance_model extends EA_Model {
     /**
      * Build the where clause for outdated appointment records.
      *
-     * @param int $months Retention period in months.
+     * @param int $days Retention period in days.
      *
      * @return void
      */
-    protected function appointments_where(int $months): void
+    protected function appointments_where(int $days): void
     {
-        $this->db->where('end_datetime <', $this->cutoff_date($months));
+        $this->db->where('end_datetime <', $this->cutoff_date($days));
     }
 
     /**
      * Build the where clause for outdated provider block records.
      *
-     * @param int $months Retention period in months.
+     * @param int $days Retention period in days.
      *
      * @return void
      */
-    protected function provider_blocks_where(int $months): void
+    protected function provider_blocks_where(int $days): void
     {
         $this->db
             ->where('is_unavailable', TRUE)
-            ->where('end_datetime <', $this->cutoff_date($months));
+            ->where('end_datetime <', $this->cutoff_date($days));
     }
 
     /**
@@ -154,19 +154,19 @@ class Maintenance_model extends EA_Model {
     }
 
     /**
-     * Compute the cutoff date of the provided retention period in months.
+     * Compute the cutoff date of the provided retention period in days.
      *
      * Appointments are considered expired when their end datetime falls before the
      * cutoff date.
      *
-     * @param int $months Retention period in months.
+     * @param int $days Retention period in days.
      *
      * @return string Returns the cutoff datetime in Y-m-d H:i:s format.
      */
-    public function cutoff_date(int $months): string
+    public function cutoff_date(int $days): string
     {
         return (new DateTime('now'))
-            ->modify('-' . max(0, $months) . ' months')
+            ->modify('-' . max(0, $days) . ' days')
             ->format('Y-m-d 00:00:00');
     }
 }

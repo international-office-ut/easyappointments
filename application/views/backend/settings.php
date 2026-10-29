@@ -373,11 +373,11 @@
                             <h4><?= lang('data_retention') ?></h4>
 
                             <div class="form-group">
-                                <label for="data-retention-months">
-                                    <?= lang('retention_months') ?>
+                                <label for="data-retention-days">
+                                    <?= lang('retention_days') ?>
                                 </label>
-                                <input id="data-retention-months" data-field="record_retention_months"
-                                       class="form-control" type="number" min="0" max="120">
+                                <input id="data-retention-days" data-field="record_retention_days"
+                                       class="form-control" type="number" min="0" max="3650">
                                 <span class="form-text text-muted">
                                     <?= lang('data_retention_hint') ?>
                                 </span>

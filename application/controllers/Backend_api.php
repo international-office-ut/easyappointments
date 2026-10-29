@@ -1176,12 +1176,17 @@ class Backend_api extends EA_Controller {
 
             $dry_run = filter_var($this->input->post('dry_run'), FILTER_VALIDATE_BOOLEAN);
 
-            $months = (int)$this->settings_model->get_setting('record_retention_months');
+            $days = (int)$this->settings_model->get_setting('record_retention_days');
+
+            if (empty($days))
+            {
+                $days = (int)$this->settings_model->get_setting('record_retention_months') * 30 ?: 90;
+            }
 
             $this->db->trans_begin();
 
-            $appointments = $this->maintenance_model->purge_appointments($months, $dry_run);
-            $provider_blocks = $this->maintenance_model->purge_provider_blocks($months, $dry_run);
+            $appointments = $this->maintenance_model->purge_appointments($days, $dry_run);
+            $provider_blocks = $this->maintenance_model->purge_provider_blocks($days, $dry_run);
             $customers = $this->maintenance_model->purge_customers_without_appointments($dry_run);
 
             if ($dry_run)
@@ -1202,7 +1207,7 @@ class Backend_api extends EA_Controller {
 
             $response = [
                 'dry_run' => $dry_run,
-                'retention_months' => $months,
+                'retention_days' => $days,
                 'appointments' => $appointments,
                 'provider_blocks' => $provider_blocks,
                 'customers' => $customers

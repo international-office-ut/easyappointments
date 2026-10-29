@@ -15,7 +15,7 @@
  * Class Migration_Add_record_retention_setting
  *
  * Adds the data retention setting used by the maintenance cleanup (privilege: records like
- * appointments, customers and unavailables older than the configured months get removed).
+ * appointments, customers and provider blocks older than the configured days get removed).
  *
  * @property CI_DB_query_builder $db
  */
@@ -25,14 +25,10 @@ class Migration_Add_record_retention_setting extends CI_Migration {
      */
     public function up()
     {
-        if ($this->db->table_exists('user_settings'))
+        if ($this->db->table_exists('settings')
+            && $this->db->get_where('settings', ['name' => 'record_retention_days'])->num_rows() === 0)
         {
-            $rows = $this->db->get_where('settings', ['name' => 'record_retention_months'])->num_rows();
-
-            if ($rows === 0)
-            {
-                $this->db->insert('settings', ['name' => 'record_retention_months', 'value' => '3']);
-            }
+            $this->db->insert('settings', ['name' => 'record_retention_days', 'value' => '90']);
         }
     }
 
@@ -43,7 +39,7 @@ class Migration_Add_record_retention_setting extends CI_Migration {
     {
         if ($this->db->table_exists('settings'))
         {
-            $this->db->delete('settings', ['name' => 'record_retention_months']);
+            $this->db->delete('settings', ['name' => 'record_retention_days']);
         }
     }
 }

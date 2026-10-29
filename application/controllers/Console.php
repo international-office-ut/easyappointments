@@ -204,19 +204,41 @@ class Console extends EA_Controller {
     {
         $dry_run = isset($GLOBALS['argv'][3]) && in_array($GLOBALS['argv'][3], ['dry', '--dry-run']);
 
-        $months = (int)$this->settings_model->get_setting('record_retention_months');
+        $days = $this->retention_days();
 
-        $appointments = $this->maintenance_model->purge_appointments($months, $dry_run);
-        $provider_blocks = $this->maintenance_model->purge_provider_blocks($months, $dry_run);
+        $appointments = $this->maintenance_model->purge_appointments($days, $dry_run);
+        $provider_blocks = $this->maintenance_model->purge_provider_blocks($days, $dry_run);
         $customers = $this->maintenance_model->purge_customers_without_appointments($dry_run);
 
         $mode = $dry_run ? 'DRY RUN' : 'CLEANUP';
 
         $this->output->set_output(PHP_EOL
-            . '⇾ Maintenance ' . $mode . ' (retention period: ' . $months . ' months)' . PHP_EOL
+            . '⇾ Maintenance ' . $mode . ' (retention period: ' . $days . ' days)' . PHP_EOL
             . '  Appointments: ' . $appointments . PHP_EOL
             . '  Provider blocks: ' . $provider_blocks . PHP_EOL
             . '  Customers: ' . $customers . PHP_EOL . PHP_EOL);
+    }
+
+    /**
+     * Resolve the data retention period in days.
+     *
+     * Older installations stored the period in months; the value gets converted once on
+     * the fly in case the days setting does not exist yet.
+     *
+     * @return int Returns the retention period in days.
+     */
+    protected function retention_days(): int
+    {
+        $days = (int)$this->settings_model->get_setting('record_retention_days');
+
+        if (empty($days))
+        {
+            $days = (int)$this->settings_model->get_setting('record_retention_months');
+
+            $days = (empty($days)) ? 90 : $days * 30;
+        }
+
+        return max(0, $days);
     }
 
     /**

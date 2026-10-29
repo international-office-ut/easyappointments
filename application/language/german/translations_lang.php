@@ -229,9 +229,9 @@ $lang["select_role"] = "Weiter als ...";
 $lang["identity_attach_hint"] =
     'Diese Rolle wird der bestehenden Person „{$name}" ({$role}) zugeordnet. Die Anmeldedaten werden geteilt.';
 $lang["data_retention"] = "Datenaufbewahrung";
-$lang["retention_months"] = "Aufbewahrungszeitraum (Monate)";
+$lang["retention_days"] = "Aufbewahrungszeitraum (Tage)";
 $lang["data_retention_hint"] =
-    'Termine, Nichtverfügbarkeiten und Kunden ohne (übrig gebliebene) Termine, die älter sind als dieser Zeitraum, werden gemäß der Datenaufbewahrungsrichtlinie entfernt.';
+    'Termine, Nichtverfügbarkeiten und Kunden ohne (übrig gebliebene) Termine, die älter sind als dieser Tage, werden gemäß der Datenaufbewahrungsrichtlinie entfernt.';
 $lang["purge_records"] = "Datensätze jetzt bereinigen";
 $lang["maintenance_dry_run"] = "Testlauf";
 $lang["maintenance_done"] = "Wartungsbereinigung";

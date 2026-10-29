@@ -102,8 +102,8 @@ window.BackendSettings = window.BackendSettings || {};
                 $('#privacy-policy-content').trumbowyg('html', setting.value);
             }
 
-            if (setting.name === 'record_retention_months') {
-                $('#data-retention-months').val(setting.value);
+            if (setting.name === 'record_retention_days') {
+                $('#data-retention-days').val(setting.value);
             }
         });
 

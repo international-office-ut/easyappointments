@@ -82,10 +82,10 @@
             });
         });
 
-        // Data retention setting (legal contents tab).
+        // Data retention setting (legal contents tab), stored in days.
         settings.push({
-            name: 'record_retention_months',
-            value: $('#data-retention-months').val() || '3'
+            name: 'record_retention_days',
+            value: $('#data-retention-days').val() || '90'
         });
 
         settings.push({

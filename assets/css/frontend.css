@@ -253,16 +253,9 @@ body {
     color: #1A865F;
 }
 
-#book-appointment-wizard .captcha-image {
-    float: left;
-    margin-bottom: 20px;
-    border-radius: 3px;
-    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
-}
-
-#book-appointment-wizard .captcha-text {
-    width: 100%;
-    margin-bottom: 20px;
+altcha-widget {
+    display: block;
+    margin-bottom: 10px;
 }
 
 #book-appointment-wizard #service-description {
@@ -327,12 +320,7 @@ body {
         justify-content: space-between;
     }
 
-    #book-appointment-wizard .captcha-title {
-        margin-right: 20px;
-        margin-top: 7px;
-    }
-
-    #book-appointment-wizard .captcha-image {
+    altcha-widget {
         float: right;
     }
 

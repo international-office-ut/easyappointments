@@ -308,7 +308,7 @@ $lang["ea_update_success"] =
     "Easy!Appointments wurde erfolgreich aktualisiert.";
 $lang["require_captcha"] = "CAPTCHA erfordern";
 $lang["require_captcha_hint"] =
-    "Wenn aktiv, werden die Kunden aufgefordert, eine zufällig generierte Zeichenfolge (CAPTCHA) einzutippen bevor Sie einen Termin buchen oder speichern können.";
+    "Wenn aktiv, haben die Kunden eine unsichtbare Proof-of-Work-Herausforderung zu lösen, bevor ein Termin gebucht werden kann.";
 $lang["captcha_is_wrong"] =
     "CAPTCHA-Überprüfung fehlgeschlagen, bitte versuchen Sie es erneut.";
 $lang["any_provider"] = "Jeder Anbieter";

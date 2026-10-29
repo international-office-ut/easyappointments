@@ -16,6 +16,11 @@
  *
  * @package Controllers
  */
+use AltchaOrg\Altcha\Altcha;
+use AltchaOrg\Altcha\Algorithm\Pbkdf2;
+use AltchaOrg\Altcha\HmacAlgorithm;
+use AltchaOrg\Altcha\VerifySolutionOptions;
+
 class Appointments extends EA_Controller {
     /**
      * Class Constructor
@@ -437,7 +442,7 @@ class Appointments extends EA_Controller {
         try
         {
             $post_data = $this->input->post('post_data');
-            $captcha = $this->input->post('captcha');
+            $altcha_solution = (string) $this->input->post('altcha');
             $manage_mode = filter_var($post_data['manage_mode'], FILTER_VALIDATE_BOOLEAN);
             $appointment = $post_data['appointment'];
             $customer = $post_data['customer'];
@@ -476,22 +481,35 @@ class Appointments extends EA_Controller {
             $service = $this->services_model->get_row($appointment['id_services']);
 
             $require_captcha = $this->settings_model->get_setting('require_captcha');
-            $captcha_phrase = $this->session->userdata('captcha_phrase');
 
-            // Validate the CAPTCHA string and make sure it can be used only once.
-            if ($require_captcha === '1'
-                && ($captcha === NULL || $captcha_phrase === NULL || ! hash_equals($captcha_phrase, $captcha)))
+            // Verify the ALTCHA proof-of-work payload submitted by the widget.
+            if ($require_captcha === '1' && (! defined('\Config::ALTCHA_HMAC_KEY')
+                    || Config::ALTCHA_HMAC_KEY === ''))
             {
-                $this->output
-                    ->set_content_type('application/json')
-                    ->set_output(json_encode([
-                        'captcha_verification' => FALSE
-                    ]));
-
-                return;
+                log_message('error', 'The "ALTCHA_HMAC_KEY" configuration value is not set.');
             }
 
-            $this->session->unset_userdata('captcha_phrase');
+            if ($require_captcha === '1'
+                && defined('\Config::ALTCHA_HMAC_KEY') && Config::ALTCHA_HMAC_KEY !== '')
+            {
+                $altcha = new Altcha(hmacSignatureSecret: Config::ALTCHA_HMAC_KEY);
+
+                $verification = $altcha->verifySolution(new VerifySolutionOptions(
+                    payload: $altcha_solution,
+                    algorithm: new Pbkdf2(HmacAlgorithm::SHA256),
+                ));
+
+                if ( ! $verification->verified)
+                {
+                    $this->output
+                        ->set_content_type('application/json')
+                        ->set_output(json_encode([
+                            'captcha_verification' => FALSE
+                        ]));
+
+                    return;
+                }
+            }
 
             if (empty($customer['id']) && $this->customers_model->exists($customer))
             {

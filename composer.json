@@ -36,10 +36,10 @@
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-gd": "*",
-        "gregwar/captcha": "^1.1",
         "phpmailer/phpmailer": "^6.1",
         "jsvrcek/ics": "^0.8",
-        "monolog/monolog": "^1"
+        "monolog/monolog": "^1",
+        "altcha-org/altcha": "^2.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^9"

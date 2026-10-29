@@ -11,21 +11,40 @@
  * @since       v1.0.0
  * ---------------------------------------------------------------------------- */
 
+use AltchaOrg\Altcha\Altcha;
+use AltchaOrg\Altcha\CreateChallengeOptions;
+use AltchaOrg\Altcha\Algorithm\Pbkdf2;
+use AltchaOrg\Altcha\HmacAlgorithm;
+
 /**
  * Captcha Controller
+ *
+ * Returns ALTCHA proof-of-work challenges for the booking page (see https://altcha.org).
  *
  * @package Controllers
  */
 class Captcha extends EA_Controller {
     /**
-     * Make a request to this method to get a captcha image.
+     * Return a new ALTCHA challenge as JSON.
      */
     public function index()
     {
-        header('Content-type: image/jpeg');
-        $builder = new Gregwar\Captcha\CaptchaBuilder;
-        $builder->build();
-        $this->session->set_userdata('captcha_phrase', $builder->getPhrase());
-        $builder->output();
+        if ( ! defined('\Config::ALTCHA_HMAC_KEY') || Config::ALTCHA_HMAC_KEY === '')
+        {
+            show_error('The "ALTCHA_HMAC_KEY" configuration value is not set. See the "config.php" file.', 500);
+        }
+
+        $altcha = new Altcha(hmacSignatureSecret: Config::ALTCHA_HMAC_KEY);
+
+        $challenge = $altcha->createChallenge(new CreateChallengeOptions(
+            algorithm: new Pbkdf2(HmacAlgorithm::SHA256),
+            cost: 5000,
+            counter: random_int(5000, 10000),
+            expiresAt: time() + 900,
+        ));
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($challenge));
     }
 }

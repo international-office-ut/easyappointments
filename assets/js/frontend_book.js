@@ -455,15 +455,6 @@ window.FrontendBook = window.FrontendBook || {};
         });
 
         /**
-         * Event: Refresh captcha image.
-         *
-         * @param {jQuery.Event} event
-         */
-        $('.captcha-title button').on('click', function (event) {
-            $('.captcha-image').attr('src', GlobalVariables.baseUrl + '/index.php/captcha?' + Date.now());
-        });
-
-        /**
          * Event: Appointment Mode Radio "Changed"
          */
         $('input[name="appointment_mode"]').on('change', function () {

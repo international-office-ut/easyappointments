@@ -146,16 +146,6 @@ window.FrontendBookApi = window.FrontendBookApi || {};
      * the appointment to the database.
      */
     exports.registerAppointment = function () {
-        var $captchaText = $('.captcha-text');
-
-        if ($captchaText.length > 0) {
-            $captchaText.closest('.form-group').removeClass('has-error');
-            if ($captchaText.val() === '') {
-                $captchaText.closest('.form-group').addClass('has-error');
-                return;
-            }
-        }
-
         var formData = JSON.parse($('input[name="post_data"]').val());
 
         var data = {
@@ -163,8 +153,10 @@ window.FrontendBookApi = window.FrontendBookApi || {};
             post_data: formData
         };
 
-        if ($captchaText.length > 0) {
-            data.captcha = $captchaText.val();
+        var altchaSolution = $('input[name="altcha"]').val();
+
+        if (altchaSolution) {
+            data.altcha = altchaSolution;
         }
 
         if (GlobalVariables.manageMode) {

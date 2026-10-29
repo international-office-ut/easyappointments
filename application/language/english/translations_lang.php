@@ -306,7 +306,7 @@ $lang["oops_something_went_wrong"] = "Oops! Something Went Wrong.";
 $lang["ea_update_success"] = "Easy!Appointments has been successfully updated.";
 $lang["require_captcha"] = "Require CAPTCHA";
 $lang["require_captcha_hint"] =
-    "When enabled, the customers will have to type a random generated CAPTCHA string before booking/updating an appointment.";
+    "When enabled, the customers will have to complete an invisible proof-of-work challenge before booking an appointment.";
 $lang["captcha_is_wrong"] = "CAPTCHA verification failed, please try again.";
 $lang["any_provider"] = "Any Provider";
 $lang["requested_hour_is_unavailable"] =

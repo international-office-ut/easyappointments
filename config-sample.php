@@ -33,6 +33,8 @@ class Config {
     const BASE_URL      = 'http://url-to-easyappointments-directory';
     const LANGUAGE      = 'english';
     const DEBUG_MODE    = FALSE;
+    const ALTCHA_HMAC_KEY = '';  // Required when CAPTCHA is enabled; openssl rand -hex 32
+
 
     // ------------------------------------------------------------------------
     // DATABASE SETTINGS

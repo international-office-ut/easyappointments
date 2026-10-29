@@ -392,12 +392,11 @@
                             <div class="col-12 col-md-6">
                                 <h4 class="captcha-title">
                                     CAPTCHA
-                                    <button class="btn btn-link text-dark text-decoration-none py-0">
-                                        <i class="fas fa-sync-alt"></i>
-                                    </button>
                                 </h4>
-                                <img class="captcha-image" src="<?= site_url('captcha') ?>">
-                                <input class="captcha-text form-control" type="text" value=""/>
+                                <altcha-widget challenge="<?= site_url('captcha') ?>"
+                                               name="altcha"
+                                               language="<?= $this->config->item('language') === 'german' ? 'de' : 'en' ?>">
+                                </altcha-widget>
                                 <span id="captcha-hint" class="help-block" style="opacity:0">&nbsp;</span>
                             </div>
                         <?php endif; ?>
@@ -492,6 +491,8 @@
 <script src="<?= asset_url('assets/ext/datejs/date.min.js') ?>"></script>
 <script src="<?= asset_url('assets/ext/moment/moment.min.js') ?>"></script>
 <script src="<?= asset_url('assets/ext/moment/moment-timezone-with-data.min.js') ?>"></script>
+<script src="<?= asset_url('assets/ext/altcha/altcha.min.js') ?>"></script>
+<script src="<?= asset_url('assets/ext/altcha/i18n/de.umd.cjs') ?>"></script>
 <script src="<?= asset_url('assets/js/frontend_book_api.js') ?>"></script>
 <script src="<?= asset_url('assets/js/frontend_book.js') ?>"></script>
 

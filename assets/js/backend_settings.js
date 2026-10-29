@@ -304,7 +304,7 @@ window.BackendSettings = window.BackendSettings || {};
         $.post(url, data)
             .done(function (response) {
                 var message = (dryRun ? EALang.maintenance_dry_run : EALang.maintenance_done)
-                    + ' (' + response.retention_days + ') '
+                    + ' — '
                     + EALang.maintenance_result
                         .replace('{$appointments}', response.appointments)
                         .replace('{$provider_blocks}', response.provider_blocks)

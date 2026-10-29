@@ -1120,9 +1120,6 @@ class Backend_api extends EA_Controller {
         {
             $provider = json_decode($this->input->post('provider'), TRUE);
 
-            log_message('debug', '[identity-diag] ajax_save_provider incoming: '
-                . print_r($provider, TRUE));
-
             $required_privileges = ( ! isset($provider['id']))
                 ? $this->privileges[PRIV_USERS]['add']
                 : $this->privileges[PRIV_USERS]['edit'];

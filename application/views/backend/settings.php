@@ -388,7 +388,7 @@
                             <h4>Maintenance</h4>
 
                             <div class="form-group">
-                                <button id="purge-records" class="btn btn-outline-secondary">
+                                <button type="button" id="purge-records" class="btn btn-outline-secondary">
                                     <i class="fas fa-broom mr-2"></i>
                                     <?= lang('purge_records') ?>
                                 </button>

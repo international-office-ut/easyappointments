@@ -267,6 +267,16 @@ body legend {
         max-width: none;
     }
 
+    /* Align the three working-plan columns: the description zone keeps a fixed height so the
+       buttons and tables of all columns start at the same position. */
+    .working-plan-column p,
+    .breaks-column p,
+    .working-plan-exceptions-column p {
+        min-height: 2.6em; /* two lines */
+    }
+}
+
+@media (min-width: 768px) {
     /* The settings page has no independent columns: its tab content scrolls inside the
        fixed frame instead (otherwise e.g. the privacy-policy editor would be clipped
        below the fold and impossible to edit). */

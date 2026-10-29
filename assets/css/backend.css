@@ -222,6 +222,16 @@ body legend {
     padding-bottom: 15px;
 }
 
+/* Keep the header and the pinned footer in place and scroll the main backend content
+   instead of the whole page. The calendar page is excluded on purpose (fullCalendar
+   manages its own layout). The offset matches the full-height filter panels below. */
+@media (min-width: 768px) {
+    .backend-page.content-scroll {
+        height: calc(100vh - 128px);
+        overflow-y: auto;
+    }
+}
+
 .backend-page .filter-records {
     max-width: 350px;
     margin-bottom: 20px;

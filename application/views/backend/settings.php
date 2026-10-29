@@ -31,7 +31,7 @@
     });
 </script>
 
-<div id="settings-page" class="container-fluid backend-page">
+<div id="settings-page" class="container-fluid backend-page content-scroll">
     <ul class="nav nav-pills">
         <?php if ($privileges[PRIV_SYSTEM_SETTINGS]['view'] == TRUE): ?>
             <li class="nav-item">

@@ -34,7 +34,7 @@
     });
 </script>
 
-<div class="container-fluid backend-page" id="users-page">
+<div id="users-page" class="container-fluid backend-page content-scroll">
 
     <!-- PAGE NAVIGATION -->
     <ul class="nav nav-pills">

@@ -24,7 +24,7 @@
     });
 </script>
 
-<div class="container-fluid backend-page" id="services-page">
+<div id="services-page" class="container-fluid backend-page content-scroll">
     <ul class="nav nav-pills">
         <li class="nav-item">
             <a class="nav-link active" href="#services" data-toggle="tab">

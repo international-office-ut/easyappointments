@@ -226,22 +226,32 @@ body legend {
    instead of the whole page. The calendar page is excluded on purpose (fullCalendar
    manages its own layout). The offset matches the full-height filter panels below. */
 @media (min-width: 768px) {
+    /* The page never scrolls; every column scrolls independently. */
     .backend-page.content-scroll {
         height: calc(100vh - 128px);
-        overflow-y: auto;
+        overflow: hidden;
     }
 
-    /* Independent scrolling: the sidebar and the record details columns scroll on their own
-       instead of moving with the page scroll. */
+    /* Height chain through the tab structure (users/services wrap their rows in panes). */
+    .backend-page.content-scroll > .tab-content,
+    .backend-page.content-scroll .tab-pane,
     .backend-page.content-scroll > .row,
     .backend-page.content-scroll .tab-pane > .row {
-        height: calc(100vh - 128px);
+        height: 100%;
     }
 
+    .backend-page.content-scroll > .row,
+    .backend-page.content-scroll .tab-pane > .row {
+        overflow: hidden; /* rows clip, the columns scroll on their own */
+    }
+
+    /* Both columns scroll on their own and keep their spacing inside the scroll area. */
     .backend-page.content-scroll .row > .filter-records,
     .backend-page.content-scroll .row > .record-details {
-        height: calc(100vh - 128px);
+        height: 100%;
         overflow-y: auto;
+        margin-bottom: 0;
+        padding-bottom: 15px;
     }
 }
 
@@ -249,6 +259,12 @@ body legend {
 @media (min-width: 768px) {
     .backend-page.content-scroll .filter-records {
         height: 100%;
+        margin-bottom: 0;
+    }
+
+    .backend-page.content-scroll .record-details {
+        margin-bottom: 0;
+        max-width: none;
     }
 }
 

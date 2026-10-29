@@ -544,6 +544,23 @@ class Appointments extends EA_Controller {
 
                     return;
                 }
+
+                // A solved challenge may only be redeemed once: cache the payload hash until
+                // the challenge expires, so that a replayed payload cannot skip the CAPTCHA.
+                $payload_key = 'altcha|' . sha1($altcha_solution);
+
+                if ($this->cache->get($payload_key) !== FALSE)
+                {
+                    $this->output
+                        ->set_content_type('application/json')
+                        ->set_output(json_encode([
+                            'captcha_verification' => FALSE
+                        ]));
+
+                    return;
+                }
+
+                $this->cache->save($payload_key, 1, 900);
             }
 
             if (empty($customer['id']) && $this->customers_model->exists($customer))

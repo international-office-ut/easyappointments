@@ -254,6 +254,7 @@ class Secretaries_model extends EA_Model {
     {
         $providers = $secretary['providers'];
         unset($secretary['providers']);
+        $new_password = $secretary['settings']['password'] ?? NULL;
         $settings = $secretary['settings'];
         unset($secretary['settings']);
 
@@ -287,11 +288,11 @@ class Secretaries_model extends EA_Model {
         $this->save_settings($settings, $secretary['id']);
 
         // Sync the new password to the other role rows of the same identity.
-        $this->load->model('identities_model');
-        if (isset($settings['password']) && isset($secretary['settings']['password']))
+        if ($new_password !== NULL)
         {
-            $this->identities_model->sync_password($secretary['email'],
-                $secretary['settings']['password'], (int)$secretary['id']);
+            $this->load->model('identities_model');
+            $this->identities_model->sync_password($secretary['email'], $new_password,
+                (int)$secretary['id']);
         }
 
         return $secretary['id'];
@@ -402,6 +403,7 @@ class Secretaries_model extends EA_Model {
     {
         $providers = $secretary['providers'];
         unset($secretary['providers']);
+        $new_password = $secretary['settings']['password'] ?? NULL;
         $settings = $secretary['settings'];
         unset($secretary['settings']);
 
@@ -437,10 +439,10 @@ class Secretaries_model extends EA_Model {
             );
         }
 
-        if (isset($secretary['settings']['password']))
+        if ($new_password !== NULL)
         {
-            $this->identities_model->sync_password($secretary['email'],
-                $secretary['settings']['password'], (int)$secretary['id']);
+            $this->identities_model->sync_password($secretary['email'], $new_password,
+                (int)$secretary['id']);
         }
 
         return (int)$secretary['id'];

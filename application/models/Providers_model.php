@@ -311,6 +311,7 @@ class Providers_model extends EA_Model {
         // Store provider settings and services (must not be present on the $provider array).
         $services = $provider['services'];
         unset($provider['services']);
+        $new_password = $provider['settings']['password'] ?? NULL;
         $settings = $provider['settings'];
         unset($provider['settings']);
 
@@ -348,11 +349,10 @@ class Providers_model extends EA_Model {
         $this->save_services($services, $provider['id']);
 
         // Sync the new password to the other role rows of the same identity.
-        $this->load->model('identities_model');
-        if (isset($settings['password']) && isset($provider['settings']['password']))
+        if ($new_password !== NULL)
         {
-            $this->identities_model->sync_password($provider['email'],
-                $provider['settings']['password'], $provider['id']);
+            $this->load->model('identities_model');
+            $this->identities_model->sync_password($provider['email'], $new_password, $provider['id']);
         }
 
         // Return the new record id.
@@ -484,6 +484,7 @@ class Providers_model extends EA_Model {
         // Store service and settings (must not be present on the $provider array).
         $services = $provider['services'];
         unset($provider['services']);
+        $new_password = $provider['settings']['password'] ?? NULL;
         $settings = $provider['settings'];
         unset($provider['settings']);
 
@@ -520,10 +521,9 @@ class Providers_model extends EA_Model {
             );
         }
 
-        if (isset($provider['settings']['password']))
+        if ($new_password !== NULL)
         {
-            $this->identities_model->sync_password($provider['email'],
-                $provider['settings']['password'], $provider['id']);
+            $this->identities_model->sync_password($provider['email'], $new_password, $provider['id']);
         }
 
         // Return record id.

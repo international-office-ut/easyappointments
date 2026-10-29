@@ -295,12 +295,7 @@ window.BackendUsers = window.BackendUsers || {};
                     'last_name': prefix + '-last-name',
                     'phone_number': prefix + '-phone-number',
                     'mobile_number': prefix + '-mobile-number',
-                    'address': prefix + '-address',
-                    'city': prefix + '-city',
-                    'state': prefix + '-state',
-                    'zip_code': prefix + '-zip-code',
-                    'timezone': prefix + '-timezone',
-                    'notes': prefix + '-notes'
+                    'timezone': prefix + '-timezone'
                 };
 
                 Object.keys(fieldPrefixes).forEach(function (fieldName) {

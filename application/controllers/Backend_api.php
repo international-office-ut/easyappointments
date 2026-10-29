@@ -1442,7 +1442,7 @@ class Backend_api extends EA_Controller {
     {
         try
         {
-            if ($this->privileges[PRIV_USERS]['view'] == FALSE)
+            if ($this->privileges[PRIV_USERS]['edit'] == FALSE)
             {
                 throw new Exception('You do not have the required privileges for this task.');
             }
@@ -1476,6 +1476,8 @@ class Backend_api extends EA_Controller {
                     ->get()
                     ->row_array();
 
+                // Address and free-text fields are intentionally not disclosed: the lookup
+                // only serves the pre-fill of the common identity fields.
                 $response = [
                     'exists' => TRUE,
                     'user' => [
@@ -1483,12 +1485,7 @@ class Backend_api extends EA_Controller {
                         'last_name' => $sibling['last_name'],
                         'phone_number' => $sibling['phone_number'],
                         'mobile_number' => $sibling['mobile_number'],
-                        'address' => $sibling['address'],
-                        'city' => $sibling['city'],
-                        'state' => $sibling['state'],
-                        'zip_code' => $sibling['zip_code'],
                         'timezone' => $sibling['timezone'],
-                        'notes' => $sibling['notes'],
                         'login_name' => $sibling['login_name'],
                         'role_slug' => $sibling['role_slug'],
                     ]

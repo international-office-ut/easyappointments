@@ -248,6 +248,7 @@ class Admins_model extends EA_Model {
         // the database and a zero or empty id would create a broken user_settings link.
         unset($admin['id']);
         $admin['id_roles'] = $this->get_admin_role_id();
+        $new_password = $admin['settings']['password'] ?? NULL;
         $settings = $admin['settings'];
         unset($admin['settings']);
 
@@ -285,11 +286,10 @@ class Admins_model extends EA_Model {
         $this->db->trans_complete();
 
         // Sync the new password to the other role rows of the same identity.
-        $this->load->model('identities_model');
-        if (isset($admin['settings']['password']) && isset($settings['password']))
+        if ($new_password !== NULL)
         {
-            $this->identities_model->sync_password($admin['email'],
-                $admin['settings']['password'], (int)$admin['id']);
+            $this->load->model('identities_model');
+            $this->identities_model->sync_password($admin['email'], $new_password, (int)$admin['id']);
         }
 
         return $admin['id'];
@@ -316,6 +316,7 @@ class Admins_model extends EA_Model {
      */
     protected function update($admin)
     {
+        $new_password = $admin['settings']['password'] ?? NULL;
         $settings = $admin['settings'];
         unset($admin['settings']);
         $settings['id_users'] = $admin['id'];
@@ -355,10 +356,9 @@ class Admins_model extends EA_Model {
             );
         }
 
-        if (isset($admin['settings']['password']))
+        if ($new_password !== NULL)
         {
-            $this->identities_model->sync_password($admin['email'],
-                $admin['settings']['password'], (int)$admin['id']);
+            $this->identities_model->sync_password($admin['email'], $new_password, (int)$admin['id']);
         }
 
         return (int)$admin['id'];

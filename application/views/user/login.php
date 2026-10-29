@@ -39,6 +39,13 @@
     </script>
 </head>
 <body>
+<div id="role-picker" class="frame-container" style="display: none;">
+    <h2 class="frame-title"><?= lang('select_role') ?></h2>
+    <div class="row frame-content">
+        <div class="col-12" id="role-picker-buttons"></div>
+    </div>
+</div>
+
 <div id="login-frame" class="frame-container">
     <h2><?= lang('backend_section') ?></h2>
     <p><?= lang('you_need_to_login') ?></p>

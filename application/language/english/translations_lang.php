@@ -223,8 +223,10 @@ $lang["enter_username_here"] = "Enter your username here ...";
 $lang["enter_password_here"] = "Enter your password here ...";
 $lang["login"] = "Login";
 $lang["forgot_your_password"] = "Forgot Your Password?";
-$lang["login_failed"] =
-    "Login failed, please enter the correct credentials and try again.";
+$lang["login_failed"] = "Login failed. Please use the correct username and password.";
+$lang["select_role"] = "Continue as ...";
+$lang["identity_attach_hint"] =
+    'Attach this role to the existing person "{$name}" ({$role}). Login credentials are shared.';
 $lang["type_username_and_email_for_new_password"] =
     "Type your username and your email address to get your new password.";
 $lang["enter_email_here"] = "Enter your email here ...";

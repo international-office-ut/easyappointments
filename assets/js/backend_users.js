@@ -196,6 +196,85 @@ window.BackendUsers = window.BackendUsers || {};
         });
 
         /**
+         * Event: Email "Focusout" — Attach Existing Identity
+         *
+         * When adding a new role row for a person that already exists under a different role
+         * (same email), the common fields of that identity get pre-filled and the login name
+         * is inherited, so the attach flow does not need password or duplicate data entries.
+         */
+        $('#admin-email, #provider-email, #secretary-email').focusout(function () {
+            var $email = $(this);
+            var prefix = $email.attr('id').replace('-email', ''); // admin | provider | secretary
+
+            var slugMap = {
+                'admin': Backend.DB_SLUG_ADMIN,
+                'provider': Backend.DB_SLUG_PROVIDER,
+                'secretary': Backend.DB_SLUG_SECRETARY
+            };
+
+            var $parentForm = $email.parents().eq(3);
+            var userId = $parentForm.find('.record-id').val();
+
+            if ($email.val() === '' || userId) {
+                return; // Only relevant when no user record id exists (row creation).
+            }
+
+            $.post(GlobalVariables.baseUrl + '/index.php/backend_api/ajax_get_identity_info', {
+                csrfToken: GlobalVariables.csrfToken,
+                email: $email.val(),
+                role_slug: slugMap[prefix]
+            }).done(function (response) {
+                var $passwordFields = $parentForm.find('#' + prefix + '-password, #' + prefix + '-password-confirm');
+
+                if (!response || !response.exists) {
+                    // New email → a password is required for a genuinely new identity.
+                    $passwordFields.addClass('required');
+                    return;
+                }
+
+                var person = response.user;
+
+                var fieldPrefixes = {
+                    'first_name': prefix + '-first-name',
+                    'last_name': prefix + '-last-name',
+                    'phone_number': prefix + '-phone-number',
+                    'mobile_number': prefix + '-mobile-number',
+                    'address': prefix + '-address',
+                    'city': prefix + '-city',
+                    'state': prefix + '-state',
+                    'zip_code': prefix + '-zip-code',
+                    'timezone': prefix + '-timezone',
+                    'notes': prefix + '-notes'
+                };
+
+                Object.keys(fieldPrefixes).forEach(function (fieldName) {
+                    var $field = $parentForm.find('#' + fieldPrefixes[fieldName]);
+
+                    // Only fill empty inputs, so that already typed values are not lost.
+                    if ($field.length > 0 && ($field.val() === '' || $field.val() === null)) {
+                        $field.val(person[fieldName]);
+                    }
+                });
+
+                var $usernameField = $parentForm.find('#' + prefix + '-username');
+
+                if ($usernameField.val() === '' && person.login_name) {
+                    $usernameField.val(person.login_name);
+                }
+
+                var roleLabel = EALang[prefix + 's'] || person.role_slug;
+                var fullName = (person.first_name || '') + ' ' + (person.last_name || '');
+
+                $parentForm.find('.form-message')
+                    .text(EALang.identity_attach_hint
+                        .replace('{$role}', roleLabel)
+                        .replace('{$name}', fullName.trim()))
+                    .addClass('alert-success')
+                    .show();
+            });
+        });
+
+        /**
          * Event: Admin, Provider, Secretary Username "Focusout"
          *
          * When the user leaves the username input field we will need to check if the username
@@ -214,11 +293,15 @@ window.BackendUsers = window.BackendUsers || {};
                 return;
             }
 
+            var $parentTab = $input.parents().eq(3);
+            var email = $parentTab.find('#provider-email, #admin-email, #secretary-email').val() || '';
+
             var url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_validate_username';
 
             var data = {
                 csrfToken: GlobalVariables.csrfToken,
                 username: $input.val(),
+                email: email,
                 user_id: userId
             };
 

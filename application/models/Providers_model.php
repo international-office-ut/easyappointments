@@ -128,8 +128,8 @@ class Providers_model extends EA_Model {
         // Check if username exists.
         if (isset($provider['settings']['username']))
         {
-            $user_id = (isset($provider['id'])) ? $provider['id'] : '';
-            if ( ! $this->validate_username($provider['settings']['username'], $user_id))
+            $user_id = (isset($provider['id'])) ? $provider['id'] : NULL;
+            if ( ! $this->validate_username($provider['settings']['username'], $provider['email'], $user_id))
             {
                 throw new Exception ('Username already exists. Please select a different '
                     . 'username for this record.');
@@ -211,16 +211,15 @@ class Providers_model extends EA_Model {
      *
      * @return bool Returns the validation result.
      */
-    public function validate_username($username, $user_id)
+    public function validate_username($username, $email, $user_id = NULL)
     {
-        if ( ! empty($user_id))
-        {
-            $this->db->where('id_users !=', $user_id);
-        }
+        $this->load->model('identities_model');
 
-        $this->db->where('username', $username);
-
-        return $this->db->get('user_settings')->num_rows() === 0;
+        return $this->identities_model->validate_username(
+            $username,
+            $email,
+            $user_id
+        );
     }
 
     /**
@@ -310,12 +309,31 @@ class Providers_model extends EA_Model {
             throw new Exception('Could not insert provider into the database');
         }
 
-        $settings['salt'] = generate_salt();
-        $settings['password'] = hash_password($settings['salt'], $settings['password']);
+        if (isset($settings['password']))
+        {
+            $settings['salt'] = generate_salt();
+            $settings['password'] = hash_password($settings['salt'], $settings['password']);
+        }
+        else
+        {
+            // The new row belongs to an existing identity (same email on another role), so
+            // its credentials are copied from the sibling row and a new password is not
+            // required at this point.
+            $this->load->model('identities_model');
+            $settings = $this->identities_model->attach_credentials($settings, $provider['email']);
+        }
 
         $provider['id'] = $this->db->insert_id();
         $this->save_settings($settings, $provider['id']);
         $this->save_services($services, $provider['id']);
+
+        // Sync the new password to the other role rows of the same identity.
+        $this->load->model('identities_model');
+        if (isset($settings['password']) && isset($provider['settings']['password']))
+        {
+            $this->identities_model->sync_password($provider['email'],
+                $provider['settings']['password'], $provider['id']);
+        }
 
         // Return the new record id.
         return (int)$provider['id'];
@@ -449,6 +467,9 @@ class Providers_model extends EA_Model {
         $settings = $provider['settings'];
         unset($provider['settings']);
 
+        $old_row = $this->db->get_where('users', ['id' => $provider['id']])->row_array();
+        $old_settings = $this->db->get_where('user_settings', ['id_users' => $provider['id']])->row_array();
+
         if (isset($settings['password']))
         {
             $salt = $this->db->get_where('user_settings', ['id_users' => $provider['id']])->row()->salt;
@@ -464,6 +485,26 @@ class Providers_model extends EA_Model {
 
         $this->save_services($services, $provider['id']);
         $this->save_settings($settings, $provider['id']);
+
+        // Identity cascade: keep the other role rows of the same person in sync.
+        $this->load->model('identities_model');
+
+        if (isset($provider['email']) && $old_row && $old_row['email'] !== $provider['email'])
+        {
+            $this->identities_model->sync_email_and_login_name(
+                $old_row['email'],
+                $provider['email'],
+                $settings['username'] ?? ($old_settings['username'] ?? NULL),
+                $old_settings['username'] ?? NULL,
+                $provider['id']
+            );
+        }
+
+        if (isset($provider['settings']['password']))
+        {
+            $this->identities_model->sync_password($provider['email'],
+                $provider['settings']['password'], $provider['id']);
+        }
 
         // Return record id.
         return (int)$provider['id'];

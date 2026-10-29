@@ -163,6 +163,7 @@ class User extends EA_Controller {
         $this->session->unset_userdata('user_email');
         $this->session->unset_userdata('role_slug');
         $this->session->unset_userdata('username');
+        $this->session->unset_userdata('login_candidates');
         $this->session->unset_userdata('dest_url');
 
         $view['base_url'] = config('base_url');
@@ -218,7 +219,31 @@ class User extends EA_Controller {
                     ? NULL
                     : $this->user_model->check_login($this->input->post('username'), $this->input->post('password'));
 
-            if ($user_data)
+            if (is_array($user_data) && ! empty($user_data['multi']))
+            {
+                // The login name belongs to an identity with multiple roles: cache the verified
+                // candidates and let the user pick the role to continue with.
+                $this->session->set_userdata('login_candidates', json_encode($user_data['candidates']));
+
+                $rate_limit_clear = method_exists($this, 'rate_limit_clear') ? 'rate_limit_clear' : '';
+
+                if ($rate_limit_clear)
+                {
+                    $this->rate_limit_clear($client_key);
+                    $this->rate_limit_clear($user_key);
+                }
+
+                $response = [
+                    'multi' => TRUE,
+                    'candidates' => array_map(function ($candidate) {
+                        return [
+                            'user_id' => $candidate['user_id'],
+                            'role_slug' => $candidate['role_slug'],
+                        ];
+                    }, $user_data['candidates'])
+                ];
+            }
+            else if ($user_data)
             {
                 $this->session->set_userdata($user_data); // Save data on user's session.
 
@@ -234,6 +259,65 @@ class User extends EA_Controller {
 
                 $response = AJAX_FAILURE;
             }
+        }
+        catch (Exception $exception)
+        {
+            $this->output->set_status_header(500);
+
+            $response = [
+                'message' => $exception->getMessage(),
+                'trace' => config('debug') ? $exception->getTrace() : []
+            ];
+        }
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($response));
+    }
+
+    /**
+     * Continue the login with one of the cached role candidates.
+     *
+     * The candidates got stored in the session after the password was verified, so this
+     * endpoint only needs to match the provided user id against that safe list.
+     *
+     * Required POST Parameters:
+     *
+     * - int $_POST['user_id'] Selected candidate user record id.
+     */
+    public function ajax_select_login_role()
+    {
+        try
+        {
+            $candidates = json_decode((string) $this->session->userdata('login_candidates'), TRUE);
+
+            if (empty($candidates) || ! is_array($candidates))
+            {
+                throw new Exception('No login candidates in the current session.');
+            }
+
+            $user_id = (int) $this->input->post('user_id');
+
+            $user_data = NULL;
+
+            foreach ($candidates as $candidate)
+            {
+                if ((int) $candidate['user_id'] === $user_id)
+                {
+                    $user_data = $candidate;
+                    break;
+                }
+            }
+
+            if (empty($user_data))
+            {
+                throw new Exception('The selected role is not part of the verified login candidates.');
+            }
+
+            $this->session->set_userdata($user_data);
+            $this->session->unset_userdata('login_candidates');
+
+            $response = AJAX_SUCCESS;
         }
         catch (Exception $exception)
         {

@@ -81,49 +81,81 @@ class User_model extends EA_Model {
     /**
      * Performs the check of the given user credentials.
      *
+     * The login name may now be shared between role rows inside the same identity (same
+     * email), so the credentials are verified against every row that carries the provided
+     * login name and the matching rows are returned for the role selection.
+     *
      * @param string $username Given user's name.
      * @param string $password Given user's password (not hashed yet).
      *
-     * @return array|null Returns the session data of the logged in user or null on failure.
+     * @return array|null Returns the session data of the matched user, a candidate list when
+     * the login name resolves into multiple rows (key 'multi') or NULL on failure.
      */
     public function check_login($username, $password)
     {
-        $salt = $this->get_salt($username);
-        $password = hash_password($salt, $password);
+        $settings_rows = $this->db
+            ->where('username', $username)
+            ->get('user_settings')
+            ->result_array();
 
-        $user_settings = $this->db->get_where('user_settings', [
-            'username' => $username,
-            'password' => $password
-        ])->row_array();
-
-        if (empty($user_settings))
+        if (empty($settings_rows))
         {
             return NULL;
         }
 
-        $user = $this->db->get_where('users', ['id' => $user_settings['id_users']])->row_array();
+        $matches = [];
 
-        if (empty($user))
+        foreach ($settings_rows as $user_settings)
+        {
+            if (empty($user_settings['salt']))
+            {
+                continue;
+            }
+
+            $password_hash = hash_password($user_settings['salt'], $password);
+
+            if ($password_hash !== $user_settings['password'])
+            {
+                continue;
+            }
+
+            $user = $this->db->get_where('users', ['id' => $user_settings['id_users']])->row_array();
+
+            if (empty($user))
+            {
+                continue;
+            }
+
+            $role = $this->db->get_where('roles', ['id' => $user['id_roles']])->row_array();
+
+            if (empty($role))
+            {
+                continue;
+            }
+
+            $default_timezone = $this->timezones->get_default_timezone();
+
+            $matches[] = [
+                'user_id' => $user['id'],
+                'user_email' => $user['email'],
+                'username' => $username,
+                'timezone' => isset($user['timezone']) ? $user['timezone'] : $default_timezone,
+                'role_slug' => $role['slug'],
+            ];
+        }
+
+        if (count($matches) === 0)
         {
             return NULL;
         }
 
-        $role = $this->db->get_where('roles', ['id' => $user['id_roles']])->row_array();
-
-        if (empty($role))
+        if (count($matches) === 1)
         {
-            return NULL;
+            return reset($matches);
         }
 
-        $default_timezone = $this->timezones->get_default_timezone();
-
-        return [
-            'user_id' => $user['id'],
-            'user_email' => $user['email'],
-            'username' => $username,
-            'timezone' => isset($user['timezone']) ? $user['timezone'] : $default_timezone,
-            'role_slug' => $role['slug'],
-        ];
+        // Multiple roles match the identity: the customer chooses the role to open.
+        return ['multi' => TRUE, 'candidates' => $matches];
     }
 
     /**
@@ -184,13 +216,19 @@ class User_model extends EA_Model {
             return FALSE;
         }
 
-        $user_id = $result->row()->id;
-
         // Create a new password and send it with an email to the given email address.
         $new_password = random_string('alnum', 12);
-        $salt = $this->db->get_where('user_settings', ['id_users' => $user_id])->row()->salt;
-        $hash_password = hash_password($salt, $new_password);
-        $this->db->update('user_settings', ['password' => $hash_password], ['id_users' => $user_id]);
+
+        // Reset the password on every record of the identity (same email and login name):
+        // one person, one password, no matter how many role rows they hold. Each row keeps
+        // its own salt, so the hash gets computed separately per row.
+        foreach ($result->result_array() as $row)
+        {
+            $user_id = $row['id'];
+            $salt = $this->db->get_where('user_settings', ['id_users' => $user_id])->row()->salt;
+            $hash_password = hash_password($salt, $new_password);
+            $this->db->update('user_settings', ['password' => $hash_password], ['id_users' => $user_id]);
+        }
 
         return $new_password;
     }

@@ -1354,14 +1354,101 @@ class Backend_api extends EA_Controller {
     /**
      * This method checks whether the username already exists in the database.
      */
+    /**
+     * Return the identity information of a person that already exists under a different role.
+     *
+     * Used by the user management pages when adding a new role row to an existing person:
+     * the form gets pre-filled with the common fields of the existing identity row, so the
+     * same email/login name holder does not have to be typed in again.
+     *
+     * Required POST Parameters:
+     *
+     * - string $_POST['email'] Email address of the (prospective) identity.
+     * - string $_POST['role_slug'] Role of the new row (admins/providers/secretaries).
+     */
+    public function ajax_get_identity_info()
+    {
+        try
+        {
+            if ($this->privileges[PRIV_USERS]['view'] == FALSE)
+            {
+                throw new Exception('You do not have the required privileges for this task.');
+            }
+
+            $email = (string) $this->input->post('email');
+            $role_slug = (string) $this->input->post('role_slug');
+
+            if ($email === '' || $role_slug === '')
+            {
+                throw new Exception('Email and role are required for the identity lookup.');
+            }
+
+            $this->load->model('identities_model');
+
+            if ( ! $this->identities_model->exists_in_other_role($email, $role_slug))
+            {
+                $response = ['exists' => FALSE];
+            }
+            else
+            {
+                $sibling = $this->db
+                    ->select('users.*, roles.slug AS role_slug, '
+                        . 'user_settings.username AS login_name')
+                    ->from('users')
+                    ->join('roles', 'roles.id = users.id_roles', 'inner')
+                    ->join('user_settings', 'user_settings.id_users = users.id', 'left')
+                    ->where('users.email', $email)
+                    ->where('roles.slug !=', $role_slug)
+                    ->order_by('users.id', 'ASC')
+                    ->limit(1)
+                    ->get()
+                    ->row_array();
+
+                $response = [
+                    'exists' => TRUE,
+                    'user' => [
+                        'first_name' => $sibling['first_name'],
+                        'last_name' => $sibling['last_name'],
+                        'phone_number' => $sibling['phone_number'],
+                        'mobile_number' => $sibling['mobile_number'],
+                        'address' => $sibling['address'],
+                        'city' => $sibling['city'],
+                        'state' => $sibling['state'],
+                        'zip_code' => $sibling['zip_code'],
+                        'timezone' => $sibling['timezone'],
+                        'notes' => $sibling['notes'],
+                        'login_name' => $sibling['login_name'],
+                        'role_slug' => $sibling['role_slug'],
+                    ]
+                ];
+            }
+        }
+        catch (Exception $exception)
+        {
+            $this->output->set_status_header(500);
+
+            $response = [
+                'message' => $exception->getMessage(),
+                'trace' => config('debug') ? $exception->getTrace() : []
+            ];
+        }
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($response));
+    }
+
     public function ajax_validate_username()
     {
         try
         {
             // We will only use the function in the admins_model because it is sufficient for the rest user types for
             // now (providers, secretaries).
-            $is_valid = $this->admins_model->validate_username($this->input->post('username'),
-                $this->input->post('user_id'));
+            $is_valid = $this->admins_model->validate_username(
+                $this->input->post('username'),
+                (string) $this->input->post('email'),
+                $this->input->post('user_id')
+            );
 
             $response = $is_valid;
         }

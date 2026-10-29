@@ -225,6 +225,9 @@ $lang["login"] = "Anmelden";
 $lang["forgot_your_password"] = "Passwort vergessen?";
 $lang["login_failed"] =
     "Anmeldung fehlgeschlagen, bitte geben Sie die richtigen Anmeldedaten ein und versuchen Sie es erneut.";
+$lang["select_role"] = "Weiter als ...";
+$lang["identity_attach_hint"] =
+    'Diese Rolle wird der bestehenden Person „{$name}" ({$role}) zugeordnet. Die Anmeldedaten werden geteilt.';
 $lang["type_username_and_email_for_new_password"] =
     "Geben Sie Ihren Nutzernamen und Ihre E-Mail-Adresse ein, um Ihr neues Passwort zu erhalten.";
 $lang["enter_email_here"] = "Geben Sie Ihre E-Mail-Adresse hier ein ...";

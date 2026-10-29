@@ -98,8 +98,8 @@ class Admins_model extends EA_Model {
         // Check if username exists.
         if (isset($admin['settings']['username']))
         {
-            $user_id = (isset($admin['id'])) ? $admin['id'] : '';
-            if ( ! $this->validate_username($admin['settings']['username'], $user_id))
+            $user_id = (isset($admin['id'])) ? $admin['id'] : NULL;
+            if ( ! $this->validate_username($admin['settings']['username'], $admin['email'], $user_id))
             {
                 throw new Exception ('Username already exists. Please select a different '
                     . 'username for this record.');
@@ -159,16 +159,11 @@ class Admins_model extends EA_Model {
      *
      * @return bool Returns the validation result.
      */
-    public function validate_username($username, $user_id)
+    public function validate_username($username, $email, $user_id = NULL)
     {
-        if ( ! empty($user_id))
-        {
-            $this->db->where('id_users !=', $user_id);
-        }
+        $this->load->model('identities_model');
 
-        $this->db->where('username', $username);
-
-        return $this->db->get('user_settings')->num_rows() === 0;
+        return $this->identities_model->validate_username($username, $email, $user_id);
     }
 
     /**
@@ -246,6 +241,20 @@ class Admins_model extends EA_Model {
         $settings = $admin['settings'];
         unset($admin['settings']);
 
+        if (isset($settings['password']))
+        {
+            $settings['salt'] = generate_salt();
+            $settings['password'] = hash_password($settings['salt'], $settings['password']);
+        }
+        else
+        {
+            // The new row belongs to an existing identity (same email on another role), so
+            // its credentials are copied from the sibling row and a new password is not
+            // required at this point.
+            $this->load->model('identities_model');
+            $settings = $this->identities_model->attach_credentials($settings, $admin['email']);
+        }
+
         $this->db->trans_begin();
 
         if ( ! $this->db->insert('users', $admin))
@@ -255,8 +264,6 @@ class Admins_model extends EA_Model {
 
         $admin['id'] = (int)$this->db->insert_id();
         $settings['id_users'] = $admin['id'];
-        $settings['salt'] = generate_salt();
-        $settings['password'] = hash_password($settings['salt'], $settings['password']);
 
         // Insert admin settings.
         if ( ! $this->db->insert('user_settings', $settings))
@@ -266,6 +273,14 @@ class Admins_model extends EA_Model {
         }
 
         $this->db->trans_complete();
+
+        // Sync the new password to the other role rows of the same identity.
+        $this->load->model('identities_model');
+        if (isset($admin['settings']['password']) && isset($settings['password']))
+        {
+            $this->identities_model->sync_password($admin['email'],
+                $admin['settings']['password'], (int)$admin['id']);
+        }
 
         return $admin['id'];
     }
@@ -295,6 +310,9 @@ class Admins_model extends EA_Model {
         unset($admin['settings']);
         $settings['id_users'] = $admin['id'];
 
+        $old_row = $this->db->get_where('users', ['id' => $admin['id']])->row_array();
+        $old_settings = $this->db->get_where('user_settings', ['id_users' => $admin['id']])->row_array();
+
         if (isset($settings['password']))
         {
             $salt = $this->db->get_where('user_settings', ['id_users' => $admin['id']])->row()->salt;
@@ -311,6 +329,26 @@ class Admins_model extends EA_Model {
         if ( ! $this->db->update('user_settings', $settings))
         {
             throw new Exception('Could not update admin settings.');
+        }
+
+        // Identity cascade: keep the other role rows of the same person in sync.
+        $this->load->model('identities_model');
+
+        if (isset($admin['email']) && $old_row && $old_row['email'] !== $admin['email'])
+        {
+            $this->identities_model->sync_email_and_login_name(
+                $old_row['email'],
+                $admin['email'],
+                $settings['username'] ?? ($old_settings['username'] ?? NULL),
+                $old_settings['username'] ?? NULL,
+                (int)$admin['id']
+            );
+        }
+
+        if (isset($admin['settings']['password']))
+        {
+            $this->identities_model->sync_password($admin['email'],
+                $admin['settings']['password'], (int)$admin['id']);
         }
 
         return (int)$admin['id'];

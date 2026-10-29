@@ -106,8 +106,8 @@ class Secretaries_model extends EA_Model {
         // Check if username exists.
         if (isset($secretary['settings']['username']))
         {
-            $user_id = (isset($secretary['id'])) ? $secretary['id'] : '';
-            if ( ! $this->validate_username($secretary['settings']['username'], $user_id))
+            $user_id = (isset($secretary['id'])) ? $secretary['id'] : NULL;
+            if ( ! $this->validate_username($secretary['settings']['username'], $secretary['email'], $user_id))
             {
                 throw new Exception ('Username already exists. Please select a different '
                     . 'username for this record.');
@@ -167,16 +167,11 @@ class Secretaries_model extends EA_Model {
      *
      * @return bool Returns the validation result.
      */
-    public function validate_username($username, $user_id)
+    public function validate_username($username, $email, $user_id = NULL)
     {
-        if ( ! empty($user_id))
-        {
-            $this->db->where('id_users !=', $user_id);
-        }
+        $this->load->model('identities_model');
 
-        $this->db->where('username', $username);
-
-        return $this->db->get('user_settings')->num_rows() === 0;
+        return $this->identities_model->validate_username($username, $email, $user_id);
     }
 
     /**
@@ -263,11 +258,31 @@ class Secretaries_model extends EA_Model {
         }
 
         $secretary['id'] = (int)$this->db->insert_id();
-        $settings['salt'] = generate_salt();
-        $settings['password'] = hash_password($settings['salt'], $settings['password']);
+
+        if (isset($settings['password']))
+        {
+            $settings['salt'] = generate_salt();
+            $settings['password'] = hash_password($settings['salt'], $settings['password']);
+        }
+        else
+        {
+            // The new row belongs to an existing identity (same email on another role), so
+            // its credentials are copied from the sibling row and a new password is not
+            // required at this point.
+            $this->load->model('identities_model');
+            $settings = $this->identities_model->attach_credentials($settings, $secretary['email']);
+        }
 
         $this->save_providers($providers, $secretary['id']);
         $this->save_settings($settings, $secretary['id']);
+
+        // Sync the new password to the other role rows of the same identity.
+        $this->load->model('identities_model');
+        if (isset($settings['password']) && isset($secretary['settings']['password']))
+        {
+            $this->identities_model->sync_password($secretary['email'],
+                $secretary['settings']['password'], (int)$secretary['id']);
+        }
 
         return $secretary['id'];
     }
@@ -380,6 +395,9 @@ class Secretaries_model extends EA_Model {
         $settings = $secretary['settings'];
         unset($secretary['settings']);
 
+        $old_row = $this->db->get_where('users', ['id' => $secretary['id']])->row_array();
+        $old_settings = $this->db->get_where('user_settings', ['id_users' => $secretary['id']])->row_array();
+
         if (isset($settings['password']))
         {
             $salt = $this->db->get_where('user_settings', ['id_users' => $secretary['id']])->row()->salt;
@@ -394,6 +412,26 @@ class Secretaries_model extends EA_Model {
 
         $this->save_providers($providers, $secretary['id']);
         $this->save_settings($settings, $secretary['id']);
+
+        // Identity cascade: keep the other role rows of the same person in sync.
+        $this->load->model('identities_model');
+
+        if (isset($secretary['email']) && $old_row && $old_row['email'] !== $secretary['email'])
+        {
+            $this->identities_model->sync_email_and_login_name(
+                $old_row['email'],
+                $secretary['email'],
+                $settings['username'] ?? ($old_settings['username'] ?? NULL),
+                $old_settings['username'] ?? NULL,
+                (int)$secretary['id']
+            );
+        }
+
+        if (isset($secretary['settings']['password']))
+        {
+            $this->identities_model->sync_password($secretary['email'],
+                $secretary['settings']['password'], (int)$secretary['id']);
+        }
 
         return (int)$secretary['id'];
     }

@@ -225,6 +225,9 @@ body legend {
 .backend-page .filter-records {
     max-width: 350px;
     margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* stretch to the details column height within the row */
 }
 
 .backend-page .filter-records form .input-group-addon {
@@ -240,7 +243,9 @@ body legend {
 
 .backend-page .filter-records .results {
     overflow-y: auto;
-    max-height: 325px;
+    flex: 1 1 auto;
+    min-height: 325px;
+    max-height: calc(100vh - 260px);
     outline: none;
 }
 

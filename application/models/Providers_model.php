@@ -301,6 +301,10 @@ class Providers_model extends EA_Model {
     protected function insert($provider)
     {
 
+        // New records must not carry a record id; the auto increment value is assigned by
+        // the database and a zero or empty id would create a broken user_settings link.
+        unset($provider['id']);
+
         // Get provider role id.
         $provider['id_roles'] = $this->get_providers_role_id();
 
@@ -314,6 +318,13 @@ class Providers_model extends EA_Model {
         if ( ! $this->db->insert('users', $provider))
         {
             throw new Exception('Could not insert provider into the database');
+        }
+
+        $provider['id'] = (int)$this->db->insert_id();
+
+        if ( ! $provider['id'])
+        {
+            throw new Exception('Could not retrieve the inserted provider id (insert_id returned 0).');
         }
 
         if (isset($settings['password']))
@@ -330,7 +341,7 @@ class Providers_model extends EA_Model {
             $settings = $this->identities_model->attach_credentials($settings, $provider['email']);
         }
 
-        $provider['id'] = $this->db->insert_id();
+        $provider['id'] = (int)$this->db->insert_id();
         $this->save_settings($settings, $provider['id']);
         $this->save_services($services, $provider['id']);
 

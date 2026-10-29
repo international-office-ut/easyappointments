@@ -244,6 +244,9 @@ class Admins_model extends EA_Model {
      */
     protected function insert($admin)
     {
+        // New records must not carry a record id; the auto increment value is assigned by
+        // the database and a zero or empty id would create a broken user_settings link.
+        unset($admin['id']);
         $admin['id_roles'] = $this->get_admin_role_id();
         $settings = $admin['settings'];
         unset($admin['settings']);

@@ -94,8 +94,13 @@ class User_model extends EA_Model {
     public function check_login($username, $password)
     {
         $settings_rows = $this->db
-            ->where('username', $username)
-            ->get('user_settings')
+            ->select("{$this->db->dbprefix('user_settings')}.id_users, username, salt, password")
+            ->from('user_settings')
+            ->join('users', 'users.id = user_settings.id_users', 'inner')
+            ->join('roles', 'roles.id = users.id_roles', 'inner')
+            ->where('user_settings.username', $username)
+            ->where('roles.slug !=', DB_SLUG_CUSTOMER)
+            ->get()
             ->result_array();
 
         if (empty($settings_rows))

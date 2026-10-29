@@ -39,6 +39,7 @@ class Identities_model extends EA_Model {
             ->join('roles', 'roles.id = users.id_roles', 'inner')
             ->join('user_settings', 'user_settings.id_users = users.id', 'left')
             ->where('users.email', $email)
+            ->where('roles.slug !=', DB_SLUG_CUSTOMER)
             ->order_by('users.id', 'ASC');
 
         if ($except_user_id)
@@ -67,7 +68,9 @@ class Identities_model extends EA_Model {
             ->select('users.email')
             ->from('user_settings')
             ->join('users', 'users.id = user_settings.id_users', 'inner')
+            ->join('roles', 'roles.id = users.id_roles', 'inner')
             ->where('user_settings.username', $username)
+            ->where('roles.slug !=', DB_SLUG_CUSTOMER)
             ->where('users.id !=', $user_id ?? 0)
             ->get()
             ->result_array();
@@ -218,6 +221,7 @@ class Identities_model extends EA_Model {
             ->join('roles', 'roles.id = users.id_roles', 'inner')
             ->where('users.email', $email)
             ->where('roles.slug !=', $role_slug)
+            ->where('roles.slug !=', DB_SLUG_CUSTOMER)
             ->where('users.id !=', $except_user_id ?? 0)
             ->get()
             ->num_rows();

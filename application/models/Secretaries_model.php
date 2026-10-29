@@ -257,6 +257,9 @@ class Secretaries_model extends EA_Model {
         $settings = $secretary['settings'];
         unset($secretary['settings']);
 
+        // New records must not carry a record id; the auto increment value is assigned by
+        // the database and a zero or empty id would create a broken user_settings link.
+        unset($secretary['id']);
         $secretary['id_roles'] = $this->get_secretary_role_id();
 
         if ( ! $this->db->insert('users', $secretary))

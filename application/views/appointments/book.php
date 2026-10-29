@@ -394,7 +394,7 @@
                                                name="altcha"
                                                language="<?= $this->config->item('language') === 'german' ? 'de' : 'en' ?>">
                                 </altcha-widget>
-                                <span id="captcha-hint" class="help-block" style="opacity:0">&nbsp;</span>
+                                <div id="captcha-hint" class="text-muted" style="opacity:0">&nbsp;</div>
                             </div>
                         <?php endif; ?>
                     </div>

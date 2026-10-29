@@ -244,6 +244,12 @@ altcha-widget {
     margin-bottom: 10px;
 }
 
+#book-appointment-wizard #captcha-hint {
+    display: block;
+    float: none;
+    clear: both;
+}
+
 #book-appointment-wizard #service-description {
     overflow-y: auto;
     clear: both;
@@ -307,7 +313,7 @@ altcha-widget {
     }
 
     altcha-widget {
-        float: right;
+        margin-bottom: 10px;
     }
 
     #book-appointment-wizard #select-language {

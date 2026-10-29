@@ -187,8 +187,7 @@ window.GeneralFunctions = window.GeneralFunctions || {};
     /**
      * Convert date to ISO date string.
      *
-     * This function creates a RFC 3339 date string. This string is needed by the Google Calendar API
-     * in order to pass dates as parameters.
+     * This function creates a RFC 3339 date string.
      *
      * @param {Date} date The given date that will be transformed.
 

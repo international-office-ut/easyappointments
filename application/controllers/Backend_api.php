@@ -47,7 +47,6 @@ class Backend_api extends EA_Controller {
         $this->load->model('user_model');
         $this->load->library('ics_file');
         $this->load->library('notifications');
-        $this->load->library('synchronization');
         $this->load->library('timezones');
 
         if ($this->session->userdata('role_slug'))

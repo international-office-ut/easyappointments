@@ -138,8 +138,7 @@ You can also try the GET requests with your browser by navigating to the respect
     "notes": "These are some test notes.",
     "customerId": 56,
     "providerId": 4,
-    "serviceId": 7,
-    "googleCalendarId": 134
+    "serviceId": 7
 }
 ```
 
@@ -159,8 +158,7 @@ You can also try the GET requests with your browser by navigating to the respect
     "start": "2016-07-08 18:00:00", 
     "end": "2016-07-08 18:30:00", 
     "notes": "These are some test notes.",
-    "providerId": 4,
-    "googleCalendarId": 474
+    "providerId": 4
 }
 ```
 
@@ -293,11 +291,8 @@ You can also try the GET requests with your browser by navigating to the respect
         "username": "chloedoe",
         "password": "p@ssw0rd",
         "notifications":true,
-        "googleSync":true,
-        "googleCalendar": "calendar-id",
-        "googleToken": "23897dfasdf7a98gas98d9",
-        "syncFutureDays":10,
-        "syncPastDays":10,
+        "appointmentMode": "BOTH",
+        "zoomLink": "https://zoom.example.org/j/123456",
         "calendarView": "default",
         "workingPlan":{  
             "monday":{  

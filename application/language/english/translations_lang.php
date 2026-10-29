@@ -201,7 +201,7 @@ $lang["book_advance_timeout_hint"] =
     "Define the timeout (in minutes) before the customers can book or re-arrange appointments with the company.";
 $lang["timeout_minutes"] = "Timeout (Minutes)";
 $lang["about_app_info"] =
-    "Easy!Appointments is a highly customizable web application that allows your customers to book appointments with you via the web. Moreover, it provides the ability to sync your data with Google Calendar, so you can use them with other services.";
+    "Easy!Appointments is a highly customizable web application that allows your customers to book appointments with you via the web.";
 $lang["current_version"] = "Current Version";
 $lang["support"] = "Support";
 $lang["about_app_support"] =

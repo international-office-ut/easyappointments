@@ -489,7 +489,7 @@
 <script src="<?= asset_url('assets/ext/moment/moment.min.js') ?>"></script>
 <script src="<?= asset_url('assets/ext/moment/moment-timezone-with-data.min.js') ?>"></script>
 <script src="<?= asset_url('assets/ext/altcha/altcha.min.js') ?>"></script>
-<script src="<?= asset_url('assets/ext/altcha/i18n/de.umd.cjs') ?>"></script>
+<script src="<?= asset_url('assets/ext/altcha/altcha-i18n-de.min.js') ?>"></script>
 <script src="<?= asset_url('assets/js/frontend_book_api.js') ?>"></script>
 <script src="<?= asset_url('assets/js/frontend_book.js') ?>"></script>
 

@@ -294,26 +294,6 @@ body legend {
     .backend-page .nav-pills li {
         width: auto;
     }
-    .backend-page .filter-records .results {
-        overflow-y: auto;
-        max-height: 900px;
-        outline: none;
-    }
-    .backend-page #filter-customers.filter-records .results {
-        overflow-y: auto;
-        max-height: 660px;
-        outline: none;
-    }
-    .backend-page #filter-services.filter-records .results {
-        overflow-y: auto;
-        max-height: 660px;
-        outline: none;
-    }
-    .backend-page #filter-categories.filter-records .results {
-        overflow-y: auto;
-        max-height: 500px;
-        outline: none;
-    }
     .backend-page #category-description.form-control {
         height: 220px;
     }

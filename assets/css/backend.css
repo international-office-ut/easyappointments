@@ -227,7 +227,6 @@ body legend {
     margin-bottom: 20px;
     display: flex;
     flex-direction: column;
-    height: 100%; /* stretch to the details column height within the row */
 }
 
 .backend-page .filter-records form .input-group-addon {
@@ -244,9 +243,15 @@ body legend {
 .backend-page .filter-records .results {
     overflow-y: auto;
     flex: 1 1 auto;
-    min-height: 325px;
-    max-height: calc(100vh - 260px);
+    min-height: 0;
     outline: none;
+}
+
+/* Desktop: the list panels occupy the available window height. */
+@media (min-width: 768px) {
+    .backend-page .filter-records {
+        height: calc(100vh - 128px); /* header, page paddings and footer breathing room */
+    }
 }
 
 .backend-page .filter-records .results .entry {

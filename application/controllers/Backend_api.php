@@ -1120,8 +1120,6 @@ class Backend_api extends EA_Controller {
         {
             $provider = json_decode($this->input->post('provider'), TRUE);
 
-            log_message('error', '[identity-diag] save incoming: ' . print_r($provider, TRUE));
-
             $required_privileges = ( ! isset($provider['id']))
                 ? $this->privileges[PRIV_USERS]['add']
                 : $this->privileges[PRIV_USERS]['edit'];
@@ -1146,9 +1144,6 @@ class Backend_api extends EA_Controller {
         catch (Exception $exception)
         {
             $this->output->set_status_header(500);
-
-            log_message('error', '[identity-diag] save exception: ' . $exception->getMessage()
-                . ' (code ' . $exception->getCode() . ')');
 
             $response = [
                 'message' => $exception->getMessage(),

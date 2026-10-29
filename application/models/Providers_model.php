@@ -322,9 +322,6 @@ class Providers_model extends EA_Model {
 
         $provider['id'] = (int)$this->db->insert_id();
 
-        log_message('error', '[identity-diag] provider users insert id=' . $provider['id']
-            . ' err=' . json_encode($this->db->error()));
-
         if ( ! $provider['id'])
         {
             throw new Exception('Could not retrieve the inserted provider id (insert_id returned 0).');
@@ -339,12 +336,14 @@ class Providers_model extends EA_Model {
         {
             // The new row belongs to an existing identity (same email on another role), so
             // its credentials are copied from the sibling row and a new password is not
-            // required at this point.
+            // required at this point. NOTE: the provider id is captured ONCE right after
+            // the users insert: MySQLi resets the client-side insert id after any
+            // non-insert statement (e.g. the SELECTs of the identity lookup), so another
+            // read here would return 0 and break the user_settings link.
             $this->load->model('identities_model');
             $settings = $this->identities_model->attach_credentials($settings, $provider['email']);
         }
 
-        $provider['id'] = (int)$this->db->insert_id();
         $this->save_settings($settings, $provider['id']);
         $this->save_services($services, $provider['id']);
 
@@ -394,12 +393,7 @@ class Providers_model extends EA_Model {
         // Check if the setting record exists in db.
         if ($this->db->get_where('user_settings', ['id_users' => $provider_id])->num_rows() === 0)
         {
-            if ( ! $this->db->insert('user_settings', ['id_users' => $provider_id]))
-            {
-                $error = $this->db->error();
-                log_message('error', '[identity-diag] user_settings insert FAILED: code=' . $error['code']
-                    . ' msg=' . $error['message'] . ' id_users=' . var_export($provider_id, TRUE));
-            }
+            $this->db->insert('user_settings', ['id_users' => $provider_id]);
         }
 
         foreach ($settings as $name => $value)

@@ -33,6 +33,12 @@ window.Backend = window.Backend || {};
             .trigger('resize');
 
         $(document).ajaxStart(function () {
+            // Silent requests (background identity lookups) must not trigger the spinner.
+            if (window.BackendUsers && (BackendUsers.silentAjaxCount || 0) > 0)
+            {
+                return;
+            }
+
             $('#loading').show();
         });
 

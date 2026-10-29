@@ -44,6 +44,23 @@ window.BackendUsers = window.BackendUsers || {};
     };
 
     /**
+     * Number of silent AJAX requests in flight (e.g. the identity attach lookups). While it
+     * is greater than zero the global loading spinner is suppressed.
+     *
+     * @type {Number}
+     */
+    exports.silentAjaxCount = 0;
+    exports.silentAjaxBegin = function () {
+        exports.silentAjaxCount++;
+    };
+    exports.silentAjaxEnd = function () {
+        if (exports.silentAjaxCount > 0)
+        {
+            exports.silentAjaxCount--;
+        }
+    };
+
+    /**
      * Contains the current tab record methods for the page.
      *
      * @type {AdminsHelper|ProvidersHelper|SecretariesHelper}
@@ -249,11 +266,17 @@ window.BackendUsers = window.BackendUsers || {};
 
             BackendUsers.identityAttach[prefix] = 'pending';
 
+            BackendUsers.silentAjaxBegin();
+
             $.post(GlobalVariables.baseUrl + '/index.php/backend_api/ajax_get_identity_info', {
                 csrfToken: GlobalVariables.csrfToken,
                 email: $email.val(),
                 role_slug: slugMap[prefix]
-            }).done(function (response) {
+            })
+                .always(function () {
+                    BackendUsers.silentAjaxEnd();
+                })
+                .done(function (response) {
                 var $passwordFields = $('#' + prefix + '-password, #' + prefix + '-password-confirm');
 
                 if (!response || !response.exists) {

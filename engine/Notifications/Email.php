@@ -328,8 +328,19 @@ class Email {
             $mailer->SMTPDebug  = $this->config['smtp_debug'];
             $mailer->Host = $this->config['smtp_host'];
             $mailer->SMTPAuth = $this->config['smtp_auth'];
-            $mailer->Username = $this->config['smtp_user'];
-            $mailer->Password = $this->config['smtp_pass'];
+
+            // Anonymous SMTP relays run without credentials: the keys are then absent
+            // from the config file and reading them directly would emit warnings.
+            if (isset($this->config['smtp_user']))
+            {
+                $mailer->Username = $this->config['smtp_user'];
+            }
+
+            if (isset($this->config['smtp_pass']))
+            {
+                $mailer->Password = $this->config['smtp_pass'];
+            }
+
             $mailer->SMTPSecure = $this->config['smtp_crypto'];
             $mailer->Port = $this->config['smtp_port'];
         }

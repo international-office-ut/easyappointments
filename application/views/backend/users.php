@@ -141,7 +141,7 @@
                             <input type="hidden" id="provider-id" class="record-id">
 
                             <div class="row">
-                                <div class="provider-details col-12 col-md-6">
+                                <div class="provider-details col-12 col-md-6 col-xl-4">
                                     <div class="form-group">
                                         <label for="provider-first-name">
                                             <?= lang('first_name') ?>
@@ -218,7 +218,7 @@
                                         <textarea id="provider-notes" class="form-control" rows="3"></textarea>
                                     </div>
                                 </div>
-                                <div class="provider-settings col-12 col-md-6">
+                                <div class="provider-settings col-12 col-md-6 col-xl-4">
                                     <div class="form-group">
                                         <label for="provider-username">
                                             <?= lang('username') ?>
@@ -292,9 +292,9 @@
                                             <?= lang('receive_notifications') ?>
                                         </label>
                                     </div>
+                                </div>
 
-                                    <br>
-
+                                <div class="provider-services col-12 col-md-6 col-xl-4">
                                     <h4><?= lang('services') ?></h4>
                                     <div id="provider-services" class="card card-body bg-light border-light"></div>
                                 </div>

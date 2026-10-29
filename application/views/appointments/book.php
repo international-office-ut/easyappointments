@@ -390,9 +390,6 @@
 
                         <?php if ($this->settings_model->get_setting('require_captcha') === '1'): ?>
                             <div class="col-12 col-md-6">
-                                <h4 class="captcha-title">
-                                    CAPTCHA
-                                </h4>
                                 <altcha-widget challenge="<?= site_url('captcha') ?>"
                                                name="altcha"
                                                language="<?= $this->config->item('language') === 'german' ? 'de' : 'en' ?>">

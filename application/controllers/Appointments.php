@@ -492,15 +492,43 @@ class Appointments extends EA_Controller {
             if ($require_captcha === '1'
                 && defined('\Config::ALTCHA_HMAC_KEY') && Config::ALTCHA_HMAC_KEY !== '')
             {
+                if ($altcha_solution === '')
+                {
+                    // The widget was not solved yet, return gracefully so that the frontend can
+                    // show the hint instead of blowing up on the malformed payload.
+                    $this->output
+                        ->set_content_type('application/json')
+                        ->set_output(json_encode([
+                            'captcha_verification' => FALSE
+                        ]));
+
+                    return;
+                }
+
                 $altcha = new Altcha(hmacSignatureSecret: Config::ALTCHA_HMAC_KEY);
 
-                $verification = $altcha->verifySolution(new VerifySolutionOptions(
-                    payload: $altcha_solution,
-                    algorithm: new Pbkdf2(HmacAlgorithm::SHA256),
-                ));
-
-                if ( ! $verification->verified)
+                try
                 {
+                    $verification = $altcha->verifySolution(new VerifySolutionOptions(
+                        payload: $altcha_solution,
+                        algorithm: new Pbkdf2(HmacAlgorithm::SHA256),
+                    ));
+
+                    if ( ! $verification->verified)
+                    {
+                        $this->output
+                            ->set_content_type('application/json')
+                            ->set_output(json_encode([
+                                'captcha_verification' => FALSE
+                            ]));
+
+                        return;
+                    }
+                }
+                catch (Throwable $exception)
+                {
+                    log_message('error', 'ALTCHA verification failed: ' . $exception->getMessage());
+
                     $this->output
                         ->set_content_type('application/json')
                         ->set_output(json_encode([

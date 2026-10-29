@@ -155,6 +155,19 @@ window.FrontendBookApi = window.FrontendBookApi || {};
 
         var altchaSolution = $('input[name="altcha"]').val();
 
+        if ($('altcha-widget').length > 0 && !altchaSolution) {
+            // The ALTCHA widget is present but not solved yet, avoid the doomed request.
+            $('#captcha-hint')
+                .text(EALang.captcha_not_verified || EALang.captcha_is_wrong)
+                .fadeTo(400, 1);
+
+            setTimeout(function () {
+                $('#captcha-hint').fadeTo(400, 0);
+            }, 3000);
+
+            return;
+        }
+
         if (altchaSolution) {
             data.altcha = altchaSolution;
         }

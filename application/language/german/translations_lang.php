@@ -310,7 +310,9 @@ $lang["require_captcha"] = "CAPTCHA erfordern";
 $lang["require_captcha_hint"] =
     "Wenn aktiv, haben die Kunden eine unsichtbare Proof-of-Work-Herausforderung zu lösen, bevor ein Termin gebucht werden kann.";
 $lang["captcha_is_wrong"] =
-    "CAPTCHA-Überprüfung fehlgeschlagen, bitte versuchen Sie es erneut.";
+    "Die Überprüfung ist fehlgeschlagen. Bitte versuchen Sie es erneut.";
+$lang["captcha_not_verified"] =
+    "Bitte bestätigen Sie vor der Buchung, dass Sie kein Roboter sind (Kontrollkästchen oben).";
 $lang["any_provider"] = "Jeder Anbieter";
 $lang["requested_hour_is_unavailable"] =
     "Der gewünschte Termin ist leider nicht verfügbar. Bitte wählen Sie eine andere Zeit für den Termin.";

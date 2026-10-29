@@ -309,6 +309,17 @@
         try {
             // Validate required fields.
             var missingRequired = false;
+
+            // When the row attaches to an existing identity (same email in another role), an
+            // empty password is fine: the credentials get inherited from the identity row.
+            var identityAttach = (BackendUsers.identityAttach || {}).provider;
+
+            if (identityAttach === 'sibling' || identityAttach === 'pending') {
+                $('#provider-password, #provider-password-confirm').removeClass('required')
+                    .removeClass('has-error');
+                $('#provider-password, #provider-password-confirm').closest('.form-group').removeClass('has-error');
+            }
+
             $('#providers .required').each(function (index, requiredField) {
                 if (!$(requiredField).val()) {
                     $(requiredField).closest('.form-group').addClass('has-error');

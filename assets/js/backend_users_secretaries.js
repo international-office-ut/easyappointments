@@ -267,6 +267,17 @@
         try {
             // Validate required fields.
             var missingRequired = false;
+
+            // When the row attaches to an existing identity (same email in another role), an
+            // empty password is fine: the credentials get inherited from the identity row.
+            var identityAttach = (BackendUsers.identityAttach || {}).secretary;
+
+            if (identityAttach === 'sibling' || identityAttach === 'pending') {
+                $('#secretary-password, #secretary-password-confirm').removeClass('required')
+                    .removeClass('has-error');
+                $('#secretary-password, #secretary-password-confirm').closest('.form-group').removeClass('has-error');
+            }
+
             $('#secretaries .required').each(function (index, requiredField) {
                 if (!$(requiredField).val()) {
                     $(requiredField).closest('.form-group').addClass('has-error');

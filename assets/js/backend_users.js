@@ -31,6 +31,19 @@ window.BackendUsers = window.BackendUsers || {};
     exports.MIN_PASSWORD_LENGTH = 7;
 
     /**
+     * Identity attach state per user tab. Values: 'unknown' (nothing typed), 'pending'
+     * (identity lookup request in flight), 'sibling' (email matches an existing identity in a
+     * different role) or 'new' (genuinely new person, password required).
+     *
+     * @type {Object}
+     */
+    exports.identityAttach = {
+        admin: 'unknown',
+        provider: 'unknown',
+        secretary: 'unknown'
+    };
+
+    /**
      * Contains the current tab record methods for the page.
      *
      * @type {AdminsHelper|ProvidersHelper|SecretariesHelper}
@@ -196,41 +209,61 @@ window.BackendUsers = window.BackendUsers || {};
         });
 
         /**
-         * Event: Email "Focusout" — Attach Existing Identity
+         * Event: Email "Input"/"Focusout" — Attach Existing Identity
          *
          * When adding a new role row for a person that already exists under a different role
          * (same email), the common fields of that identity get pre-filled and the login name
          * is inherited, so the attach flow does not need password or duplicate data entries.
+         *
+         * The identity state is tracked in BackendUsers.identityAttach (input events run an
+         * early lookup with a debounce, focusout triggers a final lookup), so that the save
+         * validators always see the resolved state without a race condition.
          */
-        $('#admin-email, #provider-email, #secretary-email').focusout(function () {
-            var $email = $(this);
-            var prefix = $email.attr('id').replace('-email', ''); // admin | provider | secretary
+        function checkIdentityAttach(prefix) {
+            var $email = $('#' + prefix + '-email');
+            var $passwordFields = $('#' + prefix + '-password, #' + prefix + '-password-confirm');
 
+            if (BackendUsers.identityAttach[prefix] === 'sibling') {
+                $passwordFields.removeClass('required').val('');
+            } else if (BackendUsers.identityAttach[prefix] === 'new') {
+                $passwordFields.addClass('required');
+            }
+        }
+
+        function requestIdentityInfo(prefix) {
+            var $email = $('#' + prefix + '-email');
+            var $parentForm = $email.closest('#' + prefix + '-page, #users-page')
+                .closest('.record-details');
+            var userId = $('#' + prefix + '-id').val();
             var slugMap = {
                 'admin': Backend.DB_SLUG_ADMIN,
                 'provider': Backend.DB_SLUG_PROVIDER,
                 'secretary': Backend.DB_SLUG_SECRETARY
             };
 
-            var $parentForm = $email.closest('.record-details');
-            var userId = $parentForm.find('.record-id').val();
-
-            if ($email.val() === '' || userId) {
-                return; // Only relevant when no user record id exists (row creation).
+            if ($email.val() === '' || userId
+                || BackendUsers.identityAttach[prefix] === 'pending')
+            {
+                return;
             }
+
+            BackendUsers.identityAttach[prefix] = 'pending';
 
             $.post(GlobalVariables.baseUrl + '/index.php/backend_api/ajax_get_identity_info', {
                 csrfToken: GlobalVariables.csrfToken,
                 email: $email.val(),
                 role_slug: slugMap[prefix]
             }).done(function (response) {
-                var $passwordFields = $parentForm.find('#' + prefix + '-password, #' + prefix + '-password-confirm');
+                var $passwordFields = $('#' + prefix + '-password, #' + prefix + '-password-confirm');
 
                 if (!response || !response.exists) {
                     // New email → a password is required for a genuinely new identity.
+                    BackendUsers.identityAttach[prefix] = 'new';
                     $passwordFields.addClass('required');
                     return;
                 }
+
+                BackendUsers.identityAttach[prefix] = 'sibling';
 
                 var person = response.user;
 
@@ -248,7 +281,7 @@ window.BackendUsers = window.BackendUsers || {};
                 };
 
                 Object.keys(fieldPrefixes).forEach(function (fieldName) {
-                    var $field = $parentForm.find('#' + fieldPrefixes[fieldName]);
+                    var $field = $('#' + fieldPrefixes[fieldName]);
 
                     // Only fill empty inputs, so that already typed values are not lost.
                     if ($field.length > 0 && ($field.val() === '' || $field.val() === null)) {
@@ -256,22 +289,52 @@ window.BackendUsers = window.BackendUsers || {};
                     }
                 });
 
-                var $usernameField = $parentForm.find('#' + prefix + '-username');
+                var $usernameField = $('#' + prefix + '-username');
 
                 if ($usernameField.val() === '' && person.login_name) {
                     $usernameField.val(person.login_name);
                 }
 
+                checkIdentityAttach(prefix);
+
                 var roleLabel = EALang[prefix + 's'] || person.role_slug;
                 var fullName = (person.first_name || '') + ' ' + (person.last_name || '');
 
-                $parentForm.find('.form-message')
+                var $formMessage = $('#' + prefix + '-email').closest('.record-details')
+                    .find('.form-message');
+
+                $formMessage
                     .text(EALang.identity_attach_hint
                         .replace('{$role}', roleLabel)
                         .replace('{$name}', fullName.trim()))
                     .addClass('alert-success')
                     .show();
             });
+        }
+
+        var identityLookupTimers = {admin: null, provider: null, secretary: null};
+
+        $('#admin-email, #provider-email, #secretary-email').on('input', function () {
+            var prefix = String(this.id).replace('-email', '');
+
+            if (identityLookupTimers[prefix]) {
+                clearTimeout(identityLookupTimers[prefix]);
+            }
+
+            identityLookupTimers[prefix] = setTimeout(function () {
+                requestIdentityInfo(prefix);
+            }, 400);
+        });
+
+        $('#admin-email, #provider-email, #secretary-email').focusout(function () {
+            var prefix = String(this.id).replace('-email', '');
+
+            if (identityLookupTimers[prefix]) {
+                clearTimeout(identityLookupTimers[prefix]);
+                identityLookupTimers[prefix] = null;
+            }
+
+            requestIdentityInfo(prefix);
         });
 
         /**

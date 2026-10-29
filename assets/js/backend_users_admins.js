@@ -253,8 +253,18 @@
             // Validate required fields.
             var missingRequired = false;
 
+            // When the row attaches to an existing identity (same email in another role), an
+            // empty password is fine: the credentials get inherited from the identity row.
+            var identityAttach = (BackendUsers.identityAttach || {}).admin;
+
+            if (identityAttach === 'sibling' || identityAttach === 'pending') {
+                $('#admin-password, #admin-password-confirm').removeClass('required')
+                    .removeClass('has-error');
+                $('#admin-password, #admin-password-confirm').closest('.form-group').removeClass('has-error');
+            }
+
             $('#admins .required').each(function (index, requiredField) {
-                if (!$(requiredField).val()) {
+                if (!$(requiredField).val() && !$(requiredField).hasClass('identity-optional')) {
                     $(requiredField).closest('.form-group').addClass('has-error');
                     missingRequired = true;
                 }

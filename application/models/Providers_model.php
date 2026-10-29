@@ -322,6 +322,9 @@ class Providers_model extends EA_Model {
 
         $provider['id'] = (int)$this->db->insert_id();
 
+        log_message('debug', '[identity-diag] provider users insert id=' . $provider['id']
+            . ' error=' . json_encode($this->db->error()));
+
         if ( ! $provider['id'])
         {
             throw new Exception('Could not retrieve the inserted provider id (insert_id returned 0).');
@@ -391,7 +394,18 @@ class Providers_model extends EA_Model {
         // Check if the setting record exists in db.
         if ($this->db->get_where('user_settings', ['id_users' => $provider_id])->num_rows() === 0)
         {
-            $this->db->insert('user_settings', ['id_users' => $provider_id]);
+            if ( ! $this->db->insert('user_settings', ['id_users' => $provider_id]))
+            {
+                $error = $this->db->error();
+
+                log_message('error', '[identity-diag] user_settings insert FAILED: code=' . $error['code']
+                    . ' msg=' . $error['message']
+                    . ' id_users=' . var_export($provider_id, TRUE));
+            }
+            else
+            {
+                log_message('debug', '[identity-diag] user_settings insert ok: id_users=' . $provider_id);
+            }
         }
 
         foreach ($settings as $name => $value)

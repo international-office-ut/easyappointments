@@ -25,7 +25,10 @@ class Migration_Remove_google_sync extends CI_Migration {
      */
     public function up()
     {
-        if ($this->db->field_exists('google_sync', 'user_settings'))
+        $drop_settings_columns = $this->db->table_exists('user_settings')
+            && $this->db->field_exists('google_sync', 'user_settings');
+
+        if ($drop_settings_columns)
         {
             $this->db->query('
                 ALTER TABLE `' . $this->db->dbprefix('user_settings') . '`
@@ -34,7 +37,7 @@ class Migration_Remove_google_sync extends CI_Migration {
             ');
         }
 
-        if ($this->db->field_exists('id_google_calendar', 'appointments'))
+        if ($this->db->table_exists('appointments') && $this->db->field_exists('id_google_calendar', 'appointments'))
         {
             $this->db->query('
                 ALTER TABLE `' . $this->db->dbprefix('appointments') . '`
@@ -42,7 +45,7 @@ class Migration_Remove_google_sync extends CI_Migration {
             ');
         }
 
-        if ($this->db->field_exists('id_google_calendar', 'unavailables'))
+        if ($this->db->table_exists('unavailables') && $this->db->field_exists('id_google_calendar', 'unavailables'))
         {
             $this->db->query('
                 ALTER TABLE `' . $this->db->dbprefix('unavailables') . '`
@@ -50,7 +53,10 @@ class Migration_Remove_google_sync extends CI_Migration {
             ');
         }
 
-        $this->db->delete('settings', ['name' => 'google_analytics_code']);
+        if ($this->db->table_exists('settings'))
+        {
+            $this->db->delete('settings', ['name' => 'google_analytics_code']);
+        }
     }
 
     /**
@@ -58,7 +64,7 @@ class Migration_Remove_google_sync extends CI_Migration {
      */
     public function down()
     {
-        if ( ! $this->db->field_exists('google_sync', 'user_settings'))
+        if ($this->db->table_exists('user_settings') && ! $this->db->field_exists('google_sync', 'user_settings'))
         {
             $this->db->query('
                 ALTER TABLE `' . $this->db->dbprefix('user_settings') . '`
@@ -70,7 +76,7 @@ class Migration_Remove_google_sync extends CI_Migration {
             ');
         }
 
-        if ( ! $this->db->field_exists('id_google_calendar', 'appointments'))
+        if ($this->db->table_exists('appointments') && ! $this->db->field_exists('id_google_calendar', 'appointments'))
         {
             $this->db->query('
                 ALTER TABLE `' . $this->db->dbprefix('appointments') . '`
@@ -78,7 +84,7 @@ class Migration_Remove_google_sync extends CI_Migration {
             ');
         }
 
-        if ( ! $this->db->field_exists('id_google_calendar', 'unavailables'))
+        if ($this->db->table_exists('unavailables') && ! $this->db->field_exists('id_google_calendar', 'unavailables'))
         {
             $this->db->query('
                 ALTER TABLE `' . $this->db->dbprefix('unavailables') . '`
@@ -86,6 +92,9 @@ class Migration_Remove_google_sync extends CI_Migration {
             ');
         }
 
-        $this->db->insert('settings', ['name' => 'google_analytics_code', 'value' => NULL]);
+        if ($this->db->table_exists('settings'))
+        {
+            $this->db->insert('settings', ['name' => 'google_analytics_code', 'value' => NULL]);
+        }
     }
 }

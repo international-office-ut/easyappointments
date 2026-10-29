@@ -31,6 +31,11 @@ class Maintenance_model extends EA_Model {
      */
     public function purge_appointments(int $months, bool $dry_run = FALSE): int
     {
+        if ( ! $this->db->table_exists('appointments'))
+        {
+            return 0;
+        }
+
         $rows = $this->db
             ->select('id')
             ->from('appointments')
@@ -58,6 +63,12 @@ class Maintenance_model extends EA_Model {
      */
     public function purge_unavailables(int $months, bool $dry_run = FALSE): int
     {
+        // Some installations may not have the unavailables table.
+        if ( ! $this->db->table_exists('unavailables'))
+        {
+            return 0;
+        }
+
         $rows = $this->db
             ->select('id')
             ->from('unavailables')
@@ -88,6 +99,11 @@ class Maintenance_model extends EA_Model {
      */
     public function purge_customers_without_appointments(bool $dry_run = FALSE): int
     {
+        if ( ! $this->db->table_exists('users'))
+        {
+            return 0;
+        }
+
         $rows = $this->db
             ->select('users.id')
             ->from('users')

@@ -25,11 +25,14 @@ class Migration_Add_record_retention_setting extends CI_Migration {
      */
     public function up()
     {
-        $rows = $this->db->get_where('settings', ['name' => 'record_retention_months'])->num_rows();
-
-        if ($rows === 0)
+        if ($this->db->table_exists('user_settings'))
         {
-            $this->db->insert('settings', ['name' => 'record_retention_months', 'value' => '3']);
+            $rows = $this->db->get_where('settings', ['name' => 'record_retention_months'])->num_rows();
+
+            if ($rows === 0)
+            {
+                $this->db->insert('settings', ['name' => 'record_retention_months', 'value' => '3']);
+            }
         }
     }
 
@@ -38,6 +41,9 @@ class Migration_Add_record_retention_setting extends CI_Migration {
      */
     public function down()
     {
-        $this->db->delete('settings', ['name' => 'record_retention_months']);
+        if ($this->db->table_exists('settings'))
+        {
+            $this->db->delete('settings', ['name' => 'record_retention_months']);
+        }
     }
 }

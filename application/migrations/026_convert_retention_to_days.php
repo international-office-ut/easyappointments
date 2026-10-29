@@ -30,23 +30,17 @@ class Migration_Convert_retention_to_days extends CI_Migration {
             return;
         }
 
-        $days = (int)$this->settings_model->get_setting('record_retention_days');
+        // The days row already wins (poor-man idempotency check).
+        $days_row = $this->db->get_where('settings', ['name' => 'record_retention_days'])->row();
 
-        if ( ! empty($days))
+        if ($days_row)
         {
             return;
         }
 
-        $months = (int)$this->settings_model->get_setting('record_retention_months');
+        $months_row = $this->db->get_where('settings', ['name' => 'record_retention_months'])->row();
 
-        if ( ! empty($months))
-        {
-            $days = $months * 30;
-        }
-        else
-        {
-            $days = 90;
-        }
+        $days = ($months_row && ! empty($months_row->value)) ? ((int)$months_row->value * 30) : 90;
 
         $this->db->insert('settings', ['name' => 'record_retention_days', 'value' => (string) $days]);
 
@@ -58,17 +52,23 @@ class Migration_Convert_retention_to_days extends CI_Migration {
      */
     public function down()
     {
-        $days = (int)$this->db->get_where('settings', ['name' => 'record_retention_days'])->row()->value;
-
-        if ($this->db->table_exists('settings'))
+        if ( ! $this->db->table_exists('settings'))
         {
-            $this->db->delete('settings', ['name' => 'record_retention_days']);
+            return;
+        }
 
-            if ( ! empty($days))
-            {
-                $this->db->insert('settings',
-                    ['name' => 'record_retention_months', 'value' => (string) floor($days / 30)]);
-            }
+        $days_row = $this->db->get_where('settings', ['name' => 'record_retention_days'])->row();
+
+        $days = ($days_row && ! empty($days_row->value)) ? (int)$days_row->value : 90;
+
+        $this->db->delete('settings', ['name' => 'record_retention_days']);
+
+        $months_row = $this->db->get_where('settings', ['name' => 'record_retention_months'])->row();
+
+        if ( ! $months_row)
+        {
+            $this->db->insert('settings',
+                ['name' => 'record_retention_months', 'value' => (string) floor($days / 30)]);
         }
     }
 }

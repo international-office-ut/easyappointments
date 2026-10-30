@@ -39,6 +39,7 @@ class Config {
     // PROVIDER CALENDAR FEED (ICAL)
     const ICAL_FEED_RANGE_PAST  = 30;    // days of past appointments included
     const ICAL_FEED_RANGE_FUTURE = 365;  // days of upcoming appointments included
+    const ICAL_FEED_INCLUDE_CUSTOMER = TRUE;  // show the customer name, phone and email on feed events
 
     // Related: keep "platform-check" disabled in composer.json, because the pinned PHP version
     // (8.3.6) and the eventual Ubuntu security patch release (e.g. 8.3.14) would otherwise

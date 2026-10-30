@@ -234,6 +234,7 @@ $lang["shib_user_not_found"] =
 $lang["sso_login_only"] =
     "Password login is disabled, please use the Shibboleth login button.";
 $lang["ical_feed"] = "Calendar Feed (iCal)";
+$lang["manage_appointment"] = "Appointment in Easy!Appointments";
 $lang["ical_feed_hint"] = "Generate the feed and paste the URL into Outlook ...";
 $lang["generate_feed"] = "Generate feed";
 $lang["revoke_feed"] = "Revoke feed";

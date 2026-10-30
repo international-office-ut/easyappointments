@@ -113,9 +113,15 @@ class Ical extends EA_Controller {
         $future_days = defined('\Config::ICAL_FEED_RANGE_FUTURE') ? Config::ICAL_FEED_RANGE_FUTURE : 365;
 
         return $this->db
-            ->select('appointments.*, services.name AS service_name')
+            ->select('appointments.*, services.name AS service_name, '
+                . 'services.location AS service_location')
+            ->select('customers.first_name AS customer_first_name, '
+                . 'customers.last_name AS customer_last_name, '
+                . 'customers.phone_number AS customer_phone_number, '
+                . 'customers.email AS customer_email')
             ->from('appointments')
             ->join('services', 'services.id = appointments.id_services', 'inner')
+            ->join('users customers', 'customers.id = appointments.id_users_customer', 'left')
             ->where('appointments.id_users_provider', $provider_id)
             ->where('appointments.is_unavailable', FALSE)
             ->where('appointments.end_datetime >=', (new DateTime('now'))
@@ -130,8 +136,9 @@ class Ical extends EA_Controller {
     /**
      * Build the iCalendar stream of the feed events.
      *
-     * The feed deliberately stays minimal: only the appointment facts that the provider
-     * manages in the backend are included, no customer contact information.
+     * When ICAL_FEED_INCLUDE_CUSTOMER is enabled, the event summary carries the customer
+     * name (visible in the calendar view) and the description carries the direct contact
+     * fields — the same facts the provider already sees for the appointment in the backend.
      *
      * @param array $provider Provider record (timezone matters).
      * @param array $appointments Appointments with the resolved service name.
@@ -148,17 +155,74 @@ class Ical extends EA_Controller {
             ->setTimezone($timezone)
             ->setName($provider['first_name'] . ' ' . $provider['last_name']);
 
+        $include_customer = defined('\Config::ICAL_FEED_INCLUDE_CUSTOMER')
+            ? Config::ICAL_FEED_INCLUDE_CUSTOMER : TRUE;
+
         foreach ($appointments as $appointment)
         {
             $event = new CalendarEvent();
+
+            $customer_name = trim(($appointment['customer_first_name'] ?? '') . ' '
+                . ($appointment['customer_last_name'] ?? ''));
+
+            $summary = $appointment['service_name'];
+
+            if ($include_customer && $customer_name !== '')
+            {
+                $summary .= ' — ' . $customer_name;
+            }
+
+            $description = [];
+
+            if ($include_customer)
+            {
+                if ($customer_name !== '')
+                {
+                    $description[] = lang('customer') . ': ' . $customer_name;
+                }
+
+                if ( ! empty($appointment['customer_phone_number']))
+                {
+                    $description[] = lang('phone_number') . ': '
+                        . $appointment['customer_phone_number'];
+                }
+
+                if ( ! empty($appointment['customer_email']))
+                {
+                    $description[] = lang('email') . ': ' . $appointment['customer_email'];
+                }
+
+                if ( ! empty($appointment['notes']))
+                {
+                    $description[] = lang('notes') . ': ' . $appointment['notes'];
+                }
+            }
+
+            // The backend link lets the provider edit or cancel the appointment right from
+            // the calendar client; the link itself does nothing without a backend session.
+            $description[] = lang('manage_appointment') . ': '
+                . site_url('backend/index/' . $appointment['hash']);
+
+            if ( ! empty($description))
+            {
+                $event->setDescription(implode("\\n", $description));
+            }
+
             $event
                 ->setStart(new DateTime($appointment['start_datetime'], $timezone))
                 ->setEnd(new DateTime($appointment['end_datetime'], $timezone))
                 ->setStatus('CONFIRMED')
-                ->setSummary($appointment['service_name'])
+                ->setSummary($summary)
                 ->setUid((string)$appointment['id']);
 
-            $location_value = $appointment['location'] ?? '';
+            // The feed resolves the location like the notification emails do: an online
+            // appointment shows the Zoom link, an on-premise appointment shows the service
+            // location (a plain appointment location string passes through untouched).
+            $location_value = get_appointment_location_value(
+                $appointment['location'] ?? NULL,
+                ['location' => $appointment['service_location'] ?? NULL],
+                $provider
+            );
 
             if ($location_value)
             {

@@ -235,6 +235,7 @@ $lang["shib_user_not_found"] =
 $lang["sso_login_only"] =
     "Die Anmeldung mit Passwort ist deaktiviert, bitte verwenden Sie den Shibboleth-Login.";
 $lang["ical_feed"] = "Kalender-Abo (iCal)";
+$lang["manage_appointment"] = "Termin in Easy!Appointments";
 $lang["ical_feed_hint"] = "Feed erzeugen und die URL in Outlook eintragen ...";
 $lang["generate_feed"] = "Feed erzeugen";
 $lang["revoke_feed"] = "Feed widerrufen";

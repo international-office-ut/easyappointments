@@ -64,6 +64,7 @@ class Config {
 
     const ICAL_FEED_RANGE_PAST  = 30;    // days of past appointments included
     const ICAL_FEED_RANGE_FUTURE = 365;  // days of upcoming appointments included
+    const ICAL_FEED_INCLUDE_CUSTOMER = TRUE;  // show the customer name, phone and email on feed events
 
     // ------------------------------------------------------------------------
     // DATABASE SETTINGS

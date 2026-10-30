@@ -36,8 +36,8 @@ class Migration_Add_provider_calendar_tokens extends CI_Migration {
                     'auto_increment' => TRUE
                 ],
                 'id_users' => [
-                    'type' => 'BIGINT',
-                    'constraint' => 20
+                    'type' => 'INT',
+                    'constraint' => 11
                 ],
                 'token_hash' => [
                     'type' => 'VARCHAR',
@@ -51,15 +51,32 @@ class Migration_Add_provider_calendar_tokens extends CI_Migration {
             $this->dbforge->add_key('token_hash');
             $this->dbforge->add_key('id_users');
             $this->dbforge->create_table('provider_calendar_tokens', TRUE, ['engine' => 'InnoDB']);
-
-            $this->db->query('
-                ALTER TABLE `' . $this->db->dbprefix('provider_calendar_tokens') . '`
-                  ADD CONSTRAINT `fk_' . $this->db->dbprefix('provider_calendar_tokens') . '_1`
-                  FOREIGN KEY (`id_users`) REFERENCES `' . $this->db->dbprefix('users') . '` (`id`)
-                  ON DELETE CASCADE ON UPDATE CASCADE;
-
-            ');
         }
+
+        // Deployments that were created before the column type of "users.id" changed to
+        // INT(11) have partially applied tables without the foreign key: align the types
+        // and attach the constraint so that deleting providers removes their tokens too.
+        $foreign_keys = $this->db->query('
+            SELECT CONSTRAINT_NAME
+              FROM information_schema.KEY_COLUMN_USAGE
+             WHERE TABLE_SCHEMA = DATABASE()
+               AND TABLE_NAME = \'' . $this->db->dbprefix('provider_calendar_tokens') . '\'
+               AND COLUMN_NAME = \'id_users\'
+               AND REFERENCED_TABLE_NAME IS NOT NULL
+        ')->result_array();
+
+        if ( ! empty($foreign_keys))
+        {
+            return;
+        }
+
+        $this->db->query('ALTER TABLE `' . $this->db->dbprefix('provider_calendar_tokens') . '`
+            MODIFY `id_users` INT(11);');
+
+        $this->db->query('ALTER TABLE `' . $this->db->dbprefix('provider_calendar_tokens') . '`
+            ADD CONSTRAINT `fk_' . $this->db->dbprefix('provider_calendar_tokens') . '_1`
+            FOREIGN KEY (`id_users`) REFERENCES `' . $this->db->dbprefix('users') . '` (`id`)
+            ON DELETE CASCADE ON UPDATE CASCADE');
     }
 
     /**

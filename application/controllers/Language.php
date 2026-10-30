@@ -45,6 +45,10 @@ class Language extends EA_Controller {
             $this->session->set_userdata('language', $this->input->post('language'));
             $this->config->set_item('language', $this->input->post('language'));
 
+            // Persist the picker choice beyond the PHP session (validated on read again).
+            $this->input
+                ->set_cookie('language', $this->input->post('language'), 6 * 30 * 86400);
+
             $response = AJAX_SUCCESS;
         }
         catch (Exception $exception)

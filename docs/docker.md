@@ -15,7 +15,6 @@ class Config {
     // ------------------------------------------------------------------------
     
     const BASE_URL      = 'http://localhost:8000'; 
-    const LANGUAGE      = 'english';
     const DEBUG_MODE    = TRUE;
     const ALTCHA_HMAC_KEY = '';  // Required when CAPTCHA is enabled; openssl rand -hex 32
 

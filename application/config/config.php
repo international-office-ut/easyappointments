@@ -117,12 +117,14 @@ $language_code = isset($_SERVER["HTTP_ACCEPT_LANGUAGE"])
     ? substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2)
     : "en";
 
+// German browsers run in German, everything else in English — the picker choice of the
+// visitor overrides this detection in the session/cookie (see the Language controller).
 $config["language"] = isset(
     $_SERVER["HTTP_ACCEPT_LANGUAGE"],
     $languages[$language_code],
 )
     ? $languages[$language_code]
-    : Config::LANGUAGE;
+    : "english";
 
 /*
 |--------------------------------------------------------------------------

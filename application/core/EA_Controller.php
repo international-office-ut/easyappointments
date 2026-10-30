@@ -67,13 +67,27 @@ class EA_Controller extends CI_Controller {
     }
 
     /**
-     * Configure the language.
+     * Configure the language: the picker choice of the session wins, then the persisted
+     * cookie, then the browser detection of the config bootstrap (German browsers get
+     * German, everything else English).
      */
     private function configure_language()
     {
         if ($this->session->has_userdata('language'))
         {
             $this->config->set_item('language', $this->session->userdata('language'));
+
+            $this->lang->load('translations');
+
+            return;
+        }
+
+        $language_cookie = get_cookie('language');
+
+        if ($language_cookie !== NULL && in_array($language_cookie, config('available_languages'), TRUE))
+        {
+            $this->session->set_userdata('language', $language_cookie);
+            $this->config->set_item('language', $language_cookie);
         }
 
         $this->lang->load('translations');

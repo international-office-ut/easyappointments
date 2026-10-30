@@ -37,14 +37,13 @@ class Settings_model extends EA_Model {
             throw new Exception('$name argument is not a string: ' . $name);
         }
 
-        if ($this->db->get_where('settings', ['name' => $name])->num_rows() == 0)
+        $setting = $this->db->get_where('settings', ['name' => $name])->row();
+
+        if ( ! $setting)
         {
-            // Check if setting exists in db.
             throw new Exception('$name setting does not exist in database: ' . $name);
         }
 
-        $query = $this->db->get_where('settings', ['name' => $name]);
-        $setting = $query->num_rows() > 0 ? $query->row() : '';
         return $setting->value;
     }
 

@@ -276,18 +276,4 @@ class User_model extends EA_Model {
 
         return $new_password;
     }
-
-    /**
-     * Get the timezone of a user.
-     *
-     * @param int $id Database ID of the user.
-     *
-     * @return string|null
-     */
-    public function get_user_timezone($id)
-    {
-        $row = $this->db->get_where('users', ['id' => $id])->row_array();
-
-        return $row ? $row['timezone'] : NULL;
-    }
 }

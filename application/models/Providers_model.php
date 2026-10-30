@@ -632,24 +632,71 @@ class Providers_model extends EA_Model {
         $batch = $this->db->get_where('users', ['id_roles' => $role_id], $limit, $offset)->result_array();
 
         // Include each provider services and settings.
+        $this->attach_provider_relations($batch);
+
         foreach ($batch as &$provider)
         {
-            // Services
-            $services = $this->db->get_where('services_providers',
-                ['id_users' => $provider['id']])->result_array();
-            $provider['services'] = [];
-            foreach ($services as $service)
-            {
-                $provider['services'][] = $service['id_services'];
-            }
-
-            // Settings
-            $provider['settings'] = $this->db->get_where('user_settings', ['id_users' => $provider['id']])->row_array();
-            unset($provider['settings']['id_users']);
+            // The page UI never needs the stored credentials, so they stay in the database.
+            unset($provider['settings']['password'], $provider['settings']['salt']);
         }
 
         // Return provider records in an array.
         return $batch;
+    }
+
+    /**
+     * Attach the related services and settings of the provided providers.
+     *
+     * Runs two aggregate queries instead of two subqueries per provider (N+1) and maps the
+     * results in memory.
+     *
+     * @param array $batch Providers passed by reference; the "services" and "settings" keys get attached.
+     *
+     * @return void
+     */
+    protected function attach_provider_relations(array &$batch): void
+    {
+        if (empty($batch))
+        {
+            return;
+        }
+
+        $provider_ids = array_map(static function (array $provider): int
+        {
+            return (int)$provider['id'];
+        }, $batch);
+
+        $services_rows = $this->db
+            ->where_in('id_users', $provider_ids)
+            ->get('services_providers')
+            ->result_array();
+
+        $settings_rows = $this->db
+            ->where_in('id_users', $provider_ids)
+            ->get('user_settings')
+            ->result_array();
+
+        $services_map = [];
+        foreach ($services_rows as $service_row)
+        {
+            $services_map[$service_row['id_users']][] = $service_row['id_services'];
+        }
+
+        $settings_map = [];
+        foreach ($settings_rows as $settings_row)
+        {
+            $provider_id = (int)$settings_row['id_users'];
+            unset($settings_row['id_users']);
+            $settings_map[$provider_id] = $settings_row;
+        }
+
+        foreach ($batch as &$provider)
+        {
+            $provider_id = (int)$provider['id'];
+
+            $provider['services'] = $services_map[$provider_id] ?? [];
+            $provider['settings'] = $settings_map[$provider_id] ?? [];
+        }
     }
 
     /**
@@ -672,19 +719,11 @@ class Providers_model extends EA_Model {
         $providers = $this->db->get()->result_array();
 
         // Include each provider services and settings.
+        $this->attach_provider_relations($providers);
+
         foreach ($providers as &$provider)
         {
-            // Services
-            $services = $this->db->get_where('services_providers', ['id_users' => $provider['id']])->result_array();
-
-            $provider['services'] = [];
-            foreach ($services as $service)
-            {
-                $provider['services'][] = $service['id_services'];
-            }
-
-            // Settings
-            $provider['settings'] = $this->db->get_where('user_settings', ['id_users' => $provider['id']])->row_array();
+            // The booking page must not see the provider credentials.
             unset(
                 $provider['settings']['username'],
                 $provider['settings']['password'],

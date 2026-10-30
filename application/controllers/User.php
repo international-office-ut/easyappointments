@@ -337,7 +337,7 @@ class User extends EA_Controller {
         {
             if ( ! $this->password_login_allowed())
             {
-                log_message('error', 'Password login attempt while "SHIB_PASSWORD_LOGIN" is disabled.');
+                log_message('info', 'Password login attempt while "SHIB_PASSWORD_LOGIN" is disabled.');
                 $response = AJAX_FAILURE;
             }
             else if ( ! $this->input->post('username') || ! $this->input->post('password'))
@@ -483,7 +483,7 @@ class User extends EA_Controller {
         {
             if ( ! $this->password_login_allowed())
             {
-                log_message('error', 'Password recovery attempt while "SHIB_PASSWORD_LOGIN" is disabled.');
+                log_message('info', 'Password recovery attempt while "SHIB_PASSWORD_LOGIN" is disabled.');
                 $response = AJAX_FAILURE;
             }
             else if ( ! $this->input->post('username') || ! $this->input->post('email'))

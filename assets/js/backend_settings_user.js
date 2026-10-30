@@ -135,34 +135,34 @@
     /**
      * Bind the calendar feed widget handlers of the user tab (visible for providers only).
      */
-    if (GlobalVariables.userSlug !== 'provider') {
-        return;
-    }
-
-    function feedState() {
-        var providerId = GlobalVariables.settings.user && GlobalVariables.settings.user.id
-            ? GlobalVariables.settings.user.id
-            : $('#user-id').val();
-
-        if (!providerId) {
+    $(function () {
+        if (GlobalVariables.userSlug !== 'provider') {
             return;
         }
 
-        $.post(GlobalVariables.baseUrl + '/index.php/backend_api/ajax_ical_feed_state', {
-            csrfToken: GlobalVariables.csrfToken,
-            provider_id: providerId
-        })
-            .done(function (response) {
-                $('#feed-state').text(response.active
-                    ? EALang.feed_active
-                    : EALang.feed_inactive);
-            })
-            .fail(function () {
-                $('#feed-state').text('');
-            });
-    }
+        function feedState() {
+            var providerId = GlobalVariables.settings.user && GlobalVariables.settings.user.id
+                ? GlobalVariables.settings.user.id
+                : $('#user-id').val();
 
-    $(function () {
+            if (!providerId) {
+                return;
+            }
+
+            $.post(GlobalVariables.baseUrl + '/index.php/backend_api/ajax_ical_feed_state', {
+                csrfToken: GlobalVariables.csrfToken,
+                provider_id: providerId
+            })
+                .done(function (response) {
+                    $('#feed-state').text(response.active
+                        ? EALang.feed_active
+                        : EALang.feed_inactive);
+                })
+                .fail(function () {
+                    $('#feed-state').text('');
+                });
+        }
+
         feedState();
 
         $('#feed-generate').on('click', function () {

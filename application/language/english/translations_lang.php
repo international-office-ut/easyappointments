@@ -233,6 +233,14 @@ $lang["shib_user_not_found"] =
     "The logged-in identity does not match any Easy!Appointments user account.";
 $lang["sso_login_only"] =
     "Password login is disabled, please use the Shibboleth login button.";
+$lang["ical_feed"] = "Calendar Feed (iCal)";
+$lang["ical_feed_hint"] = "Generate the feed and paste the URL into Outlook ...";
+$lang["generate_feed"] = "Generate feed";
+$lang["revoke_feed"] = "Revoke feed";
+$lang["feed_active"] = "A feed URL is active for this provider.";
+$lang["feed_inactive"] = "No active feed.";
+$lang["feed_copied"] = "Feed URL copied to clipboard.";
+$lang["feed_revoked"] = "The calendar feed is revoked.";
 $lang["identity_attach_hint"] =
     'Attach this role to the existing person "{$name}" ({$role}). Login credentials are shared.';
 $lang["data_retention"] = "Data Retention";

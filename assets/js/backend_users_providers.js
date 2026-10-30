@@ -78,6 +78,38 @@
         }.bind(this));
 
         /**
+         * Event: Calendar Feed Generate Button "Click"
+         *
+         * Generates (or rotates) the feed token; the feed URL is shown exactly once.
+         */
+        $('#provider-feed-generate').on('click', this.onFeedGenerate.bind(this));
+
+        /**
+         * Event: Calendar Feed Revoke Button "Click"
+         */
+        $('#provider-feed-revoke').on('click', this.onFeedRevoke.bind(this));
+
+        /**
+         * Event: Calendar Feed Copy Button "Click"
+         */
+        $('#provider-feed-copy').on('click', function () {
+            var url = $('#provider-feed-url').val();
+
+            if (!url) {
+                return;
+            }
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url);
+            } else {
+                $('#provider-feed-url').get(0).select();
+                document.execCommand('copy');
+            }
+
+            Backend.displayNotification(EALang.feed_copied);
+        });
+
+        /**
          * Event: Add New Provider Button "Click"
          */
         $('#providers').on('click', '#add-provider', function () {
@@ -252,7 +284,10 @@
             .off('click', '#save-provider')
             .off('click', '#cancel-provider')
             .off('shown.bs.tab', 'a[data-toggle="tab"]')
-            .off('click', '#reset-working-plan');
+            .off('click', '#reset-working-plan')
+            .off('click', '#provider-feed-generate')
+            .off('click', '#provider-feed-revoke')
+            .off('click', '#provider-feed-copy');
     };
 
     /**
@@ -448,8 +483,90 @@
     /**
      * Resets the admin tab form back to its initial state.
      */
+    /**
+     * Refresh the calendar feed state of the displayed provider.
+     *
+     * The raw token never travels again after its generation, so the UI only shows whether
+     * an active feed exists.
+     */
+    ProvidersHelper.prototype.refreshFeedState = function () {
+        var providerId = $('#provider-id').val();
+
+        if (!providerId) {
+            return;
+        }
+
+        $.post(GlobalVariables.baseUrl + '/index.php/backend_api/ajax_ical_feed_state', {
+            csrfToken: GlobalVariables.csrfToken,
+            provider_id: providerId
+        })
+            .done(function (response) {
+                $('#provider-feed-state').text(response.active
+                    ? EALang.feed_active
+                    : EALang.feed_inactive);
+            })
+            .fail(function () {
+                $('#provider-feed-state').text('');
+            });
+    };
+
+    /**
+     * Generate (or rotate) the feed token of the displayed provider.
+     */
+    ProvidersHelper.prototype.onFeedGenerate = function () {
+        var providerId = $('#provider-id').val();
+
+        if (!providerId) {
+            return;
+        }
+
+        $.post(GlobalVariables.baseUrl + '/index.php/backend_api/ajax_generate_ical_feed', {
+            csrfToken: GlobalVariables.csrfToken,
+            provider_id: providerId
+        })
+            .done(function (response) {
+                $('#provider-feed-url').val(response.feed_url);
+                $('#provider-feed-state').text(EALang.feed_active);
+                $('#provider-feed-url').get(0).select();
+            })
+            .fail(function (jqXHR) {
+                Backend.displayNotification(jqXHR.responseJSON && jqXHR.responseJSON.message
+                    ? jqXHR.responseJSON.message
+                    : EALang.oops_something_went_wrong);
+            });
+    };
+
+    /**
+     * Revoke the feed token of the displayed provider.
+     */
+    ProvidersHelper.prototype.onFeedRevoke = function () {
+        var providerId = $('#provider-id').val();
+
+        if (!providerId) {
+            return;
+        }
+
+        $.post(GlobalVariables.baseUrl + '/index.php/backend_api/ajax_revoke_ical_feed', {
+            csrfToken: GlobalVariables.csrfToken,
+            provider_id: providerId
+        })
+            .done(function () {
+                $('#provider-feed-url').val('');
+                $('#provider-feed-state').text(EALang.feed_inactive);
+                Backend.displayNotification(EALang.feed_revoked);
+            })
+            .fail(function (jqXHR) {
+                Backend.displayNotification(jqXHR.responseJSON && jqXHR.responseJSON.message
+                    ? jqXHR.responseJSON.message
+                    : EALang.oops_something_went_wrong);
+            });
+    };
+
     ProvidersHelper.prototype.resetForm = function () {
         var tz = jstz.determine();
+        $('#provider-feed-url').val('');
+        $('#provider-feed-state').text('');
+        $('#provider-feed-generate, #provider-feed-revoke').prop('disabled', false);
         $('#filter-providers .selected').removeClass('selected');
         $('#filter-providers button').prop('disabled', false);
         $('#filter-providers .results').css('color', '');
@@ -508,6 +625,7 @@
         $('#provider-notifications').prop('checked', Boolean(Number(provider.settings.notifications)));
         $('#provider-appointment-mode').val(provider.settings.appointment_mode || 'BOTH');
         $('#provider-zoom-link').val(provider.settings.zoom_link || '');
+        this.refreshFeedState();
 
         // Add dedicated provider link.
         var dedicatedUrl = GlobalVariables.baseUrl + '/index.php?provider=' + encodeURIComponent(provider.id);

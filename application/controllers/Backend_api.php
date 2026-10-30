@@ -1114,6 +1114,127 @@ class Backend_api extends EA_Controller {
     /**
      * Save (insert or update) a provider record into database.
      */
+    /**
+     * Return whether the provider owns an active calendar feed token (URL never returned
+     * again after the generation).
+     */
+    public function ajax_ical_feed_state()
+    {
+        try
+        {
+            $provider_id = (int)$this->input->post('provider_id');
+
+            if ( ! $this->is_ical_feed_allowed($provider_id))
+            {
+                throw new Exception('You do not have the required privileges for this task.');
+            }
+
+            $response = [
+                'active' => $this->providers_model->has_feed_token($provider_id)
+            ];
+        }
+        catch (Exception $exception)
+        {
+            $this->output->set_status_header(500);
+
+            $response = [
+                'message' => $exception->getMessage(),
+                'trace' => config('debug') ? $exception->getTrace() : []
+            ];
+        }
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($response));
+    }
+
+    /**
+     * Generate (or rotate) the calendar feed token of a provider.
+     *
+     * The plaintext token is returned exactly once — the provider copies the feed URL now
+     * and the app only stores the token hash afterwards.
+     */
+    public function ajax_generate_ical_feed()
+    {
+        try
+        {
+            $provider_id = (int)$this->input->post('provider_id');
+
+            if ( ! $this->is_ical_feed_allowed($provider_id))
+            {
+                throw new Exception('You do not have the required privileges for this task.');
+            }
+
+            $token = $this->providers_model->generate_feed_token($provider_id);
+
+            $response = [
+                'feed_url' => site_url('ical/' . $token . '.ics')
+            ];
+        }
+        catch (Exception $exception)
+        {
+            $this->output->set_status_header(500);
+
+            $response = [
+                'message' => $exception->getMessage(),
+                'trace' => config('debug') ? $exception->getTrace() : []
+            ];
+        }
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($response));
+    }
+
+    /**
+     * Revoke the calendar feed token of a provider (the subscribed feed dies immediately).
+     */
+    public function ajax_revoke_ical_feed()
+    {
+        try
+        {
+            $provider_id = (int)$this->input->post('provider_id');
+
+            if ( ! $this->is_ical_feed_allowed($provider_id))
+            {
+                throw new Exception('You do not have the required privileges for this task.');
+            }
+
+            $this->providers_model->revoke_feed_token($provider_id);
+
+            $response = AJAX_SUCCESS;
+        }
+        catch (Exception $exception)
+        {
+            $this->output->set_status_header(500);
+
+            $response = [
+                'message' => $exception->getMessage(),
+                'trace' => config('debug') ? $exception->getTrace() : []
+            ];
+        }
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($response));
+    }
+
+    /**
+     * Feed management is allowed for the provider itself and for users with the users-edit
+     * privilege.
+     */
+    protected function is_ical_feed_allowed(int $provider_id): bool
+    {
+        $is_self = (int)$this->session->userdata('user_id') === $provider_id;
+
+        if ($is_self)
+        {
+            return TRUE;
+        }
+
+        return $this->privileges[PRIV_USERS]['edit'] == FALSE ? FALSE : TRUE;
+    }
+
     public function ajax_save_provider()
     {
         try

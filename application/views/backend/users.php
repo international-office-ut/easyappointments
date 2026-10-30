@@ -284,6 +284,33 @@
                                                placeholder="https://...">
                                     </div>
 
+                                    <div class="form-group">
+                                        <label for="provider-feed-url">
+                                            <?= lang('ical_feed') ?>
+                                        </label>
+                                        <div class="input-group">
+                                            <input id="provider-feed-url" class="form-control" readonly
+                                                   placeholder="<?= lang('ical_feed_hint') ?>">
+                                            <div class="input-group-append">
+                                                <button type="button" id="provider-feed-copy"
+                                                        class="btn btn-outline-secondary" title="Copy">
+                                                    <i class="fas fa-copy"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <small id="provider-feed-state" class="form-text text-muted"></small>
+                                        <button type="button" id="provider-feed-generate"
+                                                class="btn btn-outline-secondary btn-sm mr-2">
+                                            <i class="fas fa-key mr-2"></i>
+                                            <?= lang('generate_feed') ?>
+                                        </button>
+                                        <button type="button" id="provider-feed-revoke"
+                                                class="btn btn-outline-danger btn-sm">
+                                            <i class="fas fa-trash mr-2"></i>
+                                            <?= lang('revoke_feed') ?>
+                                        </button>
+                                    </div>
+
                                     <br>
 
                                     <div class="custom-control custom-switch">

@@ -234,6 +234,14 @@ $lang["shib_user_not_found"] =
     "Die angemeldete Identität passt zu keinem Easy!Appointments-Benutzerkonto.";
 $lang["sso_login_only"] =
     "Die Anmeldung mit Passwort ist deaktiviert, bitte verwenden Sie den Shibboleth-Login.";
+$lang["ical_feed"] = "Kalender-Abo (iCal)";
+$lang["ical_feed_hint"] = "Feed erzeugen und die URL in Outlook eintragen ...";
+$lang["generate_feed"] = "Feed erzeugen";
+$lang["revoke_feed"] = "Feed widerrufen";
+$lang["feed_active"] = "Für diesen Anbieter ist eine Feed-URL aktiv.";
+$lang["feed_inactive"] = "Kein aktiver Feed.";
+$lang["feed_copied"] = "Feed-URL in die Zwischenablage kopiert.";
+$lang["feed_revoked"] = "Der Kalender-Feed wurde widerrufen.";
 $lang["identity_attach_hint"] =
     'Diese Rolle wird der bestehenden Person „{$name}" ({$role}) zugeordnet. Die Anmeldedaten werden geteilt.';
 $lang["data_retention"] = "Datenaufbewahrung";

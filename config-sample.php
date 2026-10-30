@@ -59,6 +59,13 @@ class Config {
     const SHIB_LOGOUT_PATH = '/Shibboleth.sso/Logout';
 
     // ------------------------------------------------------------------------
+    // PROVIDER CALENDAR FEED (ICAL)
+    // ------------------------------------------------------------------------
+
+    const ICAL_FEED_RANGE_PAST  = 30;    // days of past appointments included
+    const ICAL_FEED_RANGE_FUTURE = 365;  // days of upcoming appointments included
+
+    // ------------------------------------------------------------------------
     // DATABASE SETTINGS
     // ------------------------------------------------------------------------
 

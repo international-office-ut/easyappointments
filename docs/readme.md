@@ -9,6 +9,7 @@ Welcome to the documentation pages of Easy!Appointments. Navigate through the av
 - [Console](console.md)
 - [Docker](docker.md)
 - [Shibboleth sso](shibboleth-sso.md)
+- [Provider Calendar Feed](ical-feed.md)
 - [FAQ](faq.md)
 
 *This document applies to Easy!Appointments v1.4.2.*

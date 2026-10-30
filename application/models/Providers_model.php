@@ -718,6 +718,100 @@ class Providers_model extends EA_Model {
     }
 
     /**
+     * Generate a fresh calendar feed token for the provided provider.
+     *
+     * Only one feed token exists per provider: generating a new one revokes the previous
+     * automatically. The plaintext token is returned once and never stored — the database
+     * only keeps its SHA-256 hash, so the feed URL cannot be recovered from the database.
+     *
+     * @param int $provider_id Provider record id.
+     *
+     * @return string Returns the base64url token for the feed URL.
+     */
+    public function generate_feed_token(int $provider_id): string
+    {
+        $token = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
+        $token_hash = hash('sha256', $token);
+
+        $this->db->trans_begin();
+
+        $this->db->where('id_users', $provider_id)->delete('provider_calendar_tokens');
+
+        $this->db->insert('provider_calendar_tokens', [
+            'id_users' => $provider_id,
+            'token_hash' => $token_hash
+        ]);
+
+        $this->db->trans_complete();
+
+        return $token;
+    }
+
+    /**
+     * Revoke every calendar feed token of the provided provider.
+     *
+     * @param int $provider_id Provider record id.
+     *
+     * @return void
+     */
+    public function revoke_feed_token(int $provider_id): void
+    {
+        $this->db->where('id_users', $provider_id)->delete('provider_calendar_tokens');
+    }
+
+    /**
+     * Check whether the provider currently owns a calendar feed token.
+     *
+     * @param int $provider_id Provider record id.
+     *
+     * @return bool Returns whether an active token exists.
+     */
+    public function has_feed_token(int $provider_id): bool
+    {
+        return $this->db->where('id_users', $provider_id)->count_all_results('provider_calendar_tokens') > 0;
+    }
+
+    /**
+     * Resolve the provider record id of a feed token.
+     *
+     * The token is looked up by its hash, so a wrong guess costs one indexed query and
+     * reveals nothing. The last-used timestamp is refreshed at most every ten minutes so
+     * that frequent calendar clients do not extend the write load.
+     *
+     * @param string $token Feed token from the URL (base64url).
+     *
+     * @return int|null Returns the provider id of the matched token, or NULL when invalid.
+     */
+    public function get_provider_id_by_feed_token(string $token): ?int
+    {
+        $token_hash = hash('sha256', $token);
+
+        $row = $this->db
+            ->select('id, token_hash, last_used_at')
+            ->from('provider_calendar_tokens')
+            ->where('token_hash', $token_hash)
+            ->get()
+            ->row_array();
+
+        if (empty($row) || ! hash_equals($row['token_hash'], $token_hash))
+        {
+            return NULL;
+        }
+
+        $refresh = $row['last_used_at'] === NULL
+            || (time() - strtotime($row['last_used_at'])) > 600;
+
+        if ($refresh)
+        {
+            $this->db
+                ->where('id', $row['id'])
+                ->update('provider_calendar_tokens', ['last_used_at' => date('Y-m-d H:i:s')]);
+        }
+
+        return (int)$row['id_users'];
+    }
+
+    /**
      * Save the provider working plan exception.
      *
      * @param string $date The working plan exception date (in YYYY-MM-DD format).

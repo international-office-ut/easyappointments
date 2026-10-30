@@ -42,6 +42,9 @@
 $route['default_controller'] = 'appointments';
 $route['404_override'] = 'errors/error404';
 
+// Provider calendar feed: the token lives in the URL path (never in a query string).
+$route['ical/(:any)'] = 'ical/fetch/$1';
+
 
 /*
 | -------------------------------------------------------------------------

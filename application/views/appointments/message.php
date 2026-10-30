@@ -15,7 +15,7 @@
     <link rel="icon" sizes="192x192" href="<?= asset_url('assets/img/logo.png') ?>">
 
     <script>
-        var EALang = <?= json_encode($this->lang->language) ?>;
+        var EALang = <?= json_data($this->lang->language) ?>;
     </script>
 
     <script src="<?= asset_url('assets/ext/jquery/jquery.min.js') ?>"></script>

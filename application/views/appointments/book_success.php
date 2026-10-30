@@ -71,15 +71,15 @@
 
 <script>
     var GlobalVariables = {
-        csrfToken: <?= json_encode($this->security->get_csrf_hash()) ?>,
-        appointmentData: <?= json_encode($appointment_data) ?>,
-        providerData: <?= json_encode($provider_data) ?>,
-        customerData: <?= json_encode($customer_data) ?>,
-        serviceData: <?= json_encode($service_data) ?>,
-        companyName: <?= json_encode($company_name) ?>,
+        csrfToken: <?= json_data($this->security->get_csrf_hash()) ?>,
+        appointmentData: <?= json_data($appointment_data) ?>,
+        providerData: <?= json_data($provider_data) ?>,
+        customerData: <?= json_data($customer_data) ?>,
+        serviceData: <?= json_data($service_data) ?>,
+        companyName: <?= json_data($company_name) ?>,
     };
 
-    var EALang = <?= json_encode($this->lang->language) ?>;
+    var EALang = <?= json_data($this->lang->language) ?>;
 </script>
 
 <script src="<?= asset_url('assets/js/polyfill.js') ?>"></script>

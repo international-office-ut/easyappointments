@@ -3,21 +3,21 @@
 <script src="<?= asset_url('assets/js/backend_customers.js') ?>"></script>
 <script>
     var GlobalVariables = {
-        csrfToken: <?= json_encode($this->security->get_csrf_hash()) ?>,
-        availableProviders: <?= json_encode($available_providers) ?>,
-        availableServices: <?= json_encode($available_services) ?>,
-        secretaryProviders: <?= json_encode($secretary_providers) ?>,
-        dateFormat: <?= json_encode($date_format) ?>,
-        timeFormat: <?= json_encode($time_format) ?>,
-        baseUrl: <?= json_encode($base_url) ?>,
-        customers: <?= json_encode($customers) ?>,
-        timezones: <?= json_encode($timezones) ?>,
+        csrfToken: <?= json_data($this->security->get_csrf_hash()) ?>,
+        availableProviders: <?= json_data($available_providers) ?>,
+        availableServices: <?= json_data($available_services) ?>,
+        secretaryProviders: <?= json_data($secretary_providers) ?>,
+        dateFormat: <?= json_data($date_format) ?>,
+        timeFormat: <?= json_data($time_format) ?>,
+        baseUrl: <?= json_data($base_url) ?>,
+        customers: <?= json_data($customers) ?>,
+        timezones: <?= json_data($timezones) ?>,
         user: {
             id: <?= $user_id ?>,
-            email: <?= json_encode($user_email) ?>,
-            timezone: <?= json_encode($timezone) ?>,
-            role_slug: <?= json_encode($role_slug) ?>,
-            privileges: <?= json_encode($privileges) ?>
+            email: <?= json_data($user_email) ?>,
+            timezone: <?= json_data($timezone) ?>,
+            role_slug: <?= json_data($role_slug) ?>,
+            privileges: <?= json_data($privileges) ?>
         }
     };
 

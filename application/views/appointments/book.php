@@ -458,24 +458,24 @@
 
 <script>
     var GlobalVariables = {
-        availableServices: <?= json_encode($available_services) ?>,
-        availableProviders: <?= json_encode($available_providers) ?>,
-        baseUrl: <?= json_encode(config('base_url')) ?>,
+        availableServices: <?= json_data($available_services) ?>,
+        availableProviders: <?= json_data($available_providers) ?>,
+        baseUrl: <?= json_data(config('base_url')) ?>,
         manageMode: <?= $manage_mode ? 'true' : 'false' ?>,
-        customerToken: <?= json_encode($customer_token) ?>,
-        dateFormat: <?= json_encode($date_format) ?>,
-        timeFormat: <?= json_encode($time_format) ?>,
-        firstWeekday: <?= json_encode($first_weekday) ?>,
-        displayCookieNotice: <?= json_encode($display_cookie_notice === '1') ?>,
-        appointmentData: <?= json_encode($appointment_data) ?>,
-        providerData: <?= json_encode($provider_data) ?>,
-        customerData: <?= json_encode($customer_data) ?>,
-        displayAnyProvider: <?= json_encode($display_any_provider) ?>,
-        csrfToken: <?= json_encode($this->security->get_csrf_hash()) ?>
+        customerToken: <?= json_data($customer_token) ?>,
+        dateFormat: <?= json_data($date_format) ?>,
+        timeFormat: <?= json_data($time_format) ?>,
+        firstWeekday: <?= json_data($first_weekday) ?>,
+        displayCookieNotice: <?= json_data($display_cookie_notice === '1') ?>,
+        appointmentData: <?= json_data($appointment_data) ?>,
+        providerData: <?= json_data($provider_data) ?>,
+        customerData: <?= json_data($customer_data) ?>,
+        displayAnyProvider: <?= json_data($display_any_provider) ?>,
+        csrfToken: <?= json_data($this->security->get_csrf_hash()) ?>
     };
 
-    var EALang = <?= json_encode($this->lang->language) ?>;
-    var availableLanguages = <?= json_encode(config('available_languages')) ?>;
+    var EALang = <?= json_data($this->lang->language) ?>;
+    var availableLanguages = <?= json_data(config('available_languages')) ?>;
 </script>
 
 <script src="<?= asset_url('assets/js/general_functions.js') ?>"></script>

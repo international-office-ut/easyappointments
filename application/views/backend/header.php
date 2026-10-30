@@ -18,8 +18,8 @@
 
     <script>
         // Global JavaScript Variables - Used in all backend pages.
-        var availableLanguages = <?= json_encode(config('available_languages')) ?>;
-        var EALang = <?= json_encode($this->lang->language) ?>;
+        var availableLanguages = <?= json_data(config('available_languages')) ?>;
+        var EALang = <?= json_data($this->lang->language) ?>;
     </script>
 
     <script src="<?= asset_url('assets/ext/jquery/jquery.min.js') ?>"></script>

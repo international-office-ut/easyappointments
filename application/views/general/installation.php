@@ -135,11 +135,11 @@
 
 <script>
     var GlobalVariables = {
-        csrfToken: <?= json_encode($this->security->get_csrf_hash()) ?>,
-        baseUrl: <?= json_encode(config('base_url')) ?>
+        csrfToken: <?= json_data($this->security->get_csrf_hash()) ?>,
+        baseUrl: <?= json_data(config('base_url')) ?>
     };
 
-    var EALang = <?= json_encode($this->lang->language) ?>;
+    var EALang = <?= json_data($this->lang->language) ?>;
 </script>
 
 <script src="<?= asset_url('assets/ext/jquery/jquery.min.js') ?>"></script>

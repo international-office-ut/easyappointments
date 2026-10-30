@@ -8,24 +8,24 @@
 <script src="<?= asset_url('assets/ext/jquery-jeditable/jquery.jeditable.min.js') ?>"></script>
 <script>
     var GlobalVariables = {
-        csrfToken: <?= json_encode($this->security->get_csrf_hash()) ?>,
-        baseUrl: <?= json_encode($base_url) ?>,
-        dateFormat: <?= json_encode($date_format) ?>,
-        firstWeekday: <?= json_encode($first_weekday); ?>,
-        timeFormat: <?= json_encode($time_format) ?>,
-        admins: <?= json_encode($admins) ?>,
-        providers: <?= json_encode($providers) ?>,
-        secretaries: <?= json_encode($secretaries) ?>,
-        services: <?= json_encode($services) ?>,
-        timezones: <?= json_encode($timezones) ?>,
-        workingPlan: <?= json_encode(json_decode($working_plan)) ?>,
-        workingPlanExceptions: <?= json_encode(json_decode($working_plan_exceptions)) ?>,
+        csrfToken: <?= json_data($this->security->get_csrf_hash()) ?>,
+        baseUrl: <?= json_data($base_url) ?>,
+        dateFormat: <?= json_data($date_format) ?>,
+        firstWeekday: <?= json_data($first_weekday); ?>,
+        timeFormat: <?= json_data($time_format) ?>,
+        admins: <?= json_data($admins) ?>,
+        providers: <?= json_data($providers) ?>,
+        secretaries: <?= json_data($secretaries) ?>,
+        services: <?= json_data($services) ?>,
+        timezones: <?= json_data($timezones) ?>,
+        workingPlan: <?= json_data(json_decode($working_plan)) ?>,
+        workingPlanExceptions: <?= json_data(json_decode($working_plan_exceptions)) ?>,
         user: {
             id: <?= $user_id ?>,
-            email: <?= json_encode($user_email) ?>,
-            timezone: <?= json_encode($timezone) ?>,
-            role_slug: <?= json_encode($role_slug) ?>,
-            privileges: <?= json_encode($privileges) ?>
+            email: <?= json_data($user_email) ?>,
+            timezone: <?= json_data($timezone) ?>,
+            role_slug: <?= json_data($role_slug) ?>,
+            privileges: <?= json_data($privileges) ?>
         }
     };
 

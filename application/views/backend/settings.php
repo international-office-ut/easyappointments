@@ -6,23 +6,23 @@
 <script src="<?= asset_url('assets/ext/jquery-jeditable/jquery.jeditable.min.js') ?>"></script>
 <script>
     var GlobalVariables = {
-        csrfToken: <?= json_encode($this->security->get_csrf_hash()) ?>,
-        baseUrl: <?= json_encode($base_url) ?>,
-        dateFormat: <?= json_encode($date_format) ?>,
-        firstWeekday: <?= json_encode($first_weekday); ?>,
-        timeFormat: <?= json_encode($time_format) ?>,
-        userSlug: <?= json_encode($role_slug) ?>,
-        timezones: <?= json_encode($timezones) ?>,
+        csrfToken: <?= json_data($this->security->get_csrf_hash()) ?>,
+        baseUrl: <?= json_data($base_url) ?>,
+        dateFormat: <?= json_data($date_format) ?>,
+        firstWeekday: <?= json_data($first_weekday); ?>,
+        timeFormat: <?= json_data($time_format) ?>,
+        userSlug: <?= json_data($role_slug) ?>,
+        timezones: <?= json_data($timezones) ?>,
         settings: {
-            system: <?= json_encode($system_settings) ?>,
-            user: <?= json_encode($user_settings) ?>
+            system: <?= json_data($system_settings) ?>,
+            user: <?= json_data($user_settings) ?>
         },
         user: {
             id: <?= $user_id ?>,
-            email: <?= json_encode($user_email) ?>,
-            timezone: <?= json_encode($timezone) ?>,
-            role_slug: <?= json_encode($role_slug) ?>,
-            privileges: <?= json_encode($privileges) ?>
+            email: <?= json_data($user_email) ?>,
+            timezone: <?= json_data($timezone) ?>,
+            role_slug: <?= json_data($role_slug) ?>,
+            privileges: <?= json_data($privileges) ?>
         }
     };
 

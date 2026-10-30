@@ -30,12 +30,12 @@ function exceptionToHtml($exception)
             <div class="accordion-group">
                 <div class="accordion-heading">
                     <a class="accordion-toggle" data-toggle="collapse"
-                            data-parent="#error-accordion" href="#error-technical">' . $exception->getMessage() . '
+                            data-parent="#error-accordion" href="#error-technical">' . html_escape($exception->getMessage()) . '
                     </a>
                 </div>
                 <div id="error-technical" class="accordion-body collapse">
                     <div class="accordion-inner">
-                        <pre>' . $exception->getTraceAsString() . '</pre>
+                        <pre>' . html_escape($exception->getTraceAsString()) . '</pre>
                     </div>
                 </div>
             </div>

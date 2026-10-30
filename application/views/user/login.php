@@ -22,19 +22,19 @@
 
     <script>
         var GlobalVariables = {
-            csrfToken: <?= json_encode($this->security->get_csrf_hash()) ?>,
-            baseUrl: <?= json_encode($base_url) ?>,
-            destUrl: <?= json_encode($dest_url) ?>,
-            shibCandidates: <?= json_encode($shib_candidates ?? []) ?>,
-            shibEnabled: <?= json_encode($shib_enabled ?? FALSE) ?>,
-            passwordLogin: <?= json_encode($password_login ?? TRUE) ?>,
+            csrfToken: <?= json_data($this->security->get_csrf_hash()) ?>,
+            baseUrl: <?= json_data($base_url) ?>,
+            destUrl: <?= json_data($dest_url) ?>,
+            shibCandidates: <?= json_data($shib_candidates ?? []) ?>,
+            shibEnabled: <?= json_data($shib_enabled ?? FALSE) ?>,
+            passwordLogin: <?= json_data($password_login ?? TRUE) ?>,
             AJAX_SUCCESS: 'SUCCESS',
             AJAX_FAILURE: 'FAILURE'
         };
 
-        var EALang = <?= json_encode($this->lang->language) ?>;
+        var EALang = <?= json_data($this->lang->language) ?>;
 
-        var availableLanguages = <?= json_encode(config('available_languages')) ?>;
+        var availableLanguages = <?= json_data(config('available_languages')) ?>;
 
         $(function () {
             GeneralFunctions.enableLanguageSelection($('#select-language'));

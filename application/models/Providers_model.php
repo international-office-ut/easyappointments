@@ -787,7 +787,7 @@ class Providers_model extends EA_Model {
         $token_hash = hash('sha256', $token);
 
         $row = $this->db
-            ->select('id, token_hash, last_used_at')
+            ->select('id, id_users, token_hash, last_used_at')
             ->from('provider_calendar_tokens')
             ->where('token_hash', $token_hash)
             ->get()

@@ -46,6 +46,45 @@ class User_model extends EA_Model {
     }
 
     /**
+     * Returns the backend user rows (admins, providers, secretaries) that carry the email of
+     * an SSO login.
+     *
+     * Customers are excluded because they authenticate through the public booking page, so
+     * their records are not login candidates.
+     *
+     * @param string $email Email address of the SSO login.
+     *
+     * @return array Returns a list of session payloads, one per matched role row.
+     */
+    public function get_users_by_email(string $email): array
+    {
+        $rows = $this->db
+            ->select('users.id, users.email, users.timezone, roles.slug AS role_slug')
+            ->from('users')
+            ->join('roles', 'roles.id = users.id_roles', 'inner')
+            ->where('users.email', $email)
+            ->where('roles.slug !=', DB_SLUG_CUSTOMER)
+            ->order_by('users.id', 'ASC')
+            ->get()
+            ->result_array();
+
+        $default_timezone = $this->timezones->get_default_timezone();
+
+        foreach ($rows as $index => $row)
+        {
+            $rows[$index] = [
+                'user_id' => (int)$row['id'],
+                'user_email' => $row['email'],
+                'username' => '',
+                'timezone' => isset($row['timezone']) ? $row['timezone'] : $default_timezone,
+                'role_slug' => $row['role_slug'],
+            ];
+        }
+
+        return $rows;
+    }
+
+    /**
      * This method saves the user record into the database (used in backend settings page).
      *
      * @param array $user Contains the current users data.

@@ -228,6 +228,11 @@ $lang["login"] = "Login";
 $lang["forgot_your_password"] = "Forgot Your Password?";
 $lang["login_failed"] = "Login failed. Please use the correct username and password.";
 $lang["select_role"] = "Continue as ...";
+$lang["login_with_shibboleth"] = "Login with Shibboleth";
+$lang["shib_user_not_found"] =
+    "The logged-in identity does not match any Easy!Appointments user account.";
+$lang["sso_login_only"] =
+    "Password login is disabled, please use the Shibboleth login button.";
 $lang["identity_attach_hint"] =
     'Attach this role to the existing person "{$name}" ({$role}). Login credentials are shared.';
 $lang["data_retention"] = "Data Retention";

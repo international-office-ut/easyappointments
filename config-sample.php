@@ -47,6 +47,16 @@ class Config {
     const SMTP_PASS      = '';
     const SMTP_CRYPTO    = 'tls';   // '', 'ssl' or 'tls'
 
+    // ------------------------------------------------------------------------
+    // SHIBBOLETH (SSO)
+    // ------------------------------------------------------------------------
+
+    const SHIB_ENABLED     = FALSE;
+    const SHIB_ATTR_EMAIL  = 'mail';          // or 'eppn' (released by the IdP)
+    const SHIB_ATTR_NAME   = 'displayName';   // optional, '' to skip
+    const SHIB_PASSWORD_LOGIN = TRUE;         // FALSE forbids the username/password login
+    const SHIB_LOGIN_PATH  = '/Shibboleth.sso/Login';
+    const SHIB_LOGOUT_PATH = '/Shibboleth.sso/Logout';
 
     // ------------------------------------------------------------------------
     // DATABASE SETTINGS

@@ -28,6 +28,14 @@ class Config {
     const SMTP_PASS      = '';
     const SMTP_CRYPTO    = 'tls';   // '', 'ssl' or 'tls'
 
+    // SHIBBOLETH (SSO): the native SP (shibd) must run beside the application.
+    const SHIB_ENABLED     = FALSE;
+    const SHIB_ATTR_EMAIL  = 'mail';          // or 'eppn' (released by the IdP)
+    const SHIB_ATTR_NAME   = 'displayName';   // optional, '' to skip
+    const SHIB_PASSWORD_LOGIN = TRUE;         // FALSE forbids the username/password login
+    const SHIB_LOGIN_PATH  = '/Shibboleth.sso/Login';
+    const SHIB_LOGOUT_PATH = '/Shibboleth.sso/Logout';
+
     // Related: keep "platform-check" disabled in composer.json, because the pinned PHP version
     // (8.3.6) and the eventual Ubuntu security patch release (e.g. 8.3.14) would otherwise
     // break the composer vendor autoload on servers that update PHP via `apt upgrade`.

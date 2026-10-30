@@ -229,6 +229,11 @@ $lang["forgot_your_password"] = "Passwort vergessen?";
 $lang["login_failed"] =
     "Anmeldung fehlgeschlagen, bitte geben Sie die richtigen Anmeldedaten ein und versuchen Sie es erneut.";
 $lang["select_role"] = "Weiter als ...";
+$lang["login_with_shibboleth"] = "Mit Shibboleth anmelden";
+$lang["shib_user_not_found"] =
+    "Die angemeldete Identität passt zu keinem Easy!Appointments-Benutzerkonto.";
+$lang["sso_login_only"] =
+    "Die Anmeldung mit Passwort ist deaktiviert, bitte verwenden Sie den Shibboleth-Login.";
 $lang["identity_attach_hint"] =
     'Diese Rolle wird der bestehenden Person „{$name}" ({$role}) zugeordnet. Die Anmeldedaten werden geteilt.';
 $lang["data_retention"] = "Datenaufbewahrung";

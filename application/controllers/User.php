@@ -151,7 +151,108 @@ class User extends EA_Controller {
 
         $view['company_name'] = $this->settings_model->get_setting('company_name');
 
+        // When the role-picker was requested through the SSO flow, the candidates of the
+        // authenticated identity get rendered server-side (no credentials required).
+        $candidates = json_decode((string) $this->session->userdata('login_candidates'), TRUE);
+        $view['shib_candidates'] = ($this->input->get('multi') === '1' && is_array($candidates))
+            ? $candidates
+            : [];
+
+        $view['shib_error'] = (bool) $this->session->flashdata('shib_error');
+        $view['shib_enabled'] = (bool) Config::SHIB_ENABLED;
+        $view['password_login'] = $this->password_login_allowed();
+
         $this->load->view('user/login', $view);
+    }
+
+    /**
+     * Start the Shibboleth SSO login by passing the browser through the service provider.
+     */
+    public function shib()
+    {
+        if ( ! Config::SHIB_ENABLED)
+        {
+            redirect('user/login');
+        }
+
+        redirect(Config::SHIB_LOGIN_PATH . '?target=' . rawurlencode(site_url('user/shib_return')));
+    }
+
+    /**
+     * Landing page of the completed Shibboleth login.
+     *
+     * The identities are matched by email (or eppn, depending on the SHIB_ATTR_* configuration),
+     * so that no additional password or provisioning data is required. The attributes are only
+     * trusted when the request really passed the Shibboleth service provider.
+     */
+    public function shib_return()
+    {
+        if ( ! Config::SHIB_ENABLED)
+        {
+            redirect('user/login');
+        }
+
+        $attribute = static function (string $name): ?string
+        {
+            return $_SERVER[$name]
+                ?? $_SERVER['HTTP_' . strtoupper(str_replace('-', '_', $name))]
+                ?? NULL;
+        };
+
+        if (empty($attribute('Shib-Application-ID')))
+        {
+            $this->session->set_flashdata('shib_error', TRUE);
+            redirect('user/login');
+        }
+
+        $email = $attribute(Config::SHIB_ATTR_EMAIL);
+
+        if ($email === NULL || $email === '')
+        {
+            log_message('info', 'Shibboleth login skipped: the email attribute is not present.');
+            $this->session->set_flashdata('shib_error', TRUE);
+            redirect('user/login');
+        }
+
+        $matches = $this->user_model->get_users_by_email($email);
+
+        if (count($matches) === 1)
+        {
+            $this->establish_session($matches[0], TRUE);
+
+            redirect('backend');
+        }
+
+        if (count($matches) > 1)
+        {
+            // The identity matches several role rows: cache the verified candidates and let
+            // the role picker of the login page render them (same list as the password flow).
+            $this->session->set_userdata('login_candidates', json_encode($matches));
+
+            redirect('user/login?multi=1');
+        }
+
+        log_message('info', 'Shibboleth login failed: no user account for "' . $email . '".');
+        $this->session->set_flashdata('shib_error', TRUE);
+        redirect('user/login');
+    }
+
+    /**
+     * Write the session data of a verified login (password or Shibboleth) and harden it.
+     *
+     * @param array $user_data Session payload of the matched user row.
+     * @param bool $sso When TRUE the login came through an identity provider (logout triggers SLO).
+     */
+    protected function establish_session(array $user_data, bool $sso = FALSE): void
+    {
+        $this->session->sess_regenerate(TRUE);
+
+        if ($sso)
+        {
+            $user_data['shib_sso'] = TRUE;
+        }
+
+        $this->session->set_userdata($user_data);
     }
 
     /**
@@ -159,16 +260,38 @@ class User extends EA_Controller {
      */
     public function logout()
     {
+        $sso_logout = (bool) Config::SHIB_ENABLED && (bool) $this->session->userdata('shib_sso');
+
         $this->session->unset_userdata('user_id');
         $this->session->unset_userdata('user_email');
         $this->session->unset_userdata('role_slug');
         $this->session->unset_userdata('username');
         $this->session->unset_userdata('login_candidates');
         $this->session->unset_userdata('dest_url');
+        $this->session->unset_userdata('shib_sso');
+
+        if ($sso_logout)
+        {
+            // Hand the session destruction over to the service provider, so that the IdP
+            // Single Logout terminates the SSO session of the user, and return to the login.
+            redirect(Config::SHIB_LOGOUT_PATH . '?return=' . rawurlencode(site_url('user/login')));
+        }
 
         $view['base_url'] = config('base_url');
         $view['company_name'] = $this->settings_model->get_setting('company_name');
         $this->load->view('user/logout', $view);
+    }
+
+    /**
+     * Returns whether the username/password login is usable with the current configuration.
+     *
+     * The password check only dies completely when the SSO is active: with the SHIB_ENABLED
+     * switch off, password login stays available no matter what (fail-open), so that a
+     * misconfigured installation never locks all users (and admins) out.
+     */
+    protected function password_login_allowed(): bool
+    {
+        return ! Config::SHIB_ENABLED || Config::SHIB_PASSWORD_LOGIN;
     }
 
     /**
@@ -177,6 +300,12 @@ class User extends EA_Controller {
      */
     public function forgot_password()
     {
+        if ( ! $this->password_login_allowed())
+        {
+            // A new password would never be accepted by the disabled password login.
+            redirect('user/login');
+        }
+
         $view['base_url'] = config('base_url');
         $view['company_name'] = $this->settings_model->get_setting('company_name');
         $this->load->view('user/forgot_password', $view);
@@ -206,7 +335,12 @@ class User extends EA_Controller {
     {
         try
         {
-            if ( ! $this->input->post('username') || ! $this->input->post('password'))
+            if ( ! $this->password_login_allowed())
+            {
+                log_message('error', 'Password login attempt while "SHIB_PASSWORD_LOGIN" is disabled.');
+                $response = AJAX_FAILURE;
+            }
+            else if ( ! $this->input->post('username') || ! $this->input->post('password'))
             {
                 throw new Exception('Invalid credentials given!');
             }
@@ -245,7 +379,7 @@ class User extends EA_Controller {
             }
             else if ($user_data)
             {
-                $this->session->set_userdata($user_data); // Save data on user's session.
+                $this->establish_session($user_data); // Save data on user's session and harden it.
 
                 $this->rate_limit_clear($client_key);
                 $this->rate_limit_clear($user_key);
@@ -314,7 +448,7 @@ class User extends EA_Controller {
                 throw new Exception('The selected role is not part of the verified login candidates.');
             }
 
-            $this->session->set_userdata($user_data);
+            $this->establish_session($user_data);
             $this->session->unset_userdata('login_candidates');
 
             $response = AJAX_SUCCESS;
@@ -347,7 +481,12 @@ class User extends EA_Controller {
     {
         try
         {
-            if ( ! $this->input->post('username') || ! $this->input->post('email'))
+            if ( ! $this->password_login_allowed())
+            {
+                log_message('error', 'Password recovery attempt while "SHIB_PASSWORD_LOGIN" is disabled.');
+                $response = AJAX_FAILURE;
+            }
+            else if ( ! $this->input->post('username') || ! $this->input->post('email'))
             {
                 throw new Exception('You must enter a valid username and email address in '
                     . 'order to get a new password!');

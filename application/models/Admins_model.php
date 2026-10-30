@@ -121,11 +121,7 @@ class Admins_model extends EA_Model {
             // A new admin row that belongs to an existing identity (same email on another
             // role) inherits the password from that identity, so an empty password is fine.
             $this->load->model('identities_model');
-
-            if ( ! $this->identities_model->exists_in_other_role($admin['email'], DB_SLUG_ADMIN))
-            {
-                throw new Exception('The user password cannot be empty for new users.');
-            }
+            $this->identities_model->assert_passwordless_row($admin['email'], DB_SLUG_ADMIN);
         }
 
         // Validate calendar view mode.
@@ -344,22 +340,8 @@ class Admins_model extends EA_Model {
 
         // Identity cascade: keep the other role rows of the same person in sync.
         $this->load->model('identities_model');
-
-        if (isset($admin['email']) && $old_row && $old_row['email'] !== $admin['email'])
-        {
-            $this->identities_model->sync_email_and_login_name(
-                $old_row['email'],
-                $admin['email'],
-                $settings['username'] ?? ($old_settings['username'] ?? NULL),
-                $old_settings['username'] ?? NULL,
-                (int)$admin['id']
-            );
-        }
-
-        if ($new_password !== NULL)
-        {
-            $this->identities_model->sync_password($admin['email'], $new_password, (int)$admin['id']);
-        }
+        $this->identities_model->sync_after_update($admin,
+            $old_row ? $old_row['email'] : NULL, $old_settings, $settings, $new_password);
 
         return (int)$admin['id'];
     }
@@ -505,13 +487,55 @@ class Admins_model extends EA_Model {
         $batch = $this->db->get_where('users', ['id_roles' => $role_id], $limit, $offset)->result_array();
 
         // Get every admin settings.
+        $this->attach_admin_settings($batch);
+
         foreach ($batch as &$admin)
         {
-            $admin['settings'] = $this->db->get_where('user_settings',
-                ['id_users' => $admin['id']])->row_array();
-            unset($admin['settings']['id_users']);
+            // The page UI never needs the stored credentials, so they stay in the database.
+            unset($admin['settings']['password'], $admin['settings']['salt']);
         }
 
         return $batch;
+    }
+
+    /**
+     * Attach the settings of the provided admins.
+     *
+     * Runs one aggregate query instead of one subquery per admin (N+1) and maps the results
+     * in memory.
+     *
+     * @param array $batch Admins passed by reference; the "settings" key gets attached.
+     *
+     * @return void
+     */
+    protected function attach_admin_settings(array &$batch): void
+    {
+        if (empty($batch))
+        {
+            return;
+        }
+
+        $admin_ids = array_map(static function (array $admin): int
+        {
+            return (int)$admin['id'];
+        }, $batch);
+
+        $settings_rows = $this->db
+            ->where_in('id_users', $admin_ids)
+            ->get('user_settings')
+            ->result_array();
+
+        $settings_map = [];
+        foreach ($settings_rows as $settings_row)
+        {
+            $admin_id = (int)$settings_row['id_users'];
+            unset($settings_row['id_users']);
+            $settings_map[$admin_id] = $settings_row;
+        }
+
+        foreach ($batch as &$admin)
+        {
+            $admin['settings'] = $settings_map[(int)$admin['id']] ?? [];
+        }
     }
 }

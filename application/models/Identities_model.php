@@ -205,6 +205,60 @@ class Identities_model extends EA_Model {
     }
 
     /**
+     * Ensure that a new role row without a password belongs to an existing identity.
+     *
+     * A passwordless row is only allowed when the same person (same email address) already
+     * holds a row in another role, so that the credentials can be inherited at insert time.
+     *
+     * @param string $email Email of the prospective new row.
+     * @param string $role_slug Role of the prospective new row.
+     *
+     * @return void
+     *
+     * @throws Exception When the email matches no role row and no password is provided.
+     */
+    public function assert_passwordless_row(string $email, string $role_slug): void
+    {
+        if ( ! $this->exists_in_other_role($email, $role_slug))
+        {
+            throw new Exception('The user password cannot be empty for new users.');
+        }
+    }
+
+    /**
+     * Keep the sibling rows of an identity in sync after a role row update.
+     *
+     * @param array $updated_user The values that are written to the users row (id + email).
+     * @param string|null $old_email Email of the row before the update (NULL skips the email cascade).
+     * @param array|null $old_settings Settings of the row before the update.
+     * @param array $new_settings Settings that are written to the row.
+     * @param string|null $new_password New plaintext password that is written to the row.
+     *
+     * @return void
+     */
+    public function sync_after_update(array $updated_user, ?string $old_email, ?array $old_settings,
+        array $new_settings, ?string $new_password): void
+    {
+        if ($old_email !== NULL
+            && ! empty($updated_user['email'])
+            && $updated_user['email'] !== $old_email)
+        {
+            $this->sync_email_and_login_name(
+                $old_email,
+                $updated_user['email'],
+                $new_settings['username'] ?? ($old_settings['username'] ?? NULL),
+                $old_settings['username'] ?? NULL,
+                (int)$updated_user['id']
+            );
+        }
+
+        if ($new_password !== NULL)
+        {
+            $this->sync_password($updated_user['email'] ?? '', $new_password, (int)$updated_user['id']);
+        }
+    }
+
+    /**
      * Determine whether an email is already used by another role row.
      *
      * @param string $email Email of the prospective new row.

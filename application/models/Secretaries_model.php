@@ -129,11 +129,7 @@ class Secretaries_model extends EA_Model {
             // A new secretary row that belongs to an existing identity (same email on another
             // role) inherits the password from that identity, so an empty password is fine.
             $this->load->model('identities_model');
-
-            if ( ! $this->identities_model->exists_in_other_role($secretary['email'], DB_SLUG_SECRETARY))
-            {
-                throw new Exception('The user password cannot be empty for new users.');
-            }
+            $this->identities_model->assert_passwordless_row($secretary['email'], DB_SLUG_SECRETARY);
         }
 
         // Validate calendar view mode.
@@ -427,23 +423,8 @@ class Secretaries_model extends EA_Model {
 
         // Identity cascade: keep the other role rows of the same person in sync.
         $this->load->model('identities_model');
-
-        if (isset($secretary['email']) && $old_row && $old_row['email'] !== $secretary['email'])
-        {
-            $this->identities_model->sync_email_and_login_name(
-                $old_row['email'],
-                $secretary['email'],
-                $settings['username'] ?? ($old_settings['username'] ?? NULL),
-                $old_settings['username'] ?? NULL,
-                (int)$secretary['id']
-            );
-        }
-
-        if ($new_password !== NULL)
-        {
-            $this->identities_model->sync_password($secretary['email'], $new_password,
-                (int)$secretary['id']);
-        }
+        $this->identities_model->sync_after_update($secretary,
+            $old_row ? $old_row['email'] : NULL, $old_settings, $settings, $new_password);
 
         return (int)$secretary['id'];
     }
@@ -586,23 +567,70 @@ class Secretaries_model extends EA_Model {
         $batch = $this->db->get_where('users', ['id_roles' => $role_id], $limit, $offset)->result_array();
 
         // Include every secretary providers.
+        $this->attach_secretary_relations($batch);
+
         foreach ($batch as &$secretary)
         {
-            $secretary_providers = $this->db->get_where('secretaries_providers',
-                ['id_users_secretary' => $secretary['id']])->result_array();
-
-            $secretary['providers'] = [];
-            foreach ($secretary_providers as $secretary_provider)
-            {
-                $secretary['providers'][] = $secretary_provider['id_users_provider'];
-            }
-
-            $secretary['settings'] = $this->db->get_where('user_settings',
-                ['id_users' => $secretary['id']])->row_array();
-            unset($secretary['settings']['id_users']);
+            // The page UI never needs the stored credentials, so they stay in the database.
+            unset($secretary['settings']['password'], $secretary['settings']['salt']);
         }
 
         return $batch;
+    }
+
+    /**
+     * Attach the related providers and settings of the provided secretaries.
+     *
+     * Runs two aggregate queries instead of two subqueries per secretary (N+1) and maps the
+     * results in memory.
+     *
+     * @param array $batch Secretaries passed by reference; the "providers" and "settings" keys get attached.
+     *
+     * @return void
+     */
+    protected function attach_secretary_relations(array &$batch): void
+    {
+        if (empty($batch))
+        {
+            return;
+        }
+
+        $secretary_ids = array_map(static function (array $secretary): int
+        {
+            return (int)$secretary['id'];
+        }, $batch);
+
+        $provider_rows = $this->db
+            ->where_in('id_users_secretary', $secretary_ids)
+            ->get('secretaries_providers')
+            ->result_array();
+
+        $providers_map = [];
+        foreach ($provider_rows as $provider_row)
+        {
+            $providers_map[$provider_row['id_users_secretary']][] = $provider_row['id_users_provider'];
+        }
+
+        $settings_rows = $this->db
+            ->where_in('id_users', $secretary_ids)
+            ->get('user_settings')
+            ->result_array();
+
+        $settings_map = [];
+        foreach ($settings_rows as $settings_row)
+        {
+            $secretary_id = (int)$settings_row['id_users'];
+            unset($settings_row['id_users']);
+            $settings_map[$secretary_id] = $settings_row;
+        }
+
+        foreach ($batch as &$secretary)
+        {
+            $secretary_id = (int)$secretary['id'];
+
+            $secretary['providers'] = $providers_map[$secretary_id] ?? [];
+            $secretary['settings'] = $settings_map[$secretary_id] ?? [];
+        }
     }
 
     /**

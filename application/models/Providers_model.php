@@ -151,11 +151,7 @@ class Providers_model extends EA_Model {
             // A new provider row that belongs to an existing identity (same email on another
             // role) inherits the password from that identity, so an empty password is fine.
             $this->load->model('identities_model');
-
-            if ( ! $this->identities_model->exists_in_other_role($provider['email'], DB_SLUG_PROVIDER))
-            {
-                throw new Exception('The user password cannot be empty for new users.');
-            }
+            $this->identities_model->assert_passwordless_row($provider['email'], DB_SLUG_PROVIDER);
         }
 
         // Validate calendar view mode.
@@ -509,22 +505,8 @@ class Providers_model extends EA_Model {
 
         // Identity cascade: keep the other role rows of the same person in sync.
         $this->load->model('identities_model');
-
-        if (isset($provider['email']) && $old_row && $old_row['email'] !== $provider['email'])
-        {
-            $this->identities_model->sync_email_and_login_name(
-                $old_row['email'],
-                $provider['email'],
-                $settings['username'] ?? ($old_settings['username'] ?? NULL),
-                $old_settings['username'] ?? NULL,
-                $provider['id']
-            );
-        }
-
-        if ($new_password !== NULL)
-        {
-            $this->identities_model->sync_password($provider['email'], $new_password, $provider['id']);
-        }
+        $this->identities_model->sync_after_update($provider,
+            $old_row ? $old_row['email'] : NULL, $old_settings, $settings, $new_password);
 
         // Return record id.
         return (int)$provider['id'];

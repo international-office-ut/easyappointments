@@ -10,7 +10,7 @@ The subscription is optional and additive: email notifications continue working 
 
 ### Generate a Feed
 
-In the backend, open `Users → Providers`, select a provider and scroll to the "Calendar Feed (iCal)" section:
+In the backend, open `Settings → User Settings` and scroll to the "Calendar Feed (iCal)" section (visible for provider accounts only — the feed is managed by the provider themselves):
 
 1. Press **Generate feed** — the URL appears exactly once, copy it now.
 2. Paste the URL into the calendar client:

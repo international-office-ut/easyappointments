@@ -132,4 +132,101 @@
 
     window.UserSettings = UserSettings;
 
+    /**
+     * Bind the calendar feed widget handlers of the user tab (visible for providers only).
+     */
+    if (GlobalVariables.userSlug !== 'provider') {
+        return;
+    }
+
+    function feedState() {
+        var providerId = GlobalVariables.settings.user && GlobalVariables.settings.user.id
+            ? GlobalVariables.settings.user.id
+            : $('#user-id').val();
+
+        if (!providerId) {
+            return;
+        }
+
+        $.post(GlobalVariables.baseUrl + '/index.php/backend_api/ajax_ical_feed_state', {
+            csrfToken: GlobalVariables.csrfToken,
+            provider_id: providerId
+        })
+            .done(function (response) {
+                $('#feed-state').text(response.active
+                    ? EALang.feed_active
+                    : EALang.feed_inactive);
+            })
+            .fail(function () {
+                $('#feed-state').text('');
+            });
+    }
+
+    $(function () {
+        feedState();
+
+        $('#feed-generate').on('click', function () {
+            var providerId = $('#user-id').val();
+
+            if (!providerId) {
+                return;
+            }
+
+            $.post(GlobalVariables.baseUrl + '/index.php/backend_api/ajax_generate_ical_feed', {
+                csrfToken: GlobalVariables.csrfToken,
+                provider_id: providerId
+            })
+                .done(function (response) {
+                    $('#feed-url').val(response.feed_url);
+                    $('#feed-state').text(EALang.feed_active);
+                    $('#feed-url').get(0).select();
+                })
+                .fail(function (jqXHR) {
+                    Backend.displayNotification(jqXHR.responseJSON && jqXHR.responseJSON.message
+                        ? jqXHR.responseJSON.message
+                        : EALang.oops_something_went_wrong);
+                });
+        });
+
+        $('#feed-revoke').on('click', function () {
+            var providerId = $('#user-id').val();
+
+            if (!providerId) {
+                return;
+            }
+
+            $.post(GlobalVariables.baseUrl + '/index.php/backend_api/ajax_revoke_ical_feed', {
+                csrfToken: GlobalVariables.csrfToken,
+                provider_id: providerId
+            })
+                .done(function () {
+                    $('#feed-url').val('');
+                    $('#feed-state').text(EALang.feed_inactive);
+                    Backend.displayNotification(EALang.feed_revoked);
+                })
+                .fail(function (jqXHR) {
+                    Backend.displayNotification(jqXHR.responseJSON && jqXHR.responseJSON.message
+                        ? jqXHR.responseJSON.message
+                        : EALang.oops_something_went_wrong);
+                });
+        });
+
+        $('#feed-copy').on('click', function () {
+            var url = $('#feed-url').val();
+
+            if (!url) {
+                return;
+            }
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url);
+            } else {
+                $('#feed-url').get(0).select();
+                document.execCommand('copy');
+            }
+
+            Backend.displayNotification(EALang.feed_copied);
+        });
+    });
+
 })();

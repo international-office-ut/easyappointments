@@ -318,9 +318,14 @@ class Backend extends EA_Controller {
         $view['first_weekday'] = $this->settings_model->get_setting('first_weekday');
         $view['time_format'] = $this->settings_model->get_setting('time_format');
         $view['role_slug'] = $this->session->userdata('role_slug');
-        $view['system_settings'] = $this->settings_model->get_settings();
         $view['user_settings'] = $this->user_model->get_user($user_id);
         $view['timezones'] = $this->timezones->to_array();
+
+        // Users without system-settings privileges may only edit their own user settings, so
+        // the system settings (like the API token) must never appear in the page source.
+        $view['system_settings'] = $this->has_privileges(PRIV_SYSTEM_SETTINGS, FALSE)
+            ? $this->settings_model->get_settings()
+            : [];
 
         // book_advance_timeout preview
         $book_advance_timeout = $this->settings_model->get_setting('book_advance_timeout');

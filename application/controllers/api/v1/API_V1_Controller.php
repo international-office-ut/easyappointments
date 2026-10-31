@@ -45,7 +45,11 @@ class API_V1_Controller extends EA_Controller {
 
             $authorization = new Authorization($this);
 
-            if ( ! empty($api_token) && $api_token === $this->get_bearer_token())
+            $provided_token = $this->get_bearer_token();
+
+            // The comparison must use a constant-time function, so that request timing does
+            // not leak any part of the configured token.
+            if ( ! empty($api_token) && ! empty($provided_token) && hash_equals($api_token, $provided_token))
             {
                 return;
             }

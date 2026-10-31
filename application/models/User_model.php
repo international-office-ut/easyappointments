@@ -261,7 +261,7 @@ class User_model extends EA_Model {
         }
 
         // Create a new password and send it with an email to the given email address.
-        $new_password = random_string('alnum', 12);
+        $new_password = bin2hex(random_bytes(16));
 
         // Reset the password on every record of the identity (same email and login name):
         // one person, one password, no matter how many role rows they hold. Each row keeps

@@ -157,7 +157,9 @@ class Appointments extends EA_Controller {
 
                 $customer = $this->customers_model->get_row($appointment['id_users_customer']);
 
-                $customer_token = md5(uniqid(mt_rand(), TRUE));
+                // The token authorizes the manage-mode carry over between the pageloads, so it must
+            // never be predictable.
+            $customer_token = bin2hex(random_bytes(16));
 
                 // Save the token for 10 minutes.
                 $this->cache->save('customer-token-' . $customer_token, $customer['id'], 600);

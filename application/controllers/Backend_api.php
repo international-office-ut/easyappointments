@@ -249,10 +249,13 @@ class Backend_api extends EA_Controller {
                 $where_id = 'id_services';
             }
 
-            // Get appointments
-            $record_id = $this->db->escape($this->input->post('record_id'));
-            $start_date = $this->db->escape($this->input->post('start_date'));
-            $end_date = $this->db->escape(date('Y-m-d', strtotime($this->input->post('end_date') . ' +1 day')));
+            // Get appointments. The values are normalized before they are interpolated into
+            // the SQL, so that malformed input can never produce raw database errors.
+            $record_id = $this->db->escape((int) $this->input->post('record_id'));
+            $start_date = $this->db->escape(date('Y-m-d',
+                strtotime($this->input->post('start_date') ?: 'today') ?: time()));
+            $end_date = $this->db->escape(date('Y-m-d',
+                strtotime(($this->input->post('end_date') ?: 'today') . ' +1 day') ?: time()));
 
             // Providers and secretaries may not request the calendar of another provider.
             if ($this->input->post('filter_type') == FILTER_TYPE_PROVIDER)

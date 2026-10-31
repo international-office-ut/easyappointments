@@ -117,11 +117,36 @@ class User extends EA_Controller {
                 'hits' => 0,
                 'expires' => time() + $window
             ];
+
+            // A new rate limit record is a good moment to clean up forgotten records of
+            // other keys, so that the cache directory cannot grow without bounds.
+            $this->rate_limit_prune();
         }
 
         $record['hits']++;
 
         @file_put_contents($this->rate_limit_path($key), json_encode($record), LOCK_EX);
+    }
+
+    /**
+     * Removes all stale rate limit records from the storage cache directory.
+     */
+    protected function rate_limit_prune(): void
+    {
+        $files = @glob(dirname($this->rate_limit_path('prune')) . '/*.ratelimit');
+
+        if ($files === FALSE)
+        {
+            return;
+        }
+
+        foreach ($files as $file)
+        {
+            if (@filemtime($file) < time() - 30 * DAY)
+            {
+                @unlink($file);
+            }
+        }
     }
 
     /**
@@ -269,6 +294,10 @@ class User extends EA_Controller {
         $this->session->unset_userdata('login_candidates');
         $this->session->unset_userdata('dest_url');
         $this->session->unset_userdata('shib_sso');
+
+        // Destroy the whole session record, so that a leaked session cookie cannot outlive
+        // the logout (a fresh login would regenerate the session id anyway).
+        $this->session->sess_destroy();
 
         if ($sso_logout)
         {

@@ -154,7 +154,7 @@ class Appointments_model extends EA_Model {
     protected function insert($appointment)
     {
         $appointment['book_datetime'] = date('Y-m-d H:i:s');
-        $appointment['hash'] = random_string('alnum', 12);
+        $appointment['hash'] = bin2hex(random_bytes(16));
 
         if ( ! $this->db->insert('appointments', $appointment))
         {

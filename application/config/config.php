@@ -355,7 +355,7 @@ $config["sess_driver"] = "files";
 $config["sess_cookie_name"] = "ea_session";
 $config["sess_expiration"] = 7200;
 $config["sess_save_path"] = __DIR__ . "/../../storage/sessions";
-$config["sess_match_ip"] = false;
+$config["sess_match_ip"] = true;
 $config["sess_time_to_update"] = 300;
 $config["sess_regenerate_destroy"] = false;
 
@@ -403,6 +403,10 @@ $config["csrf_protection"] = true;
 $config["csrf_token_name"] = "csrfToken";
 $config["csrf_cookie_name"] = "csrfCookie";
 $config["csrf_expire"] = 7200;
+// The frontend embeds freshly generated token only once per page load (GlobalVariables.csrfToken),
+// it never re-reads a rotated value, so CSRF token regeneration must stay off until the
+// AJAX layer learns to pick up refreshed tokens.
+$config["csrf_regenerate"] = false;
 $config["csrf_exclude_uris"] = ["api/v1/.*"];
 
 /*

@@ -47,6 +47,20 @@
         }.bind(this));
 
         /**
+         * Event: Filter Secretaries Key Input "Keyup" (live filter while typing)
+         */
+        $('#secretaries').on('keyup', '#filter-secretaries .key', GeneralFunctions.debounce(function () {
+            if ($('#filter-secretaries .filter').prop('disabled')) {
+                return;
+            }
+
+            var key = $('#filter-secretaries .key').val();
+            $('#filter-secretaries .selected').removeClass('selected');
+            this.resetForm();
+            this.filter(key);
+        }.bind(this), 350));
+
+        /**
          * Event: Clear Filter Results Button "Click"
          */
         $('#secretaries').on('click', '#filter-secretaries .clear', function () {
@@ -202,6 +216,7 @@
     SecretariesHelper.prototype.unbindEventHandlers = function () {
         $('#secretaries')
             .off('submit', '#filter-secretaries form')
+            .off('keyup', '#filter-secretaries .key')
             .off('click', '#filter-secretaries .clear')
             .off('click', '.secretary-row')
             .off('click', '#add-secretary')
@@ -403,8 +418,15 @@
             limit: this.filterLimit
         };
 
+        var requestKey = key;
+        this._filterRequestKey = requestKey;
+
         $.post(url, data)
             .done(function (response) {
+                if (this._filterRequestKey !== requestKey) {
+                    return;
+                }
+
                 this.filterResults = response;
 
                 $('#filter-secretaries .results').empty();

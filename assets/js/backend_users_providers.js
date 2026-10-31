@@ -47,6 +47,20 @@
         }.bind(this));
 
         /**
+         * Event: Filter Providers Key Input "Keyup" (live filter while typing)
+         */
+        $('#providers').on('keyup', '#filter-providers .key', GeneralFunctions.debounce(function () {
+            if ($('#filter-providers .filter').prop('disabled')) {
+                return;
+            }
+
+            var key = $('#filter-providers .key').val();
+            $('.selected').removeClass('selected');
+            this.resetForm();
+            this.filter(key);
+        }.bind(this), 350));
+
+        /**
          * Event: Clear Filter Button "Click"
          */
         $('#providers').on('click', '#filter-providers .clear', function () {
@@ -244,6 +258,7 @@
     ProvidersHelper.prototype.unbindEventHandlers = function () {
         $('#providers')
             .off('submit', '#filter-providers form')
+            .off('keyup', '#filter-providers .key')
             .off('click', '#filter-providers .clear')
             .off('click', '.provider-row')
             .off('click', '#add-provider')
@@ -588,8 +603,15 @@
             limit: this.filterLimit
         };
 
+        var requestKey = key;
+        this._filterRequestKey = requestKey;
+
         $.post(url, data)
             .done(function (response) {
+                if (this._filterRequestKey !== requestKey) {
+                    return;
+                }
+
                 this.filterResults = response;
 
                 $('#filter-providers .results').empty();

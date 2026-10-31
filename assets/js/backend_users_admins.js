@@ -45,6 +45,20 @@
         }.bind(this));
 
         /**
+         * Event: Filter Admins Key Input "Keyup" (live filter while typing)
+         */
+        $('#admins').on('keyup', '#filter-admins .key', GeneralFunctions.debounce(function () {
+            if ($('#filter-admins .filter').prop('disabled')) {
+                return;
+            }
+
+            var key = $('#filter-admins .key').val();
+            $('#filter-admins .selected').removeClass('selected');
+            this.resetForm();
+            this.filter(key);
+        }.bind(this), 350));
+
+        /**
          * Event: Clear Filter Results Button "Click"
          */
         $('#admins').on('click', '#filter-admins .clear', function () {
@@ -188,6 +202,7 @@
     AdminsHelper.prototype.unbindEventHandlers = function () {
         $('#admins')
             .off('submit', '#filter-admins form')
+            .off('keyup', '#filter-admins .key')
             .off('click', '#filter-admins .clear')
             .off('click', '.admin-row')
             .off('click', '#add-admin')
@@ -377,8 +392,15 @@
             limit: this.filterLimit
         };
 
+        var requestKey = key;
+        this._filterRequestKey = requestKey;
+
         $.post(url, data)
             .done(function (response) {
+                if (this._filterRequestKey !== requestKey) {
+                    return;
+                }
+
                 this.filterResults = response;
 
                 $('#filter-admins .results').empty();

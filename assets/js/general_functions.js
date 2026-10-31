@@ -628,6 +628,29 @@ window.GeneralFunctions = window.GeneralFunctions || {};
     };
 
     /**
+     * Delay the execution of a callback until the calls have settled for the given period.
+     *
+     * @param {Function} callback The callback to execute after the last call.
+     * @param {Number} wait Settling period in milliseconds.
+     * @return {Function} Returns the debounced wrapper.
+     */
+    exports.debounce = function (callback, wait) {
+        var timeout = null;
+
+        return function () {
+            var args = arguments;
+            var context = this;
+
+            clearTimeout(timeout);
+
+            timeout = setTimeout(function () {
+                timeout = null;
+                callback.apply(context, args);
+            }, wait);
+        };
+    };
+
+    /**
      * Render a map icon that links to Google maps.
      *
      * @param {Object} user Should have the address, city, etc properties.

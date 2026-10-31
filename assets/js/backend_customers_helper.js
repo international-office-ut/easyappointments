@@ -46,6 +46,21 @@
         });
 
         /**
+         * Event: Filter Customers Key Input "Keyup" (live filter while typing)
+         */
+        $('#customers').on('keyup', '#filter-customers .key', GeneralFunctions.debounce(function () {
+            if ($('#filter-customers .filter').prop('disabled')) {
+                return;
+            }
+
+            var key = $('#filter-customers .key').val();
+            $('#filter-customers .selected').removeClass('selected');
+            instance.filterLimit = 20;
+            instance.resetForm();
+            instance.filter(key);
+        }, 350));
+
+        /**
          * Event: Filter Customers Clear Button "Click"
          */
         $('#customers').on('click', '#filter-customers .clear', function () {
@@ -381,8 +396,15 @@
             limit: this.filterLimit
         };
 
+        var requestKey = key;
+        this._filterRequestKey = requestKey;
+
         $.post(url, data)
             .done(function (response) {
+                if (this._filterRequestKey !== requestKey) {
+                    return;
+                }
+
                 this.filterResults = response;
 
                 $('#filter-customers .results').empty();

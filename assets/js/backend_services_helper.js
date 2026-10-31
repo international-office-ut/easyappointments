@@ -30,8 +30,6 @@
 
         /**
          * Event: Filter Services Form "Submit"
-         *
-         * @param {jQuery.Event} event
          */
         $('#services').on('submit', '#filter-services form', function (event) {
             event.preventDefault();
@@ -40,6 +38,20 @@
             instance.resetForm();
             instance.filter(key);
         });
+
+        /**
+         * Event: Filter Services Key Input "Keyup" (live filter while typing)
+         */
+        $('#services').on('keyup', '#filter-services .key', GeneralFunctions.debounce(function () {
+            if ($('#filter-services .filter').prop('disabled')) {
+                return;
+            }
+
+            var key = $('#filter-services .key').val();
+            $('#filter-services .selected').removeClass('selected');
+            instance.resetForm();
+            instance.filter(key);
+        }, 350));
 
         /**
          * Event: Filter Service Cancel Button "Click"
@@ -258,6 +270,7 @@
     ServicesHelper.prototype.unbindEventHandlers = function () {
         $('#services')
             .off('submit', '#filter-services form')
+            .off('keyup', '#filter-services .key')
             .off('click', '#filter-services .clear')
             .off('click', '.service-row')
             .off('click', '#add-service')
@@ -853,8 +866,15 @@
             limit: this.filterLimit
         };
 
+        var requestKey = key;
+        this._filterRequestKey = requestKey;
+
         $.post(url, data)
             .done(function (response) {
+                if (this._filterRequestKey !== requestKey) {
+                    return;
+                }
+
                 this.filterResults = response;
 
                 $('#filter-services .results').empty();

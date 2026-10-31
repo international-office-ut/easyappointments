@@ -43,8 +43,6 @@
 
         /**
          * Event: Filter Categories Form "Submit"
-         *
-         * @param {jQuery.Event} event
          */
         $('#categories').on('submit', '#filter-categories form', function (event) {
             event.preventDefault();
@@ -53,6 +51,20 @@
             instance.resetForm();
             instance.filter(key);
         });
+
+        /**
+         * Event: Filter Categories Key Input "Keyup" (live filter while typing)
+         */
+        $('#categories').on('keyup', '#filter-categories .key', GeneralFunctions.debounce(function () {
+            if ($('#filter-categories .filter').prop('disabled')) {
+                return;
+            }
+
+            var key = $('#filter-categories .key').val();
+            $('.selected').removeClass('selected');
+            instance.resetForm();
+            instance.filter(key);
+        }, 350));
 
         /**
          * Event: Filter Categories Row "Click"
@@ -165,6 +177,7 @@
         $('#categories')
             .off('click', '#filter-categories .clear')
             .off('submit', '#filter-categories form')
+            .off('keyup', '#filter-categories .key')
             .off('click', '.category-row')
             .off('click', '#add-category')
             .off('click', '#edit-category')
@@ -190,8 +203,15 @@
             limit: this.filterLimit
         };
 
+        var requestKey = key;
+        this._filterRequestKey = requestKey;
+
         $.post(url, data)
             .done(function (response) {
+                if (this._filterRequestKey !== requestKey) {
+                    return;
+                }
+
                 this.filterResults = response;
 
                 $('#filter-categories .results').empty();

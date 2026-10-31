@@ -12,6 +12,7 @@
  * ---------------------------------------------------------------------------- */
 
 use EA\Engine\Notifications\Email as EmailClient;
+use EA\Engine\Search\Fuzzy;
 use EA\Engine\Types\Email;
 use EA\Engine\Types\Text;
 
@@ -465,29 +466,23 @@ class Backend_api extends EA_Controller {
                 throw new Exception('You do not have the required privileges for this task.');
             }
 
-            $key = $this->db->escape_str($this->input->post('key'));
-            $key = strtoupper($key);
+            $key = (string) $this->input->post('key');
 
-            $where =
-                '(first_name LIKE upper("%' . $key . '%") OR ' .
-                'last_name  LIKE upper("%' . $key . '%") OR ' .
-                'email LIKE upper("%' . $key . '%") OR ' .
-                'phone_number LIKE upper("%' . $key . '%") OR ' .
-                'address LIKE upper("%' . $key . '%") OR ' .
-                'city LIKE upper("%' . $key . '%") OR ' .
-                'zip_code LIKE upper("%' . $key . '%") OR ' .
-                'notes LIKE upper("%' . $key . '%"))';
+            $limit = (int) ($this->input->post('limit') ?: 1000);
 
-            $order_by = 'first_name ASC, last_name ASC';
+            $customers = $this->customers_model->get_batch(NULL, Fuzzy::MAX_CANDIDATES, NULL,
+                'first_name ASC, last_name ASC');
 
-            $limit = $this->input->post('limit');
-
-            if ($limit === NULL)
-            {
-                $limit = 1000;
-            }
-
-            $customers = $this->customers_model->get_batch($where, $limit, NULL, $order_by);
+            $customers = Fuzzy::filter($customers, [
+                'first_name',
+                'last_name',
+                'email',
+                'phone_number',
+                'address',
+                'city',
+                'zip_code',
+                'notes'
+            ], $key, $limit);
 
             foreach ($customers as &$customer)
             {
@@ -837,15 +832,20 @@ class Backend_api extends EA_Controller {
                 throw new Exception('You do not have the required privileges for this task.');
             }
 
-            $key = $this->db->escape_str($this->input->post('key'));
+            $key = (string) $this->input->post('key');
 
-            $where =
-                '(name LIKE "%' . $key . '%" OR duration LIKE "%' . $key . '%" OR ' .
-                'price LIKE "%' . $key . '%" OR currency LIKE "%' . $key . '%" OR ' .
-                'description LIKE "%' . $key . '%")';
+            $services = $this->services_model->get_batch(NULL, Fuzzy::MAX_CANDIDATES);
+
+            $services = Fuzzy::filter($services, [
+                'name',
+                'duration',
+                'price',
+                'currency',
+                'description'
+            ], $key);
 
             $response = $this->services_model
-                ->attach_weekday_modes($this->services_model->get_batch($where));
+                ->attach_weekday_modes($services);
         }
         catch (Exception $exception)
         {
@@ -944,11 +944,11 @@ class Backend_api extends EA_Controller {
                 throw new Exception('You do not have the required privileges for this task.');
             }
 
-            $key = $this->db->escape_str($this->input->post('key'));
+            $key = (string) $this->input->post('key');
 
-            $where = '(name LIKE "%' . $key . '%" OR description LIKE "%' . $key . '%")';
+            $categories = $this->services_model->get_all_categories(NULL, Fuzzy::MAX_CANDIDATES);
 
-            $response = $this->services_model->get_all_categories($where);
+            $response = Fuzzy::filter($categories, ['name', 'description'], $key);
         }
         catch (Exception $exception)
         {
@@ -977,16 +977,20 @@ class Backend_api extends EA_Controller {
                 throw new Exception('You do not have the required privileges for this task.');
             }
 
-            $key = $this->db->escape_str($this->input->post('key'));
+            $key = (string) $this->input->post('key');
 
-            $where =
-                '(first_name LIKE "%' . $key . '%" OR last_name LIKE "%' . $key . '%" ' .
-                'OR email LIKE "%' . $key . '%" OR mobile_number LIKE "%' . $key . '%" ' .
-                'OR phone_number LIKE "%' . $key . '%" OR address LIKE "%' . $key . '%" ' .
-                'OR city LIKE "%' . $key . '%" OR state LIKE "%' . $key . '%" ' .
-                'OR zip_code LIKE "%' . $key . '%" OR notes LIKE "%' . $key . '%")';
-
-            $response = $this->admins_model->get_batch($where);
+            $response = Fuzzy::filter($this->admins_model->get_batch(NULL, Fuzzy::MAX_CANDIDATES), [
+                'first_name',
+                'last_name',
+                'email',
+                'mobile_number',
+                'phone_number',
+                'address',
+                'city',
+                'state',
+                'zip_code',
+                'notes'
+            ], $key);
         }
         catch (Exception $exception)
         {
@@ -1085,16 +1089,20 @@ class Backend_api extends EA_Controller {
                 throw new Exception('You do not have the required privileges for this task.');
             }
 
-            $key = $this->db->escape_str($this->input->post('key'));
+            $key = (string) $this->input->post('key');
 
-            $where =
-                '(first_name LIKE "%' . $key . '%" OR last_name LIKE "%' . $key . '%" ' .
-                'OR email LIKE "%' . $key . '%" OR mobile_number LIKE "%' . $key . '%" ' .
-                'OR phone_number LIKE "%' . $key . '%" OR address LIKE "%' . $key . '%" ' .
-                'OR city LIKE "%' . $key . '%" OR state LIKE "%' . $key . '%" ' .
-                'OR zip_code LIKE "%' . $key . '%" OR notes LIKE "%' . $key . '%")';
-
-            $response = $this->providers_model->get_batch($where);
+            $response = Fuzzy::filter($this->providers_model->get_batch(NULL, Fuzzy::MAX_CANDIDATES), [
+                'first_name',
+                'last_name',
+                'email',
+                'mobile_number',
+                'phone_number',
+                'address',
+                'city',
+                'state',
+                'zip_code',
+                'notes'
+            ], $key);
         }
         catch (Exception $exception)
         {
@@ -1392,16 +1400,20 @@ class Backend_api extends EA_Controller {
                 throw new Exception('You do not have the required privileges for this task.');
             }
 
-            $key = $this->db->escape_str($this->input->post('key'));
+            $key = (string) $this->input->post('key');
 
-            $where =
-                '(first_name LIKE "%' . $key . '%" OR last_name LIKE "%' . $key . '%" ' .
-                'OR email LIKE "%' . $key . '%" OR mobile_number LIKE "%' . $key . '%" ' .
-                'OR phone_number LIKE "%' . $key . '%" OR address LIKE "%' . $key . '%" ' .
-                'OR city LIKE "%' . $key . '%" OR state LIKE "%' . $key . '%" ' .
-                'OR zip_code LIKE "%' . $key . '%" OR notes LIKE "%' . $key . '%")';
-
-            $response = $this->secretaries_model->get_batch($where);
+            $response = Fuzzy::filter($this->secretaries_model->get_batch(NULL, Fuzzy::MAX_CANDIDATES), [
+                'first_name',
+                'last_name',
+                'email',
+                'mobile_number',
+                'phone_number',
+                'address',
+                'city',
+                'state',
+                'zip_code',
+                'notes'
+            ], $key);
         }
         catch (Exception $exception)
         {

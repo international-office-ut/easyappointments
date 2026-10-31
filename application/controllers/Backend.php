@@ -121,23 +121,12 @@ class Backend extends EA_Controller {
      */
     protected function assert_appointment_access(array $appointment): void
     {
-        $role_slug = $this->session->userdata('role_slug');
+        $this->load->model('identities_model');
 
-        if ($role_slug === DB_SLUG_PROVIDER)
-        {
-            $allowed_providers = [(int) $this->session->userdata('user_id')];
-        }
-        else if ($role_slug === DB_SLUG_SECRETARY)
-        {
-            $allowed_providers = array_map('intval',
-                $this->secretaries_model->get_row($this->session->userdata('user_id'))['providers']);
-        }
-        else
-        {
-            return;
-        }
-
-        if ( ! in_array((int) $appointment['id_users_provider'], $allowed_providers, TRUE))
+        if ( ! $this->identities_model->provider_in_scope(
+            $this->session->userdata('role_slug'),
+            (int) $this->session->userdata('user_id'),
+            $appointment['id_users_provider']))
         {
             redirect('user/no_privileges');
         }

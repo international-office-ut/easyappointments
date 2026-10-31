@@ -40,6 +40,7 @@ class Backend_api extends EA_Controller {
         $this->load->model('appointments_model');
         $this->load->model('consents_model');
         $this->load->model('customers_model');
+        $this->load->model('identities_model');
         $this->load->model('providers_model');
         $this->load->model('roles_model');
         $this->load->model('secretaries_model');
@@ -67,19 +68,10 @@ class Backend_api extends EA_Controller {
      */
     protected function get_provider_scope(): ?array
     {
-        $role_slug = $this->session->userdata('role_slug');
-
-        if ($role_slug === DB_SLUG_PROVIDER)
-        {
-            return [$this->session->userdata('user_id')];
-        }
-
-        if ($role_slug === DB_SLUG_SECRETARY)
-        {
-            return $this->secretaries_model->get_row($this->session->userdata('user_id'))['providers'];
-        }
-
-        return NULL;
+        return $this->identities_model->providers_in_scope(
+            $this->session->userdata('role_slug'),
+            (int) $this->session->userdata('user_id')
+        );
     }
 
     /**
@@ -89,14 +81,10 @@ class Backend_api extends EA_Controller {
      */
     protected function assert_provider_in_scope($provider_id)
     {
-        $provider_scope = $this->get_provider_scope();
-
-        if ($provider_scope === NULL)
-        {
-            return;
-        }
-
-        if ( ! in_array((int) $provider_id, array_map('intval', $provider_scope), TRUE))
+        if ( ! $this->identities_model->provider_in_scope(
+            $this->session->userdata('role_slug'),
+            (int) $this->session->userdata('user_id'),
+            $provider_id))
         {
             throw new Exception('The record does not belong to your provider scope.');
         }

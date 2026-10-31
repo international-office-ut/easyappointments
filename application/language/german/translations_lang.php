@@ -267,11 +267,6 @@ $lang["type_username_and_email_for_new_password"] =
 $lang["enter_email_here"] = "Geben Sie Ihre E-Mail-Adresse hier ein ...";
 $lang["regenerate_password"] = "Passwort generieren";
 $lang["go_to_login"] = "Gehen Sie zurück auf die Anmeldeseite";
-$lang["new_password_sent_with_email"] =
-    "Ihr neues Passwort ist Ihnen per E-Mail gesendet worden.";
-$lang["new_account_password"] = "Neues Kontopasswort";
-$lang["new_password_is"] =
-    'Ihr neues Passwort ist $password Bitte sichern Sie dieses E-Mail, damit Sie Ihr Passwort nachlesen können falls nötig. Sie können dieses Passwort auf der Seite Einstellungen auch ändern.';
 $lang["account_recovery_email_sent"] =
     "Wenn der Nutzername und die E-Mail-Adresse zu einem Konto gehören, erhalten Sie in Kürze eine E-Mail mit weiteren Anweisungen.";
 $lang["password_reset_email_subject"] = "Passwort-Zurücksetzung";

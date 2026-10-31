@@ -266,11 +266,6 @@ $lang["type_username_and_email_for_new_password"] =
 $lang["enter_email_here"] = "Enter your email here ...";
 $lang["regenerate_password"] = "Regenerate Password";
 $lang["go_to_login"] = "Go Back To Login Page";
-$lang["new_password_sent_with_email"] =
-    "Your new password has been sent to you with an email.";
-$lang["new_account_password"] = "New Account Password";
-$lang["new_password_is"] =
-    'Your new account password is $password Please store this email to be able to retrieve your password if necessary. You can also change this password with a new one in the settings page.';
 $lang["account_recovery_email_sent"] =
     "If the username and email address belong to an account, you will shortly receive an email with further instructions.";
 $lang["password_reset_email_subject"] = "Password Reset";

@@ -25,7 +25,6 @@ class Appointments_model extends EA_Model {
         parent::__construct();
         $this->load->helper('data_validation');
         $this->load->helper('general');
-        $this->load->helper('string');
     }
 
     /**

@@ -286,6 +286,52 @@ class Identities_model extends EA_Model {
     }
 
     /**
+     * Providers whose records the given session role may read, edit or delete.
+     *
+     * Access is centralized here, because every endpoint that touches provider-bound
+     * records needs the same answer: providers only get their own rows, secretaries the
+     * rows of their bound providers and admins every row.
+     *
+     * @param string|NULL $role_slug The role slug of the session (a sessionless request is
+     * not allowed to touch anything and therefore gets an empty scope).
+     * @param int|NULL $user_id The user record id of the session.
+     *
+     * @return array|NULL Returns the provider ids in scope (empty for no access), or NULL
+     * when all providers are in scope (admin and other unrestricted roles).
+     */
+    public function providers_in_scope(?string $role_slug, ?int $user_id): ?array
+    {
+        if ($role_slug === DB_SLUG_PROVIDER)
+        {
+            return [$user_id];
+        }
+
+        if ($role_slug === DB_SLUG_SECRETARY)
+        {
+            $this->load->model('secretaries_model');
+
+            return $this->secretaries_model->get_row($user_id)['providers'];
+        }
+
+        return NULL;
+    }
+
+    /**
+     * Determine whether the given session role may work with a specific provider row.
+     */
+    public function provider_in_scope(?string $role_slug, ?int $user_id, $provider_id): bool
+    {
+        $provider_scope = $this->providers_in_scope($role_slug, $user_id);
+
+        if ($provider_scope === NULL)
+        {
+            return TRUE;
+        }
+
+        return in_array((int) $provider_id, array_map('intval', $provider_scope), TRUE);
+    }
+
+    /**
      * Determine whether an email is already used by another role row.
      *
      * @param string $email Email of the prospective new row.

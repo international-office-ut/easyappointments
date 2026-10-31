@@ -196,6 +196,13 @@
         });
 
         /**
+         * Event: Location Window Row Inputs "Focus" (bind the pickers lazily)
+         */
+        $('#services').on('focus', '.location-window-row input:text', function () {
+            ServicesHelper.attachLocationWindowPickers($(this).closest('.location-window-row'));
+        });
+
+        /**
          * Event: Service Remove-Location-Window "Click"
          */
         $('#services').on('click', '.remove-location-window', function (event) {
@@ -419,7 +426,7 @@
      * @param {String} from Window start ("HH:MM").
      * @param {String} to Window end ("HH:MM").
      * @param {String} location Location value for the window.
-     * @param {String} date Optional ISO date when the row belongs to a date override.
+     * @param {String} date Optional display-formatted date when the row belongs to a date override.
      * @return {jQuery} The row element.
      */
     ServicesHelper.buildLocationWindowRow = function (from, to, location, date) {
@@ -434,7 +441,6 @@
             $row.append($('<input/>', {
                 'type': 'text',
                 'class': 'location-window-date form-control',
-                'placeholder': 'YYYY-MM-DD',
                 'value': date
             }));
         }
@@ -443,19 +449,17 @@
             .append($('<input/>', {
                 'type': 'text',
                 'class': 'location-window-from form-control',
-                'placeholder': 'HH:MM',
                 'value': from
             }))
             .append($('<input/>', {
                 'type': 'text',
                 'class': 'location-window-to form-control',
-                'placeholder': 'HH:MM',
                 'value': to
             }))
             .append($('<input/>', {
                 'type': 'text',
                 'class': 'location-window-location form-control',
-                'placeholder': 'Location',
+                'placeholder': EALang.location,
                 'value': location
             }))
             .append($('<button/>', {
@@ -465,6 +469,129 @@
             }));
 
         return $row;
+    };
+
+    /**
+     * Bind the date and time pickers to a location window row (idempotent).
+     *
+     * The time fields use a 24-hour picker, as the stored windows and the resolvers compare
+     * "HH:MM" strings. The date field follows the display format of the installation.
+     *
+     * @param {jQuery} $row The row element (or any element containing the inputs).
+     */
+    ServicesHelper.attachLocationWindowPickers = function ($row) {
+        var dateFormat;
+
+        switch (GlobalVariables.dateFormat) {
+            case 'DMY':
+                dateFormat = 'dd/mm/yy';
+                break;
+            case 'DDMY':
+                dateFormat = 'dd.mm.yy';
+                break;
+            case 'MDY':
+                dateFormat = 'mm/dd/yy';
+                break;
+            case 'YMD':
+                dateFormat = 'yy/mm/dd';
+                break;
+            default:
+                throw new Error('Invalid GlobalVariables.dateFormat value.');
+        }
+
+        $row.find('.location-window-from, .location-window-to').each(function (index, input) {
+            var $input = $(input);
+
+            if ($input.data('timepicker-attached')) {
+                return;
+            }
+
+            $input.data('timepicker-attached', true).timepicker({
+                timeFormat: 'HH:mm',
+
+                // Translation
+                currentText: EALang.now,
+                closeText: EALang.close,
+                timeOnlyTitle: EALang.select_time,
+                timeText: EALang.time,
+                hourText: EALang.hour,
+                minuteText: EALang.minutes
+            });
+        });
+
+        $row.find('.location-window-date').each(function (index, input) {
+            var $input = $(input);
+
+            if ($input.data('datepicker-attached')) {
+                return;
+            }
+
+            $input.data('datepicker-attached', true).datepicker({
+                dateFormat: dateFormat,
+
+                // Translation
+                dayNames: [EALang.sunday, EALang.monday, EALang.tuesday, EALang.wednesday,
+                    EALang.thursday, EALang.friday, EALang.saturday],
+                dayNamesShort: [EALang.sunday.substr(0, 3), EALang.monday.substr(0, 3),
+                    EALang.tuesday.substr(0, 3), EALang.wednesday.substr(0, 3),
+                    EALang.thursday.substr(0, 3), EALang.friday.substr(0, 3),
+                    EALang.saturday.substr(0, 3)],
+                dayNamesMin: [EALang.sunday.substr(0, 2), EALang.monday.substr(0, 2),
+                    EALang.tuesday.substr(0, 2), EALang.wednesday.substr(0, 2),
+                    EALang.thursday.substr(0, 2), EALang.friday.substr(0, 2),
+                    EALang.saturday.substr(0, 2)],
+                monthNames: [EALang.january, EALang.february, EALang.march, EALang.april,
+                    EALang.may, EALang.june, EALang.july, EALang.august,
+                    EALang.september, EALang.october, EALang.november, EALang.december],
+                prevText: EALang.previous,
+                nextText: EALang.next,
+                currentText: EALang.now,
+                closeText: EALang.close,
+                firstDay: GeneralFunctions.getWeekDayId(GlobalVariables.firstWeekday)
+            });
+        });
+    };
+
+    /**
+     * Parse a displayed date of a location window row into an ISO date.
+     *
+     * @param {String} value The displayed date value.
+     * @return {String|null} Returns the ISO date ("YYYY-MM-DD") or NULL when unparseable.
+     */
+    ServicesHelper.parseLocationWindowDate = function (value) {
+        if (!value) {
+            return null;
+        }
+
+        var separators = {DMY: '/', DDMY: '.', MDY: '/', YMD: '/'};
+        var order = {DMY: ['dd', 'mm', 'yyyy'], DDMY: ['dd', 'mm', 'yyyy'],
+            MDY: ['mm', 'dd', 'yyyy'], YMD: ['yyyy', 'mm', 'dd']};
+        var format = GlobalVariables.dateFormat;
+
+        if (!order[format]) {
+            return null;
+        }
+
+        var parts = value.split(separators[format]);
+
+        if (parts.length !== 3) {
+            return null;
+        }
+
+        var positions = {};
+        order[format].forEach(function (token, index) {
+            positions[token] = parts[index].length === 2 && token === 'yyyy'
+                ? '20' + parts[index]
+                : parts[index];
+        });
+
+        if (!positions.yyyy || !positions.mm || !positions.dd
+            || positions.mm < 1 || positions.mm > 12 || positions.dd < 1 || positions.dd > 31) {
+            return null;
+        }
+
+        return positions.yyyy + '-' + ('0' + positions.mm).slice(-2) + '-'
+            + ('0' + positions.dd).slice(-2);
     };
 
     /**
@@ -528,12 +655,16 @@
         var rowsByDate = {};
 
         $('#services .service-location-date-overrides .location-window-row').each(function (index, row) {
-            var date = $(row).find('.location-window-date').val();
+            var $row = $(row);
+            var date = ServicesHelper.parseLocationWindowDate(
+                $row.find('.location-window-date').val());
 
-            if (date) {
-                rowsByDate[date] = rowsByDate[date] || [];
-                rowsByDate[date].push(row);
+            if (!date) {
+                reportError($row, EALang.location_window_invalid);
             }
+
+            rowsByDate[date] = rowsByDate[date] || [];
+            rowsByDate[date].push(row);
         });
 
         Object.keys(rowsByDate).forEach(function (date) {
@@ -580,10 +711,12 @@
         var dateWindows = {};
 
         $('#services .service-location-date-overrides .location-window-row').each(function (index, row) {
-            var date = $(row).find('.location-window-date').val();
-            var from = $(row).find('.location-window-from').val();
-            var to = $(row).find('.location-window-to').val();
-            var location = $(row).find('.location-window-location').val();
+            var $row = $(row);
+            var date = ServicesHelper.parseLocationWindowDate(
+                $row.find('.location-window-date').val());
+            var from = $row.find('.location-window-from').val();
+            var to = $row.find('.location-window-to').val();
+            var location = $row.find('.location-window-location').val();
 
             if (!date || !from || !to || !location) {
                 return;
@@ -657,7 +790,7 @@
                         window.from || '',
                         window.to || '',
                         window.location || '',
-                        date
+                        GeneralFunctions.formatDate(date, GlobalVariables.dateFormat)
                     )
                 );
             });

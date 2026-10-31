@@ -1,6 +1,7 @@
 <script src="<?= asset_url('assets/js/backend_services_helper.js') ?>"></script>
 <script src="<?= asset_url('assets/js/backend_categories_helper.js') ?>"></script>
 <script src="<?= asset_url('assets/js/backend_services.js') ?>"></script>
+<script src="<?= asset_url('assets/ext/jquery-ui/jquery-ui-timepicker-addon.min.js') ?>"></script>
 <script>
     var GlobalVariables = {
         csrfToken: <?= json_data($this->security->get_csrf_hash()) ?>,

@@ -60,7 +60,7 @@ class Migration_remove_service_appointment_modes extends CI_Migration {
                 `weekday` INT NOT NULL,
                 `mode` VARCHAR(16) NOT NULL,
                 PRIMARY KEY (`id`),
-                CONSTRAINT `fk_service_weekday_modes_services`
+                CONSTRAINT `' . $this->db->dbprefix('fk_service_weekday_modes_services') . '`
                     FOREIGN KEY (`id_services`)
                     REFERENCES ' . $this->db->dbprefix('services') . ' (`id`)
                     ON DELETE CASCADE

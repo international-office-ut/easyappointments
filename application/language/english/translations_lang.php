@@ -174,8 +174,7 @@ $lang["friday"] = "Friday";
 $lang["saturday"] = "Saturday";
 $lang["sunday"] = "Sunday";
 $lang["breaks"] = "Breaks";
-$lang["add_breaks_during_each_day"] =
-    "Add the working breaks during each day. During breaks the provider will not accept any appointments.";
+$lang["add_breaks_during_each_day"] = "Add the working breaks during each day.";
 $lang["day"] = "Day";
 $lang["days"] = "Days";
 $lang["actions"] = "Actions";

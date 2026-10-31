@@ -174,8 +174,7 @@ $lang["friday"] = "Freitag";
 $lang["saturday"] = "Samstag";
 $lang["sunday"] = "Sonntag";
 $lang["breaks"] = "Pausen";
-$lang["add_breaks_during_each_day"] =
-    "Fügen Sie die Arbeitspausen für jeden Tag hinzu. Während der Pausen kann der Dienstleister keine Termine akzeptieren.";
+$lang["add_breaks_during_each_day"] = "Fügen Sie die Arbeitspausen für jeden Tag hinzu.";
 $lang["day"] = "Tag";
 $lang["days"] = "Tage";
 $lang["actions"] = "Aktionen";

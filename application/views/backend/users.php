@@ -310,6 +310,10 @@
                                         <?= lang('working_plan_description') ?>
                                     </p>
 
+                                    <small class="text-muted">
+                                        <?= lang('provider_weekday_mode_overrides_hint') ?>
+                                    </small>
+
                                     <button id="reset-working-plan" class="btn btn-primary"
                                             data-tippy-content="<?= lang('reset_working_plan') ?>">
                                         <i class="fas fa-redo-alt mr-2"></i>
@@ -325,10 +329,6 @@
                                         </thead>
                                         <tbody><!-- Dynamic Content --></tbody>
                                     </table>
-
-                                    <small class="text-muted">
-                                        <?= lang('provider_weekday_mode_overrides_hint') ?>
-                                    </small>
                                 </div>
 
                                 <div class="breaks-column col-12 col-lg-6">

@@ -1,6 +1,6 @@
 <html lang="en">
 <head>
-    <title>New Password | Easy!Appointments</title>
+    <title><?= $email_title ?> | Easy!Appointments</title>
 </head>
 <body style="font: 13px arial, helvetica, tahoma;">
 <div class="email-container" style="width: 650px; border: 1px solid #eee;">

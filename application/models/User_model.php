@@ -245,43 +245,135 @@ class User_model extends EA_Model {
     }
 
     /**
-     * If the given arguments correspond to an existing user record, generate a new
-     * password and send it with an email.
+     * Store a single-use access token for the user identity that matches the given
+     * credentials and return its plaintext value.
+     *
+     * The token hash gets stored in every role row of the matched identity, so any of the
+     * identity rows can consume it later. A locked SSO-only deployment (password login
+     * disabled) can additionally be restricted to administrator rows, which keeps the
+     * break-glass access alive while regular users must use the SSO.
      *
      * @param string $username User's username.
      * @param string $email User's email.
+     * @param bool $admin_only Whether only administrator rows may be matched.
+     * @param string $type The flow that gets authorized (a password reset or a temporary
+     * admin access).
+     * @param int $lifetime Token lifetime in seconds.
      *
-     * @return string|bool Returns the new password on success or FALSE on failure.
+     * @return string|bool Returns the plaintext token or FALSE when no match was found.
      */
-    public function regenerate_password($username, $email)
+    public function create_access_token(string $username, string $email, bool $admin_only, string $type, int $lifetime)
     {
-        $result = $this->db
+        $query = $this->db
             ->select('users.id')
             ->from('users')
             ->join('user_settings', 'user_settings.id_users = users.id', 'inner')
+            ->join('roles', 'roles.id = users.id_roles', 'inner')
             ->where('users.email', $email)
-            ->where('user_settings.username', $username)
-            ->get();
+            ->where('user_settings.username', $username);
 
-        if ($result->num_rows() == 0)
+        if ($admin_only)
+        {
+            $query = $query->where('roles.slug', DB_SLUG_ADMIN);
+        }
+
+        $query = $query->get();
+
+        if ($query->num_rows() == 0)
         {
             return FALSE;
         }
 
-        // Create a new password and send it with an email to the given email address.
-        $new_password = bin2hex(random_bytes(16));
+        $token = bin2hex(random_bytes(32));
+        $token_hash = hash('sha256', $token);
+        $expires = time() + $lifetime;
 
-        // Reset the password on every record of the identity (same email and login name):
-        // one person, one password, no matter how many role rows they hold. Each row keeps
-        // its own salt, so the hash gets computed separately per row.
-        foreach ($result->result_array() as $row)
+        foreach ($query->result_array() as $row)
         {
-            $user_id = $row['id'];
-            $salt = $this->db->get_where('user_settings', ['id_users' => $user_id])->row()->salt;
-            $hash_password = hash_password($salt, $new_password);
-            $this->db->update('user_settings', ['password' => $hash_password], ['id_users' => $user_id]);
+            $this->db->update('user_settings', [
+                'password_reset_token_hash' => $token_hash,
+                'password_reset_expires' => $expires,
+                'password_reset_type' => $type
+            ], ['id_users' => $row['id']]);
         }
 
-        return $new_password;
+        return $token;
+    }
+
+    /**
+     * Find the role rows of a matching and unconsumed access token.
+     *
+     * @param string $token The plaintext token as it was stored in the link.
+     * @param string $type Only rows with this token type match.
+     *
+     * @return array Returns the matching role rows (empty when the token is unknown,
+     * expired or already used).
+     */
+    public function get_access_token_rows(string $token, string $type): array
+    {
+        $token_hash = hash('sha256', $token);
+
+        $query = $this->db
+            ->from('user_settings')
+            ->where('password_reset_token_hash', $token_hash)
+            ->where('password_reset_type', $type)
+            ->where('password_reset_expires >', time())
+            ->get();
+
+        $rows = $query->result_array();
+
+        if (empty($rows))
+        {
+            return [];
+        }
+
+        // Select the user role rows that belong to the verified token rows, so the response
+        // carries complete session payloads and not the settings rows only.
+        $user_ids = array_column($rows, 'id_users');
+
+        return $this->db
+            ->select('users.id, users.email, users.timezone, roles.slug AS role_slug')
+            ->from('users')
+            ->join('roles', 'roles.id = users.id_roles', 'inner')
+            ->where_in('users.id', $user_ids)
+            ->get()->result_array();
+    }
+
+    /**
+     * Consume the access token of the given type and set the new password for the whole
+     * identity, but only when the token is valid.
+     *
+     * @param string $token The plaintext token as it was stored in the link.
+     * @param string $new_password The new password to be set.
+     * @param string $type Only tokens of this type can be consumed.
+     *
+     * @return array|bool Returns the affected user rows or FALSE when the token is invalid.
+     */
+    public function apply_password_reset(string $token, string $new_password, string $type)
+    {
+        $rows = $this->get_access_token_rows($token, $type);
+
+        if (empty($rows))
+        {
+            return FALSE;
+        }
+
+        foreach ($rows as $row)
+        {
+            $salt = $this->db->get_where('user_settings', ['id_users' => $row['id']])->row()->salt;
+
+            // One person one password: every role row of the identity gets the same value, each
+            // with its own salt.
+            $this->db->update('user_settings', [
+                'password' => hash_password($salt, $new_password),
+
+                // The token is single-use, so it gets consumed with the password change.
+                'password_reset_token_hash' => NULL,
+                'password_reset_expires' => NULL,
+                'password_reset_type' => NULL
+            ], ['id_users' => $row['id']]);
+        }
+
+        return $rows;
     }
 }

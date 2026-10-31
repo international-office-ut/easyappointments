@@ -27,15 +27,16 @@ $(function () {
 
         $.post(url, data)
             .done(function (response) {
+                // The server responds identically for existing and unknown accounts, so that
+                // the responses cannot be used for account enumeration.
                 $alert.removeClass('d-none alert-danger alert-success');
                 $('#get-new-password').prop('disabled', false);
                 if (response === GlobalVariables.AJAX_SUCCESS) {
                     $alert.addClass('alert-success');
-                    $alert.text(EALang['new_password_sent_with_email']);
+                    $alert.text(EALang['account_recovery_email_sent']);
                 } else {
                     $alert.addClass('alert-danger');
-                    $alert.text('The operation failed! Please enter a valid username '
-                        + 'and email address in order to get a new password.');
+                    $alert.text(EALang['account_recovery_email_sent']);
                 }
             });
     }

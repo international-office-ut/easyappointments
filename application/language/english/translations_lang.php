@@ -271,6 +271,22 @@ $lang["new_password_sent_with_email"] =
 $lang["new_account_password"] = "New Account Password";
 $lang["new_password_is"] =
     'Your new account password is $password Please store this email to be able to retrieve your password if necessary. You can also change this password with a new one in the settings page.';
+$lang["account_recovery_email_sent"] =
+    "If the username and email address belong to an account, you will shortly receive an email with further instructions.";
+$lang["password_reset_email_subject"] = "Password Reset";
+$lang["password_reset_email_message"] =
+    "Please use the following link to set a new password for your account: $link";
+$lang["password_reset_email_button"] = "Set A New Password";
+$lang["admin_access_email_subject"] = "Temporary Admin Access";
+$lang["admin_access_email_message"] =
+    "Please use the following link to open the application as an administrator: $link";
+$lang["admin_access_email_button"] = "Open The Application";
+$lang["admin_access"] = "Admin Access";
+$lang["admin_access_hint"] =
+    "This installation uses single sign-on. Password logins are disabled. Use this form only if you are the administrator and the SSO service is unavailable.";
+$lang["password_reset_token_invalid"] = "The access link is invalid or expired.";
+$lang["set_new_password"] = "Set A New Password";
+$lang["password_reset_error"] = "The password reset failed. Try opening the email link again.";
 $lang["delete_record_prompt"] =
     "Are you sure that you want to delete this record? This action cannot be undone.";
 $lang["delete_admin"] = "Delete Admin";

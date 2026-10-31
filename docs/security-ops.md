@@ -53,6 +53,10 @@ this list for every fresh installation and after every major infrastructure chan
 - Re-run `composer audit` and `npm audit` on every dependency update and before releases.
 - Keep PHP on a supported minor version; Easy!Appointments requires >= 7.3 but the development
   gate in `composer.json` targets 8.3.
+- No passwords or password-reset links are emailed in plaintext: every flow needs the operator
+  to click a single-use, time-limited access link (30 minutes for password resets, 15 minutes
+  for SSO break-glass admin access). Keep the outbound mail channel trustworthy (authenticated
+  SMTP), since it now carries identity links.
 - Monitor `storage/cache/*.ratelimit` (self-pruning after 30 days) and application logs for
   repeated "ALTCHA_HMAC_KEY" or "provider scope" error messages — they point at misconfigured
   or probing clients.

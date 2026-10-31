@@ -286,19 +286,54 @@ class Email {
     }
 
     /**
-     * This method sends an email with the new password of a user.
+     * Sends the password reset link of a user.
      *
-     * @param \EA\Engine\Types\NonEmptyText $password Contains the new password.
+     * @param \EA\Engine\Types\Text $link Contains the password reset link (with the token).
      * @param \EA\Engine\Types\Email $recipientEmail The receiver's email address.
      * @param array $settings The company settings to be included in the email.
      *
      * @throws \PHPMailer\PHPMailer\Exception
      */
-    public function send_password(NonEmptyText $password, EmailAddress $recipientEmail, array $settings)
+    public function send_password_reset(Text $link, EmailAddress $recipientEmail, array $settings)
     {
-        $html = $this->CI->load->view('emails/new_password', [
-            'email_title' => lang('new_account_password'),
-            'email_message' => str_replace('$password', '<strong>' . $password->get() . '</strong>', lang('new_password_is')),
+        $this->send_link_email($link, $recipientEmail, $settings, 'password_reset_email_button',
+            'password_reset_email_message', 'password_reset', 'password_reset_email_subject');
+    }
+
+    /**
+     * Sends the temporary administrator access link of an SSO-only deployment.
+     *
+     * @param \EA\Engine\Types\Text $link Contains the temporary access link (with the token).
+     * @param \EA\Engine\Types\Email $recipientEmail The receiver's email address.
+     * @param array $settings The company settings to be included in the email.
+     *
+     * @throws \PHPMailer\PHPMailer\Exception
+     */
+    public function send_admin_access(Text $link, EmailAddress $recipientEmail, array $settings)
+    {
+        $this->send_link_email($link, $recipientEmail, $settings, 'admin_access_email_button',
+            'admin_access_email_message', 'admin_access', 'admin_access_email_subject');
+    }
+
+    /**
+     * Sends an account access link email with the shared composition.
+     *
+     * @param \EA\Engine\Types\Text $link Contains the access link (with the token).
+     * @param \EA\Engine\Types\Email $recipientEmail The receiver's email address.
+     * @param array $settings The company settings to be included in the email.
+     * @param string $key The language key that carries the invitation message.
+     * @param string $template The email template file name.
+     * @param string $subject_key The language key that carries the subject.
+     *
+     * @throws \PHPMailer\PHPMailer\Exception
+     */
+    protected function send_link_email(Text $link, EmailAddress $recipientEmail, array $settings,
+        string $key, string $message_key, string $template, string $subject_key)
+    {
+        $html = $this->CI->load->view('emails/' . $template, [
+            'email_title' => lang($subject_key),
+            'email_message' => str_replace('$link', '<a href="' . $link->get() . '" class="btn btn-primary">'
+                . lang($key) . '</a>', lang($message_key)),
             'company_name' => $settings['company_name'],
             'company_email' => $settings['company_email'],
             'company_link' => $settings['company_link'],
@@ -309,7 +344,7 @@ class Email {
         $mailer->From = $settings['company_email'];
         $mailer->FromName = $settings['company_name'];
         $mailer->AddAddress($recipientEmail->get()); // "Name" argument crushes the phpmailer class.
-        $mailer->Subject = lang('new_account_password');
+        $mailer->Subject = lang($subject_key);
         $mailer->Body = $html;
 
         if ( ! $mailer->Send())

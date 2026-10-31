@@ -125,5 +125,41 @@ $(function () {
         }
     });
 
+    /**
+     * Admin Access Request Button "Click" (SSO-only deployments)
+     *
+     * Requests a single-use access link for the administrator account. The request never
+     * reveals whether the username and email match an account.
+     */
+    $('#admin-access-button').on('click', function () {
+        var url = GlobalVariables.baseUrl + '/index.php/user/ajax_forgot_password';
+        var $alert = $('.alert');
+
+        $alert.addClass('d-none');
+        $(this).prop('disabled', true);
+
+        $.post(url, {
+            'csrfToken': GlobalVariables.csrfToken,
+            'username': $('#admin-access-username').val(),
+            'email': $('#admin-access-email').val()
+        })
+            .done(function () {
+                $alert
+                    .removeClass('d-none alert-danger')
+                    .addClass('alert-success');
+                $alert.text(EALang['account_recovery_email_sent']);
+                $('#admin-access-button').prop('disabled', false);
+            })
+            .fail(function (jqXHR) {
+                $alert.text(jqXHR.responseJSON && jqXHR.responseJSON.message
+                    ? jqXHR.responseJSON.message
+                    : EALang['admin_access']);
+                $alert
+                    .removeClass('d-none alert-success')
+                    .addClass('alert-danger');
+                $('#admin-access-button').prop('disabled', false);
+            });
+    });
+
     $loginForm.on('submit', onLoginFormSubmit);
 });

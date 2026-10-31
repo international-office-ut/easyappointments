@@ -13,7 +13,7 @@
 
 use EA\Engine\Notifications\Email as EmailClient;
 use EA\Engine\Types\Email;
-use EA\Engine\Types\NonEmptyText;
+use EA\Engine\Types\Text;
 
 /**
  * User Controller
@@ -173,6 +173,13 @@ class User extends EA_Controller {
         {
             $view['dest_url'] = site_url('backend');
         }
+
+        // Messages of redirects from the temporary access and password reset flows.
+        $view['login_message'] = $this->session->flashdata('login_message');
+
+        // SSO-only deployments hide the password login and offer the temporary
+        // administrator access instead, so admins can still log in without the SSO.
+        $view['admin_access_mode'] = (bool) Config::SHIB_ENABLED && ! (bool) Config::SHIB_PASSWORD_LOGIN;
 
         $view['company_name'] = $this->settings_model->get_setting('company_name');
 
@@ -502,8 +509,8 @@ class User extends EA_Controller {
     }
 
     /**
-     * Regenerate a new password for the current user, only if the username and
-     * email address given correspond to an existing user in db.
+     * Request the link that either sets a new password or, in SSO-only deployments, provides
+     * a temporary administrator login.
      *
      * Required POST Parameters:
      *
@@ -514,34 +521,48 @@ class User extends EA_Controller {
     {
         try
         {
-            if ( ! $this->password_login_allowed())
+            $admin_only = (bool) Config::SHIB_ENABLED && ! (bool) Config::SHIB_PASSWORD_LOGIN;
+
+            if ( ! $this->password_login_allowed() && ! $admin_only)
             {
-                log_message('info', 'Password recovery attempt while "SHIB_PASSWORD_LOGIN" is disabled.');
+                log_message('info', 'Password recovery attempt while no recovery flow is available.');
                 $response = AJAX_FAILURE;
             }
             else if ( ! $this->input->post('username') || ! $this->input->post('email'))
             {
                 throw new Exception('You must enter a valid username and email address in '
-                    . 'order to get a new password!');
+                    . 'order to request an account access link!');
             }
 
             $recovery_key = 'recovery|client|' . $this->input->ip_address();
 
             if ($this->rate_limit_has_reached_limit($recovery_key, 3))
             {
-                $new_password = FALSE;
+                $token = FALSE;
             }
             else
             {
                 $this->rate_limit_register_attempt($recovery_key, 1800);
 
-                $new_password = $this->user_model->regenerate_password(
+                // SSO-only deployments grant temporary administrator access instead of a
+                // password reset, because regular passwords would not be accepted there.
+                $token = $this->user_model->create_access_token(
                     $this->input->post('username'),
-                    $this->input->post('email')
+                    $this->input->post('email'),
+                    $admin_only,
+                    $admin_only ? 'admin_access' : 'password_reset',
+                    $admin_only ? 900 : 1800
                 );
             }
 
-            if ($new_password != FALSE)
+            // Record the request outcome, so that administrators can trace break-glass
+            // activations and probing attempts of their own accounts.
+            log_message('info', 'Reset request from "' . $this->input->ip_address() . '" for username "'
+                . $this->input->post('username') . '" and email "' . $this->input->post('email') . '": '
+                . ($token !== FALSE ? 'matched, ' . ($admin_only ? 'admin access' : 'password reset')
+                    . ' link sent' : 'no matching account'));
+
+            if ($token !== FALSE)
             {
                 $this->config->load('email');
 
@@ -553,11 +574,25 @@ class User extends EA_Controller {
                     'company_email' => $this->settings_model->get_setting('company_email')
                 ];
 
-                $email->send_password(new NonEmptyText($new_password), new Email($this->input->post('email')),
-                    $company_settings);
+                if ($admin_only)
+                {
+                    $link = site_url('user/access/' . rawurlencode($token));
+
+                    $email->send_admin_access(new Text($link), new Email($this->input->post('email')),
+                        $company_settings);
+                }
+                else
+                {
+                    $link = site_url('user/reset_password/' . rawurlencode($token));
+
+                    $email->send_password_reset(new Text($link), new Email($this->input->post('email')),
+                        $company_settings);
+                }
             }
 
-            $response = $new_password != FALSE ? AJAX_SUCCESS : AJAX_FAILURE;
+            // The response is the same for every input, so that callers cannot enumerate the
+            // existing accounts.
+            $response = AJAX_SUCCESS;
         }
         catch (Exception $exception)
         {
@@ -572,5 +607,111 @@ class User extends EA_Controller {
         $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode($response));
+    }
+
+    /**
+     * Display the password set page of a password reset link.
+     *
+     * The token gets passed between the requests in a hidden field, so that resubmissions
+     * after an invalid password still work.
+     *
+     * @param string $token The plaintext token of the emailed link.
+     */
+    public function reset_password(string $token = '')
+    {
+        $user_data = $this->user_model->get_access_token_rows($token, 'password_reset');
+
+        if (empty($user_data))
+        {
+            log_message('info', 'Invalid or expired password reset link was used from "'
+                . $this->input->ip_address() . '".');
+
+            $this->session->set_flashdata('login_message', lang('password_reset_token_invalid'));
+            redirect('user/login');
+        }
+
+        $view = [
+            'base_url' => config('base_url'),
+            'company_name' => $this->settings_model->get_setting('company_name'),
+            'token' => $token,
+            'invalid' => $this->session->flashdata('password_reset_invalid')
+        ];
+
+        $this->load->view('user/reset_password', $view);
+    }
+
+    /**
+     * Apply the password of a submitted password reset form.
+     */
+    public function ajax_reset_password()
+    {
+        try
+        {
+            $token = (string) $this->input->post('token');
+            $password = (string) $this->input->post('password');
+            $password_confirm = (string) $this->input->post('password_confirm');
+
+            if ($password === '' || $password !== $password_confirm)
+            {
+                throw new Exception(lang('passwords_mismatch'));
+            }
+
+            $user_rows = $this->user_model->apply_password_reset($token, $password, 'password_reset');
+
+            if (empty($user_rows))
+            {
+                throw new Exception(lang('password_reset_token_invalid'));
+            }
+
+            if (count($user_rows) > 1)
+            {
+                // The identity holds multiple roles: cache the verified rows and let the user
+                // pick the role to continue with.
+                $this->session->set_userdata('login_candidates', json_encode($user_rows));
+
+                redirect('user/login?multi=1');
+            }
+
+            $this->establish_session($user_rows[0]);
+        }
+        catch (Exception $exception)
+        {
+            $this->session->set_flashdata('password_reset_invalid', TRUE);
+
+            redirect('user/reset_password/' . rawurlencode((string) $this->input->post('token')));
+        }
+
+        log_message('info', 'Password reset applied for user #' . $user_rows[0]['id']
+            . ' (' . $user_rows[0]['role_slug'] . ') from "' . $this->input->ip_address() . '".');
+
+        redirect('backend');
+    }
+
+    /**
+     * Provide the temporary administrator access of an emailed link (SSO-only deployments).
+     *
+     * @param string $token The plaintext token of the emailed link.
+     */
+    public function access(string $token = '')
+    {
+        $user_data = $this->user_model->get_access_token_rows($token, 'admin_access');
+
+        if (empty($user_data))
+        {
+            log_message('info', 'Invalid or expired admin access link was used from "'
+                . $this->input->ip_address() . '".');
+
+            $this->session->set_flashdata('login_message', lang('password_reset_token_invalid'));
+            redirect('user/login');
+        }
+
+        // Multiple role rows can technically carry the admin token, even though the token
+        // creation restricts the matching to admins: the first row is sufficient.
+        $this->establish_session($user_data[0]);
+
+        log_message('info', 'Temporary admin access granted to user #' . $user_data[0]['id']
+            . ' (' . $user_data[0]['role_slug'] . ') from "' . $this->input->ip_address() . '".');
+
+        redirect('backend');
     }
 }

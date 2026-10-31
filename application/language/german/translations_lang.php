@@ -272,6 +272,22 @@ $lang["new_password_sent_with_email"] =
 $lang["new_account_password"] = "Neues Kontopasswort";
 $lang["new_password_is"] =
     'Ihr neues Passwort ist $password Bitte sichern Sie dieses E-Mail, damit Sie Ihr Passwort nachlesen können falls nötig. Sie können dieses Passwort auf der Seite Einstellungen auch ändern.';
+$lang["account_recovery_email_sent"] =
+    "Wenn der Nutzername und die E-Mail-Adresse zu einem Konto gehören, erhalten Sie in Kürze eine E-Mail mit weiteren Anweisungen.";
+$lang["password_reset_email_subject"] = "Passwort-Zurücksetzung";
+$lang["password_reset_email_message"] =
+    "Bitte verwenden Sie den folgenden Link, um ein neues Passwort für Ihr Konto festzulegen: $link";
+$lang["password_reset_email_button"] = "Ein neues Passwort festlegen";
+$lang["admin_access_email_subject"] = "Temporärer Administratorzugriff";
+$lang["admin_access_email_message"] =
+    "Bitte verwenden Sie den folgenden Link, um die Anwendung als Administrator zu öffnen: $link";
+$lang["admin_access_email_button"] = "Anwendung öffnen";
+$lang["admin_access"] = "Administratorzugriff";
+$lang["admin_access_hint"] =
+    "Diese Installation verwendet Single Sign-on und Passwort-Logins sind deaktiviert. Verwenden Sie dieses Formular nur, wenn Sie Administrator sind und der Sso-Dienst nicht erreichbar ist.";
+$lang["password_reset_token_invalid"] = "Der Zugriffs-Link ist ungültig oder abgelaufen.";
+$lang["set_new_password"] = "Ein neues Passwort festlegen";
+$lang["password_reset_error"] = "Die Passwort-Zurücksetzung ist fehlgeschlagen. Öffnen Sie den Link aus der E-Mail erneut.";
 $lang["delete_record_prompt"] =
     "Sind Sie sicher, dass Sie diesen Eintrag löschen möchten? Dieser Vorgang kann nicht zurückgenommen werden.";
 $lang["delete_admin"] = "Administrator löschen";

@@ -46,8 +46,23 @@
     <h2><?= lang('backend_section') ?></h2>
     <p><?= lang('you_need_to_login') ?></p>
     <hr>
+    <?php if ( ! empty($login_message)): ?>
+        <div class="alert alert-warning"><?= html_escape($login_message) ?></div>
+    <?php endif; ?>
     <?php if ( ! empty($shib_error)): ?>
         <div class="alert alert-danger"><?= lang('shib_user_not_found') ?></div>
+    <?php endif; ?>
+    <?php if ( ! empty($admin_access_mode)): ?>
+        <div id="admin-access-request" class="mt-2">
+            <p class="text-muted small"><?= lang('admin_access_hint') ?></p>
+            <input type="text" id="admin-access-username" class="form-control mb-2"
+                   placeholder="<?= lang('username') ?>">
+            <input type="text" id="admin-access-email" class="form-control mb-2"
+                   placeholder="<?= lang('email') ?>">
+            <button type="button" id="admin-access-button" class="btn btn-outline-primary btn-block">
+                <i class="fas fa-key mr-2"></i><?= lang('admin_access') ?>
+            </button>
+        </div>
     <?php endif; ?>
     <?php if (empty($password_login)): ?>
         <div class="alert alert-info"><?= lang('sso_login_only') ?></div>

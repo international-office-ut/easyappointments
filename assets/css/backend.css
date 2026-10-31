@@ -265,6 +265,8 @@ body legend {
     .backend-page.content-scroll .record-details {
         margin-bottom: 0;
         max-width: none;
+        flex: 1 1 0%; /* grow into the space the fixed-width filter list leaves free */
+        min-width: 0; /* allow the inner tables to shrink instead of overflowing */
     }
 
     /* Align the three working-plan columns: the description zone keeps a fixed height so the

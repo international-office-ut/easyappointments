@@ -271,9 +271,11 @@
         $.post(url, data)
             .done(function (response) {
                 Backend.displayNotification(EALang.provider_saved);
+
+                var key = $('#filter-providers .key').val();
+
                 this.resetForm();
-                $('#filter-providers .key').val('');
-                this.filter('', response.id, true);
+                this.filter(key, response.id, true);
             }.bind(this));
     };
 
@@ -738,6 +740,10 @@
             var provider = this.filterResults.find(function (filterResult) {
                 return Number(filterResult.id) === Number(id);
             }.bind(this));
+
+            if (!provider) {
+                return;
+            }
 
             this.display(provider);
 

@@ -243,9 +243,11 @@
         $.post(url, data)
             .done(function (response) {
                 Backend.displayNotification(EALang.service_category_saved);
+
+                var key = $('#filter-categories .key').val();
+
                 this.resetForm();
-                $('#filter-categories .key').val('');
-                this.filter('', response.id, true);
+                this.filter(key, response.id, true);
                 BackendServices.updateAvailableCategories();
             }.bind(this));
     };
@@ -379,6 +381,10 @@
             var category = this.filterResults.find(function (category) {
                 return Number(category.id) === Number(id);
             }.bind(this));
+
+            if (!category) {
+                return;
+            }
 
             this.display(category);
 

@@ -287,9 +287,11 @@
         $.post(url, data)
             .done(function (response) {
                 Backend.displayNotification(EALang.service_saved);
+
+                var key = $('#filter-services .key').val();
+
                 this.resetForm();
-                $('#filter-services .key').val('');
-                this.filter('', response.id, true);
+                this.filter(key, response.id, true);
             }.bind(this));
     };
 
@@ -937,6 +939,10 @@
             var service = this.filterResults.find(function (filterResult) {
                 return Number(filterResult.id) === Number(id);
             });
+
+            if (!service) {
+                return;
+            }
 
             this.display(service);
 

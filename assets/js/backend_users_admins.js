@@ -214,9 +214,11 @@
         $.post(url, data)
             .done(function (response) {
                 Backend.displayNotification(EALang.admin_saved);
+
+                var key = $('#filter-admins .key').val();
+
                 this.resetForm();
-                $('#filter-admins .key').val('');
-                this.filter('', response.id, true);
+                this.filter(key, response.id, true);
             }.bind(this));
     };
 
@@ -463,6 +465,10 @@
             var admin = this.filterResults.find(function (filterResult) {
                 return Number(filterResult.id) === Number(id);
             });
+
+            if (!admin) {
+                return;
+            }
 
             this.display(admin);
 

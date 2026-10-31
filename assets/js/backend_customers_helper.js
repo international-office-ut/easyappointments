@@ -184,9 +184,11 @@
         $.post(url, data)
             .done(function (response) {
                 Backend.displayNotification(EALang.customer_saved);
+
+                var key = $('#filter-customers .key').val();
+
                 this.resetForm();
-                $('#filter-customers .key').val('');
-                this.filter('', response.id, true);
+                this.filter(key, response.id, true);
             }.bind(this));
     };
 
@@ -467,6 +469,10 @@
             var customer = this.filterResults.find(function (filterResult) {
                 return Number(filterResult.id) === Number(id);
             });
+
+            if (!customer) {
+                return;
+            }
 
             this.display(customer);
 

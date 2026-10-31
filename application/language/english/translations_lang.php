@@ -4,6 +4,8 @@ $lang["page_title"] = "Book Appointment With";
 $lang["service_and_provider"] = "Service & Provider";
 $lang["select_service"] = "Select Service";
 $lang["select_provider"] = "Select Provider";
+$lang["select_appointment_mode"] =
+    "Please select whether the appointment takes place online or on site.";
 $lang["duration"] = "Duration";
 $lang["minutes"] = "Minutes";
 $lang["price"] = "Price";

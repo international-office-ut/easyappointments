@@ -452,6 +452,16 @@ class Appointments extends EA_Controller {
         {
             $post_data = $this->input->post('post_data');
             $altcha_solution = (string) $this->input->post('altcha');
+            // Only the known location values are accepted, anything else (e.g. legacy or
+            // hand-crafted payloads) falls back to the provider resolution ladder.
+            if (isset($post_data['appointment']['location'])
+                && ! in_array($post_data['appointment']['location'],
+                    [APPOINTMENT_MODE_ONLINE, APPOINTMENT_MODE_ON_PREMISE, APPOINTMENT_MODE_BOTH, NULL, ''],
+                    TRUE))
+            {
+                $post_data['appointment']['location'] = NULL;
+            }
+
             $manage_mode = filter_var($post_data['manage_mode'], FILTER_VALIDATE_BOOLEAN);
 
             // The booking form cannot be allowed to write arbitrary record columns, so the
@@ -713,6 +723,11 @@ class Appointments extends EA_Controller {
             $post_data = $this->input->post('post_data');
 
             $appointment = $post_data['appointment'];
+        }
+
+        if (empty($appointment['id_users_provider']))
+        {
+            throw new Exception(lang('select_provider'));
         }
 
         $appointment_start = new DateTime($appointment['start_datetime']);

@@ -219,8 +219,18 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                 window.location.href = GlobalVariables.baseUrl
                     + '/index.php/appointments/book_success/' + response.appointment_hash;
             })
-            .fail(function (jqxhr, textStatus, errorThrown) {
+            .fail(function (jqxhr) {
                 $('.captcha-title button').trigger('click');
+
+                // Server errors (availability, mode or provider issues) must reach the
+                // customer, otherwise a failing request looks like a stuck wizard.
+                var message = (jqxhr.responseJSON && jqxhr.responseJSON.message)
+                    ? jqxhr.responseJSON.message
+                    : EALang.unexpected_issues_message;
+
+                if (message) {
+                    FrontendBook.displayBookingMessage(message);
+                }
             })
             .always(function () {
                 $layer.remove();

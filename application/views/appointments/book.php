@@ -385,6 +385,8 @@
                                 <div id="appointment-mode-hint" class="text-muted" style="display:none;">
                                     <small><?= lang('zoom_link_email_hint') ?></small>
                                 </div>
+
+                                <div id="booking-message" class="alert alert-danger d-none" role="alert"></div>
                             </div>
                         </div>
 

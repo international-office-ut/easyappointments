@@ -447,10 +447,17 @@ window.FrontendBook = window.FrontendBook || {};
          * Before the form is submitted to the server we need to make sure that
          * in the meantime the selected appointment date/time wasn't reserved by
          * another customer or event.
-         *
-         * @param {jQuery.Event} event
          */
         $('#book-appointment-submit').on('click', function () {
+            var $appointmentModeWrapper = $('#appointment-mode-wrapper');
+
+            if ($appointmentModeWrapper.is(':visible') && ! $('input[name="appointment_mode"]:checked').length)
+            {
+                displayBookingMessage(EALang.select_appointment_mode);
+
+                return;
+            }
+
             FrontendBookApi.registerAppointment();
         });
 
@@ -517,6 +524,32 @@ window.FrontendBook = window.FrontendBook || {};
             return false;
         }
     }
+
+    /**
+     * Display a booking message inside the wizard and fade it out afterwards.
+     *
+     * @param {String} message The message to be displayed.
+     */
+    function displayBookingMessage(message) {
+        var $messageBox = $('#booking-message');
+
+        $messageBox
+            .removeClass('d-none')
+            .text(message);
+
+        setTimeout(function () {
+            $messageBox.addClass('d-none');
+        }, 5000);
+    }
+
+    /**
+     * Exported booking message helper (e.g. used by the registration ajax flow).
+     *
+     * @param {String} message The message to be displayed.
+     */
+    exports.displayBookingMessage = function (message) {
+        displayBookingMessage(message);
+    };
 
     /**
      * Resolve the effective appointment mode of the current booking selection.

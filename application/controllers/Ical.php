@@ -114,7 +114,9 @@ class Ical extends EA_Controller {
 
         return $this->db
             ->select('appointments.*, services.name AS service_name, '
-                . 'services.location AS service_location')
+                . 'services.location AS service_location, '
+                . 'services.location_weekday_modes AS service_location_weekday_modes, '
+                . 'services.location_date_overrides AS service_location_date_overrides')
             ->select('customers.first_name AS customer_first_name, '
                 . 'customers.last_name AS customer_last_name, '
                 . 'customers.phone_number AS customer_phone_number, '
@@ -216,12 +218,21 @@ class Ical extends EA_Controller {
                 ->setUid((string)$appointment['id']);
 
             // The feed resolves the location like the notification emails do: an online
-            // appointment shows the Zoom link, an on-premise appointment shows the service
-            // location (a plain appointment location string passes through untouched).
+            // appointment shows the Zoom link, an on-premise appointment shows the effective
+            // service location (location overrides first, then the plain location). A plain
+            // appointment location string passes through untouched.
+            $service_for_location = [
+                'location' => $appointment['service_location'] ?? NULL,
+                'location_weekday_modes' => $appointment['service_location_weekday_modes'] ?? NULL,
+                'location_date_overrides' => $appointment['service_location_date_overrides'] ?? NULL,
+            ];
+
             $location_value = get_appointment_location_value(
                 $appointment['location'] ?? NULL,
-                ['location' => $appointment['service_location'] ?? NULL],
-                $provider
+                $service_for_location,
+                $provider,
+                $appointment['start_datetime'] ?? NULL,
+                $timezone ? $timezone->getName() : NULL
             );
 
             if ($location_value)

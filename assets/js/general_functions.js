@@ -394,6 +394,78 @@ window.GeneralFunctions = window.GeneralFunctions || {};
     };
 
     /**
+     * Resolve the effective service location of an appointment slot on the booking side.
+     *
+     * The lookup mirrors the server resolver: a date window matches before a weekday window and
+     * both before the plain service location. The weekday index uses 0 = Sunday ... 6 = Saturday
+     * and the time windows compare against the appointment start ("HH:MM"), which the calendar
+     * hands out in the provider timezone.
+     *
+     * @param {Object} service Service record (with the raw location override columns).
+     * @param {String|null} dateISO Selected appointment date ("YYYY-MM-DD"), NULL skips the windows.
+     * @param {String|null} startTime Selected appointment start ("HH:MM"), NULL skips time windows.
+     *
+     * @return {String} Returns the effective location (service location when no override matches).
+     */
+    exports.resolveServiceLocation = function (service, dateISO, startTime) {
+        var defaultLocation = service.location || '';
+
+        if (!dateISO || !startTime) {
+            return defaultLocation;
+        }
+
+        var weekday = new Date(dateISO + 'T12:00:00Z').getUTCDay();
+        var layers = [];
+
+        try {
+            var dateLayer = service.location_date_overrides;
+
+            if (typeof dateLayer === 'string') {
+                dateLayer = JSON.parse(dateLayer || 'null');
+            }
+
+            if (dateLayer && dateLayer[dateISO]) {
+                layers.push(dateLayer[dateISO]);
+            }
+
+            var weekdayLayer = service.location_weekday_modes;
+
+            if (typeof weekdayLayer === 'string') {
+                weekdayLayer = JSON.parse(weekdayLayer || 'null');
+            }
+
+            if (weekdayLayer && weekdayLayer[weekday]) {
+                layers.push(weekdayLayer[weekday]);
+            }
+        } catch (exception) {
+            return defaultLocation; // Invalid override data: fall back to the default location.
+        }
+
+        for (var layerIndex = 0; layerIndex < layers.length; layerIndex += 1) {
+            var windows = layers[layerIndex];
+
+            if (!Array.isArray(windows)) {
+                continue;
+            }
+
+            for (var index = 0; index < windows.length; index += 1) {
+                var window = windows[index];
+
+                if (window
+                    && window.location
+                    && window.from
+                    && window.to
+                    && window.from <= startTime
+                    && startTime < window.to) {
+                    return window.location;
+                }
+            }
+        }
+
+        return defaultLocation;
+    };
+
+    /**
      * Format a given date according to the date format setting.
      *
      * @param {String} date The date to be formatted.

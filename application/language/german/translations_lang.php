@@ -243,6 +243,13 @@ $lang["feed_active"] = "Für diesen Anbieter ist eine Feed-URL aktiv.";
 $lang["feed_inactive"] = "Kein aktiver Feed.";
 $lang["feed_copied"] = "Feed-URL in die Zwischenablage kopiert.";
 $lang["feed_revoked"] = "Der Kalender-Feed wurde widerrufen.";
+$lang["location_weekday_overrides"] = "Standort-Überschreibungen (Zeitfenster je Wochentag)";
+$lang["location_date_overrides"] = "Standort-Überschreibungen (Zeitfenster je Datum)";
+$lang["add_location_window"] = "Fenster hinzufügen";
+$lang["add_location_date"] = "Datum hinzufügen";
+$lang["remove_location_window"] = "Entfernen";
+$lang["location_window_invalid"] = "Die Zeitfenster sind ungültig (der Anfang muss vor dem Ende liegen).";
+$lang["location_window_overlap"] = "Die Standort-Zeitfenster dürfen sich nicht überschneiden.";
 $lang["identity_attach_hint"] =
     'Diese Rolle wird der bestehenden Person „{$name}" ({$role}) zugeordnet. Die Anmeldedaten werden geteilt.';
 $lang["data_retention"] = "Datenaufbewahrung";

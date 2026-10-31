@@ -632,6 +632,10 @@ window.FrontendBook = window.FrontendBook || {};
 
         // Appointment Details
         var selectedDate = $('#select-date').datepicker('getDate');
+        var selectedDateISO = selectedDate !== null
+            ? selectedDate.toString('yyyy-MM-dd')
+            : null;
+        var selectedTime = $('.selected-hour').data('value') || null;
 
         if (selectedDate !== null) {
             selectedDate = GeneralFunctions.formatDate(selectedDate, GlobalVariables.dateFormat);
@@ -653,7 +657,11 @@ window.FrontendBook = window.FrontendBook || {};
 
         GlobalVariables.availableServices.forEach(function (service, index) {
             if (Number(service.id) === Number(serviceId)) {
-                serviceLocation = service.location;
+                serviceLocation = GeneralFunctions.resolveServiceLocation(
+                    service,
+                    selectedDateISO,
+                    selectedTime
+                );
                 return false; // break loop
             }
         });
@@ -704,7 +712,6 @@ window.FrontendBook = window.FrontendBook || {};
         $('#appointment-mode-hint').toggle(isHandledMode && selectedMode === 'ONLINE');
 
         var locationValue = getLocationDisplayValue(selectedMode, serviceLocation, provider);
-
         $('#appointment-details').empty();
 
         $('<div/>', {

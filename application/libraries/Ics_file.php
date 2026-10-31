@@ -64,7 +64,8 @@ class Ics_file {
             ->setSummary($service['name'])
             ->setUid($appointment['id']);
 
-        $location_value = get_appointment_location_value($appointment['location'] ?? NULL, $service, $provider);
+        $location_value = get_appointment_location_value($appointment['location'] ?? NULL, $service, $provider,
+            $appointment['start_datetime'], $provider['timezone'] ?? NULL);
 
         if ($location_value)
         {

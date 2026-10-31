@@ -242,6 +242,13 @@ $lang["feed_active"] = "A feed URL is active for this provider.";
 $lang["feed_inactive"] = "No active feed.";
 $lang["feed_copied"] = "Feed URL copied to clipboard.";
 $lang["feed_revoked"] = "The calendar feed is revoked.";
+$lang["location_weekday_overrides"] = "Location overrides (weekday time windows)";
+$lang["location_date_overrides"] = "Location overrides (date time windows)";
+$lang["add_location_window"] = "Add window";
+$lang["add_location_date"] = "Add date";
+$lang["remove_location_window"] = "Remove";
+$lang["location_window_invalid"] = "The window ranges are invalid (a start must be before its end).";
+$lang["location_window_overlap"] = "The location window ranges must not overlap.";
 $lang["identity_attach_hint"] =
     'Attach this role to the existing person "{$name}" ({$role}). Login credentials are shared.';
 $lang["data_retention"] = "Data Retention";

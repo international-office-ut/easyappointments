@@ -183,6 +183,34 @@ class Services_model extends EA_Model {
                 . $service['attendants_number']);
         }
 
+        // Location override layers are optional JSON strings (hidden from the editor payloads).
+        foreach (['location_weekday_modes', 'location_date_overrides'] as $location_layer)
+        {
+            $value = $service[$location_layer] ?? NULL;
+
+            if ($value === NULL || $value === '')
+            {
+                continue;
+            }
+
+            if ( ! is_string($value))
+            {
+                throw new Exception('The ' . $location_layer . ' value must be a JSON string.');
+            }
+
+            $decoded = json_decode($value, TRUE);
+
+            if ($decoded === NULL && $value !== 'null')
+            {
+                throw new Exception('The ' . $location_layer . ' value is not valid JSON.');
+            }
+
+            if ($decoded !== NULL && ! is_array($decoded))
+            {
+                throw new Exception('The ' . $location_layer . ' value must be a JSON object.');
+            }
+        }
+
         return TRUE;
     }
 

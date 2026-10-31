@@ -141,6 +141,10 @@
                 location: $('#service-location').val(),
                 appointment_mode: $('#service-appointment-mode').val() || null,
                 weekday_modes: {},
+                location_weekday_modes: JSON.stringify(
+                    ServicesHelper.collectWeekdayLocationWindows()) || null,
+                location_date_overrides: JSON.stringify(
+                    ServicesHelper.collectDateLocationWindows()) || null,
                 availabilities_type: $('#service-availabilities-type').val(),
                 attendants_number: $('#service-attendants-number').val()
             };
@@ -168,6 +172,36 @@
             }
 
             instance.save(service);
+        });
+
+        /**
+         * Event: Service Add-Location-Window "Click" (weekday windows grid)
+         */
+        $('#services').on('click', '.add-location-window', function (event) {
+            event.preventDefault();
+
+            $('#services .service-location-weekdays .location-windows[data-weekday="'
+                + $(event.currentTarget).attr('data-weekday') + '"]')
+                .append(instance.buildLocationWindowRow('', '', ''));
+        });
+
+        /**
+         * Event: Service Add-Location-Date "Click" (date override list)
+         */
+        $('#services').on('click', '.add-location-date', function (event) {
+            event.preventDefault();
+
+            $('#services .service-location-date-overrides')
+                .append(instance.buildLocationWindowRow('', '', '', ''));
+        });
+
+        /**
+         * Event: Service Remove-Location-Window "Click"
+         */
+        $('#services').on('click', '.remove-location-window', function (event) {
+            event.preventDefault();
+
+            $(event.currentTarget).closest('.location-window-row').remove();
         });
 
         /**
@@ -221,7 +255,10 @@
             .off('click', '#cancel-service')
             .off('click', '#save-service')
             .off('click', '#edit-service')
-            .off('click', '#delete-service');
+            .off('click', '#delete-service')
+            .off('click', '.add-location-window')
+            .off('click', '.add-location-date')
+            .off('click', '.remove-location-window');
     };
 
     /**
@@ -276,6 +313,8 @@
      */
     ServicesHelper.prototype.validate = function () {
         $('#services .has-error').removeClass('has-error');
+        $('#services .location-window-row.has-error').removeClass('has-error');
+        $('#services .location-window-row input').removeClass('is-invalid');
         $('#services .form-message')
             .removeClass('alert-danger')
             .hide();
@@ -301,6 +340,11 @@
                 throw new Error(EALang.invalid_duration);
             }
 
+            // Validate the location override windows: from < to on every row and no overlaps
+            // inside a weekday or date layer (first-match-wins resolution is unverifiable when
+            // borders overlap). Offending rows get highlighted in place.
+            ServicesHelper.validateLocationWindows();
+
             return true;
         } catch (error) {
             $('#services .form-message')
@@ -323,6 +367,8 @@
             .find('input, select, textarea')
             .val('')
             .prop('disabled', true);
+        $('#services .service-location-weekdays .location-windows').empty();
+        $('#services .service-location-date-overrides').empty();
         $('#services .record-details h3 a').remove();
 
         $('#services .add-edit-delete-group').show();
@@ -353,11 +399,266 @@
         Object.keys(weekdayModes).forEach(function (weekday) {
             $('.service-weekday-modes .weekday-mode[data-weekday="' + weekday + '"]').val(weekdayModes[weekday]);
         });
+
+        ServicesHelper.renderLocationWeekdayWindows(service.location_weekday_modes);
+        ServicesHelper.renderLocationDateWindows(service.location_date_overrides);
+
         $('#service-availabilities-type').val(service.availabilities_type);
         $('#service-attendants-number').val(service.attendants_number);
 
         var categoryId = (service.id_service_categories !== null) ? service.id_service_categories : 'null';
         $('#service-category').val(categoryId);
+    };
+
+    /**
+     * Build one location window editor row (from-time, to-time, location, remove button).
+     *
+     * @param {String} from Window start ("HH:MM").
+     * @param {String} to Window end ("HH:MM").
+     * @param {String} location Location value for the window.
+     * @param {String} date Optional ISO date when the row belongs to a date override.
+     * @return {jQuery} The row element.
+     */
+    ServicesHelper.buildLocationWindowRow = function (from, to, location, date) {
+        var hasDate = date !== undefined;
+
+        var $row = $('<div/>', {
+            'class': 'location-window-row input-group input-group-sm mb-1',
+            'data-date': hasDate ? date : ''
+        });
+
+        if (hasDate) {
+            $row.append($('<input/>', {
+                'type': 'text',
+                'class': 'location-window-date form-control',
+                'placeholder': 'YYYY-MM-DD',
+                'value': date
+            }));
+        }
+
+        $row
+            .append($('<input/>', {
+                'type': 'text',
+                'class': 'location-window-from form-control',
+                'placeholder': 'HH:MM',
+                'value': from
+            }))
+            .append($('<input/>', {
+                'type': 'text',
+                'class': 'location-window-to form-control',
+                'placeholder': 'HH:MM',
+                'value': to
+            }))
+            .append($('<input/>', {
+                'type': 'text',
+                'class': 'location-window-location form-control',
+                'placeholder': 'Location',
+                'value': location
+            }))
+            .append($('<button/>', {
+                'type': 'button',
+                'class': 'remove-location-window btn btn-outline-danger',
+                'html': $('<i/>', {'class': 'fas fa-trash'})
+            }));
+
+        return $row;
+    };
+
+    /**
+     * Validate the location override rows and highlight offending rows in place.
+     *
+     * Every row checks `from < to`; the weekday rows are compared inside their container and
+     * the date rows inside their ISO date (first-match-wins resolution is unverifiable when
+     * the borders overlap). Errors are thrown as rollback, but the row also stays marked, so
+     * the staff can find it without searching.
+     *
+     * @throws {Error} When a row has an invalid time range or overlapping windows.
+     */
+    ServicesHelper.validateLocationWindows = function () {
+        var reportError = function ($row, message) {
+            $row.addClass('has-error');
+            $row.find('input').addClass('is-invalid');
+            throw new Error(message);
+        };
+
+        var checkRows = function ($rows, message) {
+            var previous = null;
+
+            $rows
+                .sort(function (first, second) {
+                    return $(first).find('.location-window-from').val()
+                        < $(second).find('.location-window-from').val() ? -1 : 1;
+                })
+                .each(function (index, row) {
+                    var $row = $(row);
+                    var from = $row.find('.location-window-from').val();
+                    var to = $row.find('.location-window-to').val();
+                    var location = $row.find('.location-window-location').val();
+
+                    if (!from || !to || !location) {
+                        return;
+                    }
+
+                    var fromParts = from.split(':');
+                    var toParts = to.split(':');
+                    var fromMinutes = Number(fromParts[0]) * 60 + Number(fromParts[1]);
+                    var toMinutes = Number(toParts[0]) * 60 + Number(toParts[1]);
+
+                    if (fromMinutes >= toMinutes) {
+                        reportError($row, EALang.location_window_invalid);
+                    }
+
+                    if (previous !== null && previous.to > from) {
+                        reportError($row, EALang.location_window_overlap);
+                    }
+
+                    previous = {from: from, to: to};
+                });
+        };
+
+        $('#services .service-location-weekdays .location-windows').each(function (index, container) {
+            checkRows($(container).find('.location-window-row'));
+        });
+
+        // The date layer groups its rows by the entered date: each date is its own layer
+        // and its windows are compared with each other only.
+        var rowsByDate = {};
+
+        $('#services .service-location-date-overrides .location-window-row').each(function (index, row) {
+            var date = $(row).find('.location-window-date').val();
+
+            if (date) {
+                rowsByDate[date] = rowsByDate[date] || [];
+                rowsByDate[date].push(row);
+            }
+        });
+
+        Object.keys(rowsByDate).forEach(function (date) {
+            checkRows(rowsByDate[date]);
+        });
+    };
+
+    /**
+     * Read the weekday location windows of the editor into the JSON-layer shape.
+     *
+     * @return {Object} Map of weekday index to its non-empty window rows.
+     */
+    ServicesHelper.collectWeekdayLocationWindows = function () {
+        var weekdayWindows = {};
+
+        $('#services .service-location-weekdays .location-windows').each(function (index, container) {
+            var weekday = $(container).attr('data-weekday');
+            var rows = [];
+
+            $(container).find('.location-window-row').each(function (rowIndex, row) {
+                var from = $(row).find('.location-window-from').val();
+                var to = $(row).find('.location-window-to').val();
+                var location = $(row).find('.location-window-location').val();
+
+                if (from && to && location) {
+                    rows.push({from: from, to: to, location: location});
+                }
+            });
+
+            if (rows.length) {
+                weekdayWindows[weekday] = rows;
+            }
+        });
+
+        return weekdayWindows;
+    };
+
+    /**
+     * Read the date location windows of the editor into the JSON-layer shape.
+     *
+     * @return {Object} Map of ISO date to its non-empty window rows.
+     */
+    ServicesHelper.collectDateLocationWindows = function () {
+        var dateWindows = {};
+
+        $('#services .service-location-date-overrides .location-window-row').each(function (index, row) {
+            var date = $(row).find('.location-window-date').val();
+            var from = $(row).find('.location-window-from').val();
+            var to = $(row).find('.location-window-to').val();
+            var location = $(row).find('.location-window-location').val();
+
+            if (!date || !from || !to || !location) {
+                return;
+            }
+
+            dateWindows[date] = dateWindows[date] || [];
+            dateWindows[date].push({from: from, to: to, location: location});
+        });
+
+        return dateWindows;
+    };
+
+    /**
+     * Render the weekday location windows of a service into the editor.
+     *
+     * @param {String|Object|null} raw JSON string or object of the `location_weekday_modes` layer.
+     */
+    ServicesHelper.renderLocationWeekdayWindows = function (raw) {
+        var layers = {};
+
+        try {
+            layers = typeof raw === 'string' ? JSON.parse(raw || 'null') || {} : (raw || {});
+        } catch (exception) {
+            layers = {};
+        }
+
+        $('#services .service-location-weekdays .location-windows').empty();
+
+        Object.keys(layers).forEach(function (weekday) {
+            var container = $('#services .service-location-weekdays .location-windows'
+                + '[data-weekday="' + weekday + '"]');
+
+            if (!container.length || !Array.isArray(layers[weekday])) {
+                return;
+            }
+
+            layers[weekday].forEach(function (window) {
+                container.append(ServicesHelper.buildLocationWindowRow(
+                    window.from || '',
+                    window.to || '',
+                    window.location || ''
+                ));
+            });
+        });
+    };
+
+    /**
+     * Render the date location windows of a service into the editor.
+     *
+     * @param {String|Object|null} raw JSON string or object of the `location_date_overrides` layer.
+     */
+    ServicesHelper.renderLocationDateWindows = function (raw) {
+        var layers = {};
+
+        try {
+            layers = typeof raw === 'string' ? JSON.parse(raw || 'null') || {} : (raw || {});
+        } catch (exception) {
+            layers = {};
+        }
+
+        $('#services .service-location-date-overrides').empty();
+
+        Object.keys(layers).forEach(function (date) {
+            if (!Array.isArray(layers[date])) {
+                return;
+            }
+
+            layers[date].forEach(function (window) {
+                $('#services .service-location-date-overrides').append(
+                    ServicesHelper.buildLocationWindowRow(
+                        window.from || '',
+                        window.to || '',
+                        window.location || '',
+                        date
+                    )
+                );
+            });
+        });
     };
 
     /**

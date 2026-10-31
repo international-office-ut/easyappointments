@@ -453,10 +453,13 @@ window.FrontendBook = window.FrontendBook || {};
 
             if ($appointmentModeWrapper.is(':visible') && ! $('input[name="appointment_mode"]:checked').length)
             {
-                displayBookingMessage(EALang.select_appointment_mode);
+                // The message persists (no timer) and is cleared by the mode selection itself.
+                FrontendBook.displayBookingMessage(EALang.select_appointment_mode);
 
                 return;
             }
+
+            FrontendBook.displayBookingMessage('', false);
 
             FrontendBookApi.registerAppointment();
         });
@@ -466,7 +469,7 @@ window.FrontendBook = window.FrontendBook || {};
          */
         $('input[name="appointment_mode"]').on('change', function () {
             // The location complaint becomes obsolete as soon as the customer picks one.
-            $('#booking-message').addClass('d-none').empty();
+            $('#booking-message').addClass('invisible').text('');
 
             FrontendBook.updateConfirmFrame();
         });
@@ -529,29 +532,26 @@ window.FrontendBook = window.FrontendBook || {};
     }
 
     /**
-     * Display a booking message inside the wizard and fade it out afterwards.
+     * Display a booking message inside the wizard.
      *
      * @param {String} message The message to be displayed.
+     * @param {Boolean} autoHide Optionally fade the message out after a few seconds (used
+     * for attempt errors; stale-state messages clear on the interaction they complain about).
      */
-    function displayBookingMessage(message) {
+    exports.displayBookingMessage = function (message, autoHide) {
         var $messageBox = $('#booking-message');
 
+        // The box keeps its height at all times (visibility toggle), so that the
+        // wizard does not reflow when the message appears or disappears.
         $messageBox
-            .removeClass('d-none')
+            .toggleClass('invisible', message === '')
             .text(message);
 
-        setTimeout(function () {
-            $messageBox.addClass('d-none');
-        }, 5000);
-    }
-
-    /**
-     * Exported booking message helper (e.g. used by the registration ajax flow).
-     *
-     * @param {String} message The message to be displayed.
-     */
-    exports.displayBookingMessage = function (message) {
-        displayBookingMessage(message);
+        if (autoHide) {
+            setTimeout(function () {
+                $messageBox.addClass('invisible').text('');
+            }, 5000);
+        }
     };
 
     /**
@@ -660,6 +660,9 @@ window.FrontendBook = window.FrontendBook || {};
         if ($('.selected-hour').text() === '') {
             return;
         }
+
+        // Stale messages of previous selections do not belong into the next render.
+        $('#booking-message').addClass('invisible').text('');
 
         // Appointment Details
         var selectedDate = $('#select-date').datepicker('getDate');

@@ -386,7 +386,10 @@
                                     <small><?= lang('zoom_link_email_hint') ?></small>
                                 </div>
 
-                                <div id="booking-message" class="alert alert-danger d-none" role="alert"></div>
+                                <div id="booking-message"
+                                     class="alert alert-danger invisible"
+                                     role="alert"
+                                     style="min-height: 2.5rem;"></div>
                             </div>
                         </div>
 

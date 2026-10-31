@@ -229,7 +229,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
                     : EALang.unexpected_issues_message;
 
                 if (message) {
-                    FrontendBook.displayBookingMessage(message);
+                    FrontendBook.displayBookingMessage(message, true);
                 }
             })
             .always(function () {

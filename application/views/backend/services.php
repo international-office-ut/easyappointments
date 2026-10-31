@@ -103,129 +103,146 @@
 
                     <input type="hidden" id="service-id">
 
-                    <div class="row">
-                        <div class="col-12 col-lg-3">
-                            <div class="form-group">
-                                <label for="service-name">
-                                    <?= lang('name') ?>
-                                    <span class="text-danger">*</span>
-                                </label>
-                                <input id="service-name" class="form-control required" maxlength="128">
-                            </div>
+                    <ul class="nav nav-pills switch-view">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#service-details" data-toggle="tab">
+                                <?= lang('details') ?>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#service-location-overrides" data-toggle="tab">
+                                <?= lang('location') ?>
+                            </a>
+                        </li>
+                    </ul>
 
-                            <div class="form-group">
-                                <label for="service-duration">
-                                    <?= lang('duration_minutes') ?>
-                                    <span class="text-danger">*</span>
-                                </label>
-                                <input id="service-duration" class="form-control required" type="number" min="<?= EVENT_MINIMUM_DURATION ?>">
-                            </div>
+                    <div class="form-message alert" style="display:none;"></div>
 
-                            <div class="form-group"  style="display: none">
-                                <label for="service-price">
-                                    <?= lang('price') ?>
-                                    <span class="text-danger">*</span>
-                                </label>
-                                <input id="service-price" class="form-control required">
-                            </div>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active clearfix" id="service-details">
+                            <div class="row">
+                                <div class="col-12 col-lg-6">
+                                    <div class="form-group">
+                                        <label for="service-name">
+                                            <?= lang('name') ?>
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <input id="service-name" class="form-control required" maxlength="128">
+                                    </div>
 
-                            <div class="form-group"  style="display: none">
-                                <label for="service-currency">
-                                    <?= lang('currency') ?>
-                                </label>
-                                <input id="service-currency" class="form-control" maxlength="32">
-                            </div>
+                                    <div class="form-group">
+                                        <label for="service-duration">
+                                            <?= lang('duration_minutes') ?>
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <input id="service-duration" class="form-control required" type="number" min="<?= EVENT_MINIMUM_DURATION ?>">
+                                    </div>
 
-                            <div class="form-group">
-                                <label for="service-category">
-                                    <?= lang('category') ?>
-                                </label>
-                                <select id="service-category" class="form-control"></select>
-                            </div>
+                                    <div class="form-group"  style="display: none">
+                                        <label for="service-price">
+                                            <?= lang('price') ?>
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <input id="service-price" class="form-control required">
+                                    </div>
 
-                            <div class="form-group">
-                                <label for="service-availabilities-type">
-                                    <?= lang('availabilities_type') ?>
-                                </label>
-                                <select id="service-availabilities-type" class="form-control">
-                                    <option value="<?= AVAILABILITIES_TYPE_FIXED ?>">
-                                        <?= lang('fixed') ?>
-                                    </option>
-                                    <option value="<?= AVAILABILITIES_TYPE_FLEXIBLE ?>">
-                                        <?= lang('flexible') ?>
-                                    </option>
-                                </select>
-                            </div>
+                                    <div class="form-group"  style="display: none">
+                                        <label for="service-currency">
+                                            <?= lang('currency') ?>
+                                        </label>
+                                        <input id="service-currency" class="form-control" maxlength="32">
+                                    </div>
 
-                            <div class="form-group">
-                                <label for="service-attendants-number">
-                                    <?= lang('attendants_number') ?>
-                                    <span class="text-danger">*</span>
-                                </label>
-                                <input id="service-attendants-number" class="form-control required" type="number" min="1">
-                            </div>
+                                    <div class="form-group">
+                                        <label for="service-category">
+                                            <?= lang('category') ?>
+                                        </label>
+                                        <select id="service-category" class="form-control"></select>
+                                    </div>
 
-                            <div class="form-group">
-                                <label for="service-location">
-                                    <?= lang('location') ?>
+                                    <div class="form-group">
+                                        <label for="service-availabilities-type">
+                                            <?= lang('availabilities_type') ?>
+                                        </label>
+                                        <select id="service-availabilities-type" class="form-control">
+                                            <option value="<?= AVAILABILITIES_TYPE_FIXED ?>">
+                                                <?= lang('fixed') ?>
+                                            </option>
+                                            <option value="<?= AVAILABILITIES_TYPE_FLEXIBLE ?>">
+                                                <?= lang('flexible') ?>
+                                            </option>
+                                        </select>
+                                    </div>
 
-                                </label>
-                                <input id="service-location" class="form-control">
-                            </div>
+                                    <div class="form-group">
+                                        <label for="service-attendants-number">
+                                            <?= lang('attendants_number') ?>
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <input id="service-attendants-number" class="form-control required" type="number" min="1">
+                                    </div>
 
-                                                                                </div>
+                                    <div class="form-group">
+                                        <label for="service-location">
+                                            <?= lang('location') ?>
+                                        </label>
+                                        <input id="service-location" class="form-control">
+                                    </div>
+                                </div>
 
-                        <div class="col-12 col-lg-3">
-                            <div class="form-group">
-                                <label for="service-appointment-mode">
-                                    <?= lang('appointment_mode') ?>
-                                </label>
-                                <select id="service-appointment-mode" class="form-control">
-                                    <option value=""><?= lang('mode_provider_default') ?></option>
-                                    <option value="<?= APPOINTMENT_MODE_ONLINE ?>"><?= lang('mode_online') ?></option>
-                                    <option value="<?= APPOINTMENT_MODE_ON_PREMISE ?>"><?= lang('mode_on_premise') ?></option>
-                                    <option value="<?= APPOINTMENT_MODE_BOTH ?>"><?= lang('mode_both') ?></option>
-                                </select>
-                            </div>
+                                <div class="col-12 col-lg-6">
+                                    <div class="form-group">
+                                        <label for="service-appointment-mode">
+                                            <?= lang('appointment_mode') ?>
+                                        </label>
+                                        <select id="service-appointment-mode" class="form-control">
+                                            <option value=""><?= lang('mode_provider_default') ?></option>
+                                            <option value="<?= APPOINTMENT_MODE_ONLINE ?>"><?= lang('mode_online') ?></option>
+                                            <option value="<?= APPOINTMENT_MODE_ON_PREMISE ?>"><?= lang('mode_on_premise') ?></option>
+                                            <option value="<?= APPOINTMENT_MODE_BOTH ?>"><?= lang('mode_both') ?></option>
+                                        </select>
+                                    </div>
 
-                            <div class="form-group">
-                                <label>
-                                    <?= lang('weekday_mode_overrides') ?>
-                                </label>
-                                <table class="service-weekday-modes table table-sm table-borderless">
-                                    <tbody>
-                                    <?php
-                                    $weekday_names = ['sunday', 'monday', 'tuesday', 'wednesday',
-                                        'thursday', 'friday', 'saturday'];
+                                    <div class="form-group">
+                                        <label>
+                                            <?= lang('weekday_mode_overrides') ?>
+                                        </label>
+                                        <table class="service-weekday-modes table table-sm table-borderless">
+                                            <tbody>
+                                            <?php
+                                            $weekday_names = ['sunday', 'monday', 'tuesday', 'wednesday',
+                                                'thursday', 'friday', 'saturday'];
 
-                                    for ($weekday = 0; $weekday <= 6; $weekday++): ?>
-                                        <tr>
-                                            <td class="align-middle">
-                                                <?= lang($weekday_names[$weekday]) ?>
-                                            </td>
-                                            <td>
-                                                <select class="weekday-mode form-control" data-weekday="<?= $weekday ?>">
-                                                    <option value="">—</option>
-                                                    <option value="<?= APPOINTMENT_MODE_ONLINE ?>"><?= lang('mode_online') ?></option>
-                                                    <option value="<?= APPOINTMENT_MODE_ON_PREMISE ?>"><?= lang('mode_on_premise') ?></option>
-                                                    <option value="<?= APPOINTMENT_MODE_BOTH ?>"><?= lang('mode_both') ?></option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                    <?php endfor ?>
-                                    </tbody>
-                                </table>
-                            </div>
+                                            for ($weekday = 0; $weekday <= 6; $weekday++): ?>
+                                                <tr>
+                                                    <td class="align-middle">
+                                                        <?= lang($weekday_names[$weekday]) ?>
+                                                    </td>
+                                                    <td>
+                                                        <select class="weekday-mode form-control" data-weekday="<?= $weekday ?>">
+                                                            <option value="">—</option>
+                                                            <option value="<?= APPOINTMENT_MODE_ONLINE ?>"><?= lang('mode_online') ?></option>
+                                                            <option value="<?= APPOINTMENT_MODE_ON_PREMISE ?>"><?= lang('mode_on_premise') ?></option>
+                                                            <option value="<?= APPOINTMENT_MODE_BOTH ?>"><?= lang('mode_both') ?></option>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                            <?php endfor ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
 
-                            <div class="form-group">
-                                <label for="service-description">
-                                    <?= lang('description') ?>
-                                </label>
-                                <textarea id="service-description" rows="4" class="form-control"></textarea>
+                                    <div class="form-group">
+                                        <label for="service-description">
+                                            <?= lang('description') ?>
+                                        </label>
+                                        <textarea id="service-description" rows="4" class="form-control"></textarea>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="col-12 col-lg-6">
+                        <div class="tab-pane fade clearfix" id="service-location-overrides">
                             <div class="form-group service-location-overrides">
                                 <label>
                                     <?= lang('location_weekday_overrides') ?>

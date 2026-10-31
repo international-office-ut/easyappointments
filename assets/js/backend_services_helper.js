@@ -377,6 +377,9 @@
 
         $('#services .record-details .has-error').removeClass('has-error');
         $('#services .record-details .form-message').hide();
+
+        // Reset the internal record tabs so that a new selection opens with Details active.
+        $('#services .record-details .switch-view a[href="#service-details"]').tab('show');
     };
 
     /**

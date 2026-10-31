@@ -112,6 +112,7 @@ $lang["hide"] = "Hide";
 $lang["working_plan_description"] =
     'Set the daily working hours and the appointment type for each day.';
 $lang["type"] = "Type";
+$lang["mode"] = "Mode";
 $lang["type_to_filter_customers"] = "Type to filter customers.";
 $lang["clear_fields_add_existing_customer_hint"] =
     "Clear the fields and enter a new customer.";
@@ -361,7 +362,9 @@ $lang["time_format_hint"] =
     "Change the time display format (H - Hours, M - Minutes).";
 $lang["first_weekday"] = "First day of week";
 $lang["first_weekday_hint"] = "Set the first day of the calendar week.";
-$lang["availabilities_type"] = "Appointment Type";
+$lang["availabilities_type"] = "Appointment Slots";
+$lang["slots_fixed"] = "Fixed Intervals";
+$lang["slots_flexible"] = "Flexible";
 $lang["flexible"] = "Flexible";
 $lang["fixed"] = "Fixed";
 $lang["attendants_number"] = "Attendants per time slot";
@@ -422,12 +425,12 @@ $lang["default"] = "Default";
 $lang["table"] = "Table";
 $lang["date"] = "Date";
 
-$lang["appointment_mode"] = "Appointment Type";
+$lang["appointment_mode"] = "Location Type";
 $lang["mode_online"] = "Online";
 $lang["mode_on_premise"] = "On Site";
 $lang["mode_both"] = "Online or On Site";
 $lang["mode_provider_default"] = "Provider Default";
-$lang["weekday_mode_overrides"] = "Weekday Overrides";
+$lang["weekday_mode_overrides"] = "Weekday Mode Overrides";
 $lang["zoom_link"] = "Zoom Link";
 $lang["other"] = "Other";
 $lang["zoom_link_required"] =
@@ -435,6 +438,6 @@ $lang["zoom_link_required"] =
 $lang["zoom_link_email_hint"] =
     "The link will be sent to you by email after the booking.";
 $lang["provider_weekday_mode_overrides_hint"] =
-    "Applies to services without their own appointment type or weekday overrides.";
+    "Applies to services without their own location type or weekday mode overrides.";
 
 // End

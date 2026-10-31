@@ -110,6 +110,7 @@ $lang["hide"] = "Verbergen";
 $lang["working_plan_description"] =
     'Legen Sie die täglichen Arbeitszeiten und die Terminart für jeden Tag fest.';
 $lang["type"] = "Typ";
+$lang["mode"] = "Modus";
 $lang["type_to_filter_customers"] = "Eingeben, um Kunden zu filtern.";
 $lang["clear_fields_add_existing_customer_hint"] =
     "Löschen Sie die Felder und geben Sie einen neuen Kunden-Hinweis ein.";
@@ -364,7 +365,9 @@ $lang["time_format_hint"] =
     "Ändern Sie das Zeitanzeigeformat (H - Stunden, M - Minuten).";
 $lang["first_weekday"] = "Erster Tag der Woche";
 $lang["first_weekday_hint"] = "Wählen Sie den ersten Tag der Kalenderwoche.";
-$lang["availabilities_type"] = "Terminart";
+$lang["availabilities_type"] = "Termin-Slots";
+$lang["slots_fixed"] = "Feste Intervalle";
+$lang["slots_flexible"] = "Flexibel";
 $lang["flexible"] = "Flexibel";
 $lang["fixed"] = "Fest";
 $lang["attendants_number"] = "Teilnehmer pro Zeitfenster";
@@ -426,12 +429,12 @@ $lang["default"] = "Standard";
 $lang["table"] = "Tabelle";
 $lang["date"] = "Datum";
 
-$lang["appointment_mode"] = "Terminart";
+$lang["appointment_mode"] = "Standort-Typ";
 $lang["mode_online"] = "Online";
 $lang["mode_on_premise"] = "Vor Ort";
 $lang["mode_both"] = "Online oder Vor Ort";
 $lang["mode_provider_default"] = "Anbieter-Standard";
-$lang["weekday_mode_overrides"] = "Wochentag-Überschreibungen";
+$lang["weekday_mode_overrides"] = "Wochentag-Modus-Überschreibungen";
 $lang["zoom_link"] = "Zoom-Link";
 $lang["other"] = "Andere";
 $lang["zoom_link_required"] =
@@ -439,4 +442,4 @@ $lang["zoom_link_required"] =
 $lang["zoom_link_email_hint"] =
     "Der Link wird Ihnen nach der Buchung per E-Mail zugesendet.";
 $lang["provider_weekday_mode_overrides_hint"] =
-    "Gilt nur für Services, deren Terminart und Wochentag-Überschreibungen nicht gesetzt sind.";
+    "Gilt für Services, die keinen eigenen Standort-Typ und keine Wochentag-Modus-Überschreibungen haben.";

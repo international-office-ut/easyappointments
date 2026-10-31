@@ -165,10 +165,10 @@
                                         </label>
                                         <select id="service-availabilities-type" class="form-control">
                                             <option value="<?= AVAILABILITIES_TYPE_FIXED ?>">
-                                                <?= lang('fixed') ?>
+                                                <?= lang('slots_fixed') ?>
                                             </option>
                                             <option value="<?= AVAILABILITIES_TYPE_FLEXIBLE ?>">
-                                                <?= lang('flexible') ?>
+                                                <?= lang('slots_flexible') ?>
                                             </option>
                                         </select>
                                     </div>

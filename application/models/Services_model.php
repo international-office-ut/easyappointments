@@ -24,6 +24,7 @@ class Services_model extends EA_Model {
     {
         parent::__construct();
         $this->load->helper('data_validation');
+        $this->load->helper('general');
     }
 
     /**
@@ -131,7 +132,7 @@ class Services_model extends EA_Model {
         if ($service['name'] == '')
         {
             throw new Exception('Not all required service fields where provided: '
-                . print_r($service, TRUE));
+                . describe_data_fields($service));
         }
 
         // Duration must be int
@@ -267,7 +268,7 @@ class Services_model extends EA_Model {
         ))
         {
             throw new Exception('Not all service fields are provided in order to check whether '
-                . 'a service record already exists: ' . print_r($service, TRUE));
+                . 'a service record already exists: ' . describe_data_fields($service));
         }
 
         $num_rows = $this->db->get_where('services', [
@@ -550,7 +551,7 @@ class Services_model extends EA_Model {
             if ($category['name'] == '' || $category['name'] == NULL)
             {
                 throw new Exception('Required fields cannot be empty or null ($category: '
-                    . print_r($category, TRUE) . ')');
+                    . describe_data_fields($category) . ')');
             }
 
             return TRUE;

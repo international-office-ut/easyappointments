@@ -217,14 +217,18 @@ class User extends EA_Controller {
             redirect('user/login');
         }
 
+        // The attribute values are only read from the unprefixed environment, because a plain
+        // HTTP header (e.g. "mail: ...") can never spoof such a value: mod_shib exports the
+        // attributes without a prefix, while nginx deployments forward them explicitly through
+        // fastcgi_param directives (see docs/security-ops.md).
         $attribute = static function (string $name): ?string
         {
-            return $_SERVER[$name]
-                ?? $_SERVER['HTTP_' . strtoupper(str_replace('-', '_', $name))]
-                ?? NULL;
+            return $_SERVER[$name] ?? NULL;
         };
 
-        if (empty($attribute('Shib-Application-ID')))
+        // A real service provider session always carries both the application id and the
+        // unique session id of the SSO request.
+        if (empty($attribute('Shib-Application-ID')) || empty($attribute('Shib-Session-ID')))
         {
             $this->session->set_flashdata('shib_error', TRUE);
             redirect('user/login');

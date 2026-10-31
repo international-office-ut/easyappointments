@@ -41,7 +41,15 @@ class User_model extends EA_Model {
     {
         $user = $this->db->get_where('users', ['id' => $user_id])->row_array();
         $user['settings'] = $this->db->get_where('user_settings', ['id_users' => $user_id])->row_array();
-        unset($user['settings']['id_users']);
+
+        // The credentials never belong into view data (e.g. the settings page globals), the
+        // password flows read them directly from the database when they are needed.
+        unset(
+            $user['settings']['id_users'],
+            $user['settings']['salt'],
+            $user['settings']['password']
+        );
+
         return $user;
     }
 

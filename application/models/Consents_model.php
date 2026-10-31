@@ -18,6 +18,16 @@
  */
 class Consents_model extends EA_Model {
     /**
+     * Class Constructor
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->load->helper('general');
+    }
+
+    /**
      * Add a consent record to the database.
      *
      * This method adds a consent to the database.
@@ -61,7 +71,7 @@ class Consents_model extends EA_Model {
             || ! isset($consent['type']))
         {
             throw new Exception('Not all required fields are provided: '
-                . print_r($consent, TRUE));
+                . describe_data_fields($consent));
         }
     }
 

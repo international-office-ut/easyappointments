@@ -24,6 +24,7 @@ class Customers_model extends EA_Model {
     {
         parent::__construct();
         $this->load->helper('data_validation');
+        $this->load->helper('general');
     }
 
     /**
@@ -96,7 +97,7 @@ class Customers_model extends EA_Model {
             )
             || ( ! isset($customer['phone_number']) && $phone_number_required))
         {
-            throw new Exception('Not all required fields are provided: ' . print_r($customer, TRUE));
+            throw new Exception('Not all required fields are provided: ' . describe_data_fields($customer));
         }
 
         // Validate email address
@@ -178,7 +179,7 @@ class Customers_model extends EA_Model {
         if (empty($customer['email']))
         {
             throw new Exception('Customer\'s email was not provided: '
-                . print_r($customer, TRUE));
+                . describe_data_fields($customer));
         }
 
         // Get customer's role id

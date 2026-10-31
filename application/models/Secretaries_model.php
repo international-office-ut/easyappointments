@@ -94,7 +94,7 @@ class Secretaries_model extends EA_Model {
             $secretary['phone_number']
         ))
         {
-            throw new Exception('Not all required fields are provided: ' . print_r($secretary, TRUE));
+            throw new Exception('Not all required fields are provided: ' . describe_data_fields($secretary));
         }
 
         // Validate secretary email address.
@@ -190,7 +190,7 @@ class Secretaries_model extends EA_Model {
     {
         if ( ! isset($secretary['email']))
         {
-            throw new Exception('Secretary email is not provided: ' . print_r($secretary, TRUE));
+            throw new Exception('Secretary email is not provided: ' . describe_data_fields($secretary));
         }
 
         // This method shouldn't depend on another method of this class.
@@ -218,7 +218,7 @@ class Secretaries_model extends EA_Model {
     {
         if ( ! isset($secretary['email']))
         {
-            throw new Exception('Secretary email was not provided: ' . print_r($secretary, TRUE));
+            throw new Exception('Secretary email was not provided: ' . describe_data_fields($secretary));
         }
 
         $result = $this->db
@@ -316,7 +316,7 @@ class Secretaries_model extends EA_Model {
     {
         if ( ! is_array($providers))
         {
-            throw new Exception('Invalid argument given $providers: ' . print_r($providers, TRUE));
+            throw new Exception('Invalid argument given $providers: ' . describe_data_fields($providers));
         }
 
         // Delete old connections
@@ -352,7 +352,7 @@ class Secretaries_model extends EA_Model {
 
         if (count($settings) == 0 || ! is_array($settings))
         {
-            throw new Exception('Invalid $settings argument given:' . print_r($settings, TRUE));
+            throw new Exception('Invalid $settings argument given:' . describe_data_fields($settings));
         }
 
         // Check if the setting record exists in db.

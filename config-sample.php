@@ -48,6 +48,13 @@ class Config {
 
     // ------------------------------------------------------------------------
     // SHIBBOLETH (SSO)
+    //
+    // The attribute values are read from the unprefixed environment ($_SERVER['mail'] etc.),
+    // because plain HTTP headers can be forged by clients. Apache+mod_shib exports them
+    // unprefixed automatically. nginx deployments must forward the IdP attributes with
+    // explicit fastcgi_param directives (e.g. fastcgi_param mail $upstream_http_mail; — never
+    // forget to also drop incoming "Shib-*"/attribute headers from untrusted clients in the
+    // web server configuration). See docs/security-ops.md.
     // ------------------------------------------------------------------------
 
     const SHIB_ENABLED     = FALSE;

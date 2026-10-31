@@ -86,7 +86,7 @@ class Admins_model extends EA_Model {
             $admin['phone_number']
         ))
         {
-            throw new Exception('Not all required fields are provided: ' . print_r($admin, TRUE));
+            throw new Exception('Not all required fields are provided: ' . describe_data_fields($admin));
         }
 
         // Validate admin email address.
@@ -182,7 +182,7 @@ class Admins_model extends EA_Model {
     {
         if ( ! isset($admin['email']))
         {
-            throw new Exception('Admin email is not provided: ' . print_r($admin, TRUE));
+            throw new Exception('Admin email is not provided: ' . describe_data_fields($admin));
         }
 
         // This method shouldn't depend on another method of this class.
@@ -210,7 +210,7 @@ class Admins_model extends EA_Model {
     {
         if ( ! isset($admin['email']))
         {
-            throw new Exception('Admin email was not provided: ' . print_r($admin, TRUE));
+            throw new Exception('Admin email was not provided: ' . describe_data_fields($admin));
         }
 
         $result = $this->db

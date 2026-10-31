@@ -18,6 +18,16 @@
  */
 class Settings_model extends EA_Model {
     /**
+     * Class Constructor
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->load->helper('general');
+    }
+
+    /**
      * Get setting value from database.
      *
      * This method returns a system setting from the database.
@@ -137,7 +147,7 @@ class Settings_model extends EA_Model {
     {
         if ( ! is_array($settings))
         {
-            throw new Exception('$settings argument is invalid: ' . print_r($settings, TRUE));
+            throw new Exception('$settings argument is invalid: ' . describe_data_fields($settings));
         }
 
         foreach ($settings as $setting)

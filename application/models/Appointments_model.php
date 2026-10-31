@@ -24,6 +24,7 @@ class Appointments_model extends EA_Model {
     {
         parent::__construct();
         $this->load->helper('data_validation');
+        $this->load->helper('general');
         $this->load->helper('string');
     }
 
@@ -208,7 +209,7 @@ class Appointments_model extends EA_Model {
         ))
         {
             throw new Exception('Not all appointment field values are provided: '
-                . print_r($appointment, TRUE));
+                . describe_data_fields($appointment));
         }
 
         $num_rows = $this->db->get_where('appointments', [

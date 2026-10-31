@@ -96,6 +96,11 @@ class Backend extends EA_Controller {
         if ($appointment_hash !== '' && count($results) > 0)
         {
             $appointment = $results[0];
+
+            // Providers and secretaries must not open the appointment dialog of a foreign
+            // provider, even when the appointment hash is known to them somehow.
+            $this->assert_appointment_access($appointment);
+
             $appointment['customer'] = $this->customers_model->get_row($appointment['id_users_customer']);
             $view['edit_appointment'] = $appointment; // This will display the appointment edit dialog on page load.
         }
@@ -107,6 +112,35 @@ class Backend extends EA_Controller {
         $this->load->view('backend/header', $view);
         $this->load->view('backend/calendar', $view);
         $this->load->view('backend/footer', $view);
+    }
+
+    /**
+     * Make sure the session role is allowed to open the given appointment record.
+     *
+     * @param array $appointment The appointment row to be opened through its hash.
+     */
+    protected function assert_appointment_access(array $appointment): void
+    {
+        $role_slug = $this->session->userdata('role_slug');
+
+        if ($role_slug === DB_SLUG_PROVIDER)
+        {
+            $allowed_providers = [(int) $this->session->userdata('user_id')];
+        }
+        else if ($role_slug === DB_SLUG_SECRETARY)
+        {
+            $allowed_providers = array_map('intval',
+                $this->secretaries_model->get_row($this->session->userdata('user_id'))['providers']);
+        }
+        else
+        {
+            return;
+        }
+
+        if ( ! in_array((int) $appointment['id_users_provider'], $allowed_providers, TRUE))
+        {
+            redirect('user/no_privileges');
+        }
     }
 
     /**

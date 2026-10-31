@@ -83,3 +83,23 @@ function generate_salt()
     $salt = hash('sha256', (uniqid(rand(), TRUE)));
     return substr($salt, 0, $max_length);
 }
+
+/**
+ * Describe the field names of a data argument.
+ *
+ * Exception messages must not contain the submitted data itself, only the names of its
+ * fields, so that payloads never get reflected back to the client.
+ *
+ * @param mixed $data The data argument of an exception message.
+ *
+ * @return string Returns the field names or the value type.
+ */
+function describe_data_fields($data): string
+{
+    if (is_array($data))
+    {
+        return '[' . implode(', ', array_map('strval', array_keys($data))) . ']';
+    }
+
+    return gettype($data);
+}

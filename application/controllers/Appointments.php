@@ -453,8 +453,32 @@ class Appointments extends EA_Controller {
             $post_data = $this->input->post('post_data');
             $altcha_solution = (string) $this->input->post('altcha');
             $manage_mode = filter_var($post_data['manage_mode'], FILTER_VALIDATE_BOOLEAN);
-            $appointment = $post_data['appointment'];
-            $customer = $post_data['customer'];
+
+            // The booking form cannot be allowed to write arbitrary record columns, so the
+            // payloads are reduced to the fields the booking flow actually works with
+            // (mass-assignment protection).
+            $appointment = array_intersect_key($post_data['appointment'], array_flip([
+                'id',
+                'id_services',
+                'start_datetime',
+                'end_datetime',
+                'notes',
+                'location'
+            ]));
+
+            $customer = array_intersect_key($post_data['customer'], array_flip([
+                'id',
+                'first_name',
+                'last_name',
+                'email',
+                'phone_number',
+                'address',
+                'city',
+                'zip_code',
+                'notes',
+                'timezone',
+                'language'
+            ]));
 
             // Only trust a posted appointment ID when the request carries the hash of that record. This
             // prevents third parties from modifying the appointments of other customers.

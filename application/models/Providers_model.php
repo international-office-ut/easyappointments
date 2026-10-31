@@ -91,7 +91,7 @@ class Providers_model extends EA_Model {
             $provider['phone_number']
         ))
         {
-            throw new Exception('Not all required fields are provided: ' . print_r($provider, TRUE));
+            throw new Exception('Not all required fields are provided: ' . describe_data_fields($provider));
         }
 
         // Validate provider email address.
@@ -103,7 +103,7 @@ class Providers_model extends EA_Model {
         // Validate provider services.
         if ( ! isset($provider['services']) || ! is_array($provider['services']))
         {
-            throw new Exception('Invalid provider services given: ' . print_r($provider, TRUE));
+            throw new Exception('Invalid provider services given: ' . describe_data_fields($provider));
         }
         else
         {
@@ -113,7 +113,7 @@ class Providers_model extends EA_Model {
                 if ( ! is_numeric($service_id))
                 {
                     throw new Exception('A provider service with invalid id was found: '
-                        . print_r($provider, TRUE));
+                        . describe_data_fields($provider));
                 }
             }
         }
@@ -122,7 +122,7 @@ class Providers_model extends EA_Model {
         if ( ! isset($provider['settings']) || count($provider['settings']) === 0
             || ! is_array($provider['settings']))
         {
-            throw new Exception('Invalid provider settings given: ' . print_r($provider, TRUE));
+            throw new Exception('Invalid provider settings given: ' . describe_data_fields($provider));
         }
 
         // Check if username exists.
@@ -238,7 +238,7 @@ class Providers_model extends EA_Model {
     {
         if ( ! isset($provider['email']))
         {
-            throw new Exception('Provider email is not provided:' . print_r($provider, TRUE));
+            throw new Exception('Provider email is not provided:' . describe_data_fields($provider));
         }
 
         // This method shouldn't depend on another method of this class.
@@ -266,7 +266,7 @@ class Providers_model extends EA_Model {
     {
         if ( ! isset($provider['email']))
         {
-            throw new Exception('Provider email was not provided:' . print_r($provider, TRUE));
+            throw new Exception('Provider email was not provided:' . describe_data_fields($provider));
         }
 
         $result = $this->db
@@ -383,7 +383,7 @@ class Providers_model extends EA_Model {
 
         if (count($settings) == 0 || ! is_array($settings))
         {
-            throw new Exception('Invalid $settings argument given:' . print_r($settings, TRUE));
+            throw new Exception('Invalid $settings argument given:' . describe_data_fields($settings));
         }
 
         // Check if the setting record exists in db.

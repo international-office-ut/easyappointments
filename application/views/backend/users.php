@@ -303,7 +303,7 @@
 
                         <div class="working-plan-view tab-pane fade clearfix" id="working-plan">
                             <div class="row">
-                                <div class="working-plan-column col-12 col-lg-6 col-xl-4">
+                                <div class="working-plan-column col-12 col-lg-6">
                                     <h3><?= lang('working_plan') ?></h3>
 
                                     <p>
@@ -331,7 +331,7 @@
                                     </small>
                                 </div>
 
-                                <div class="breaks-column col-12 col-lg-6 col-xl-4">
+                                <div class="breaks-column col-12 col-lg-6">
                                     <h3><?= lang('breaks') ?></h3>
 
                                     <p>
@@ -358,7 +358,7 @@
                                     </table>
                                 </div>
 
-                                <div class="working-plan-exceptions-column col-12 col-xl-4">
+                                <div class="working-plan-exceptions-column col-12">
                                     <h3><?= lang('working_plan_exceptions') ?></h3>
 
                                     <p>

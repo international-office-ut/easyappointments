@@ -175,31 +175,29 @@
         });
 
         /**
-         * Event: Service Add-Location-Window "Click" (weekday windows grid)
+         * Event: Service Add-Location-Window "Click" (weekday windows table)
          */
         $('#services').on('click', '.add-location-window', function (event) {
             event.preventDefault();
 
-            $('#services .service-location-weekdays .location-windows[data-weekday="'
-                + $(event.currentTarget).attr('data-weekday') + '"]')
-                .append(ServicesHelper.buildLocationWindowRow('', '', ''));
+            var $row = ServicesHelper.buildLocationWindowRow('', '', '');
+
+            $('#services .service-location-weekdays tbody').append($row);
+
+            ServicesHelper.attachLocationWindowPickers($row);
         });
 
         /**
-         * Event: Service Add-Location-Date "Click" (date override list)
+         * Event: Service Add-Location-Date "Click" (date overrides table)
          */
         $('#services').on('click', '.add-location-date', function (event) {
             event.preventDefault();
 
-            $('#services .service-location-date-overrides')
-                .append(ServicesHelper.buildLocationWindowRow('', '', '', ''));
-        });
+            var $row = ServicesHelper.buildLocationWindowRow('', '', '', '');
 
-        /**
-         * Event: Location Window Row Inputs "Focus" (bind the pickers lazily)
-         */
-        $('#services').on('focus', '.location-window-row input:text', function () {
-            ServicesHelper.attachLocationWindowPickers($(this).closest('.location-window-row'));
+            $('#services .service-location-date-overrides tbody').append($row);
+
+            ServicesHelper.attachLocationWindowPickers($row);
         });
 
         /**
@@ -208,7 +206,7 @@
         $('#services').on('click', '.remove-location-window', function (event) {
             event.preventDefault();
 
-            $(event.currentTarget).closest('.location-window-row').remove();
+            $(event.currentTarget).closest('tr').remove();
         });
 
         /**
@@ -374,8 +372,8 @@
             .find('input, select, textarea')
             .val('')
             .prop('disabled', true);
-        $('#services .service-location-weekdays .location-windows').empty();
-        $('#services .service-location-date-overrides').empty();
+        $('#services .service-location-weekdays tbody').empty();
+        $('#services .service-location-date-overrides tbody').empty();
         $('#services .record-details h3 a').remove();
 
         $('#services .add-edit-delete-group').show();
@@ -432,41 +430,55 @@
     ServicesHelper.buildLocationWindowRow = function (from, to, location, date) {
         var hasDate = date !== undefined;
 
-        var $row = $('<div/>', {
-            'class': 'location-window-row input-group input-group-sm mb-1',
+        var $row = $('<tr/>', {
+            'class': 'location-window-row',
             'data-date': hasDate ? date : ''
         });
 
         if (hasDate) {
-            $row.append($('<input/>', {
+            $row.append($('<td/>').append($('<input/>', {
                 'type': 'text',
-                'class': 'location-window-date form-control',
+                'class': 'location-window-date form-control form-control-sm',
                 'value': date
-            }));
+            })));
+        } else {
+            var $daySelect = $('<select/>', {'class': 'location-window-day form-control form-control-sm'});
+
+            // Monday first, the option values keep the real weekday index (0 = Sunday ... 6 = Saturday).
+            [1, 2, 3, 4, 5, 6, 0].forEach(function (weekday) {
+                $daySelect.append($('<option/>', {
+                    'value': weekday,
+                    'text': EALang[['sunday', 'monday', 'tuesday', 'wednesday',
+                        'thursday', 'friday', 'saturday'][weekday]]
+                }));
+            });
+
+            $row.append($('<td/>').append($daySelect));
         }
 
         $row
-            .append($('<input/>', {
+            .append($('<td/>').append($('<input/>', {
                 'type': 'text',
-                'class': 'location-window-from form-control',
+                'class': 'location-window-from form-control form-control-sm',
                 'value': from
-            }))
-            .append($('<input/>', {
+            })))
+            .append($('<td/>').append($('<input/>', {
                 'type': 'text',
-                'class': 'location-window-to form-control',
+                'class': 'location-window-to form-control form-control-sm',
                 'value': to
-            }))
-            .append($('<input/>', {
+            })))
+            .append($('<td/>').append($('<input/>', {
                 'type': 'text',
-                'class': 'location-window-location form-control',
+                'class': 'location-window-location form-control form-control-sm',
                 'placeholder': EALang.location,
                 'value': location
-            }))
-            .append($('<button/>', {
+            })))
+            .append($('<td/>').append($('<button/>', {
                 'type': 'button',
-                'class': 'remove-location-window btn btn-outline-danger',
+                'class': 'remove-location-window btn btn-outline-danger btn-sm',
+                'title': EALang.remove_location_window,
                 'html': $('<i/>', {'class': 'fas fa-trash'})
-            }));
+            })));
 
         return $row;
     };
@@ -599,7 +611,7 @@
     /**
      * Validate the location override rows and highlight offending rows in place.
      *
-     * Every row checks `from < to`; the weekday rows are compared inside their container and
+     * Every row checks `from < to`; the weekday rows are compared inside their selected day and
      * the date rows inside their ISO date (first-match-wins resolution is unverifiable when
      * the borders overlap). Errors are thrown as rollback, but the row also stays marked, so
      * the staff can find it without searching.
@@ -609,7 +621,7 @@
     ServicesHelper.validateLocationWindows = function () {
         var reportError = function ($row, message) {
             $row.addClass('has-error');
-            $row.find('input').addClass('is-invalid');
+            $row.find('input, select').addClass('is-invalid');
             throw new Error(message);
         };
 
@@ -648,8 +660,20 @@
                 });
         };
 
-        $('#services .service-location-weekdays .location-windows').each(function (index, container) {
-            checkRows($(container).find('.location-window-row'));
+        // The weekday rows are grouped by their selected day: each day is its own layer and
+        // its windows are compared with each other only.
+        var rowsByWeekday = {};
+
+        $('#services .service-location-weekdays .location-window-row').each(function (index, row) {
+            var $row = $(row);
+            var weekday = $row.find('.location-window-day').val();
+
+            rowsByWeekday[weekday] = rowsByWeekday[weekday] || [];
+            rowsByWeekday[weekday].push($row);
+        });
+
+        Object.keys(rowsByWeekday).forEach(function (weekday) {
+            checkRows(rowsByWeekday[weekday]);
         });
 
         // The date layer groups its rows by the entered date: each date is its own layer
@@ -666,7 +690,7 @@
             }
 
             rowsByDate[date] = rowsByDate[date] || [];
-            rowsByDate[date].push(row);
+            rowsByDate[date].push($row);
         });
 
         Object.keys(rowsByDate).forEach(function (date) {
@@ -682,23 +706,19 @@
     ServicesHelper.collectWeekdayLocationWindows = function () {
         var weekdayWindows = {};
 
-        $('#services .service-location-weekdays .location-windows').each(function (index, container) {
-            var weekday = $(container).attr('data-weekday');
-            var rows = [];
+        $('#services .service-location-weekdays .location-window-row').each(function (index, row) {
+            var $row = $(row);
+            var weekday = $row.find('.location-window-day').val();
+            var from = $row.find('.location-window-from').val();
+            var to = $row.find('.location-window-to').val();
+            var location = $row.find('.location-window-location').val();
 
-            $(container).find('.location-window-row').each(function (rowIndex, row) {
-                var from = $(row).find('.location-window-from').val();
-                var to = $(row).find('.location-window-to').val();
-                var location = $(row).find('.location-window-location').val();
-
-                if (from && to && location) {
-                    rows.push({from: from, to: to, location: location});
-                }
-            });
-
-            if (rows.length) {
-                weekdayWindows[weekday] = rows;
+            if (!weekday || !from || !to || !location) {
+                return;
             }
+
+            weekdayWindows[weekday] = weekdayWindows[weekday] || [];
+            weekdayWindows[weekday].push({from: from, to: to, location: location});
         });
 
         return weekdayWindows;
@@ -745,24 +765,29 @@
             layers = {};
         }
 
-        $('#services .service-location-weekdays .location-windows').empty();
+        $('#services .service-location-weekdays tbody').empty();
+
+        var $tbody = $('#services .service-location-weekdays tbody');
 
         Object.keys(layers).forEach(function (weekday) {
-            var container = $('#services .service-location-weekdays .location-windows'
-                + '[data-weekday="' + weekday + '"]');
-
-            if (!container.length || !Array.isArray(layers[weekday])) {
+            if (!Array.isArray(layers[weekday])) {
                 return;
             }
 
             layers[weekday].forEach(function (window) {
-                container.append(ServicesHelper.buildLocationWindowRow(
+                var $row = ServicesHelper.buildLocationWindowRow(
                     window.from || '',
                     window.to || '',
                     window.location || ''
-                ));
+                );
+
+                $row.find('.location-window-day').val(weekday);
+
+                $tbody.append($row);
             });
         });
+
+        ServicesHelper.attachLocationWindowPickers($tbody);
     };
 
     /**
@@ -779,7 +804,9 @@
             layers = {};
         }
 
-        $('#services .service-location-date-overrides').empty();
+        var $tbody = $('#services .service-location-date-overrides tbody');
+
+        $tbody.empty();
 
         Object.keys(layers).forEach(function (date) {
             if (!Array.isArray(layers[date])) {
@@ -787,16 +814,16 @@
             }
 
             layers[date].forEach(function (window) {
-                $('#services .service-location-date-overrides').append(
-                    ServicesHelper.buildLocationWindowRow(
-                        window.from || '',
-                        window.to || '',
-                        window.location || '',
-                        GeneralFunctions.formatDate(date, GlobalVariables.dateFormat)
-                    )
-                );
+                $tbody.append(ServicesHelper.buildLocationWindowRow(
+                    window.from || '',
+                    window.to || '',
+                    window.location || '',
+                    GeneralFunctions.formatDate(date, GlobalVariables.dateFormat)
+                ));
             });
         });
+
+        ServicesHelper.attachLocationWindowPickers($tbody);
     };
 
     /**

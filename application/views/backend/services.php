@@ -248,40 +248,52 @@
                                 <label>
                                     <?= lang('location_weekday_overrides') ?>
                                 </label>
-                                <table class="service-location-weekdays table table-sm table-borderless">
-                                    <tbody>
-                                    <?php
-                                    $weekday_names = ['sunday', 'monday', 'tuesday', 'wednesday',
-                                        'thursday', 'friday', 'saturday'];
 
-                                    foreach ([1, 2, 3, 4, 5, 6, 0] as $weekday): ?>
-                                        <tr>
-                                            <td class="align-middle weekday-label">
-                                                <?= lang($weekday_names[$weekday]) ?>
-                                            </td>
-                                            <td>
-                                                <div class="location-windows"
-                                                     data-weekday="<?= $weekday ?>"></div>
-                                                <button type="button"
-                                                        class="add-location-window btn btn-outline-secondary btn-sm"
-                                                        data-weekday="<?= $weekday ?>">
-                                                    <i class="fas fa-plus mr-2"></i>
-                                                    <?= lang('add_location_window') ?>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach ?>
-                                    </tbody>
+                                <div>
+                                    <button type="button"
+                                            class="add-location-window btn btn-primary btn-sm">
+                                        <i class="fas fa-plus-square mr-2"></i>
+                                        <?= lang('add_location_window') ?>
+                                    </button>
+                                </div>
+
+                                <table class="service-location-weekdays table table-striped table-sm mt-2">
+                                    <thead>
+                                    <tr>
+                                        <th><?= lang('day') ?></th>
+                                        <th><?= lang('start') ?></th>
+                                        <th><?= lang('end') ?></th>
+                                        <th><?= lang('location') ?></th>
+                                        <th><?= lang('actions') ?></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody><!-- Dynamic Content --></tbody>
                                 </table>
 
                                 <label class="mt-2">
                                     <?= lang('location_date_overrides') ?>
                                 </label>
-                                <div class="service-location-date-overrides"></div>
-                                <button type="button" class="add-location-date btn btn-outline-secondary btn-sm">
-                                    <i class="fas fa-plus mr-2"></i>
-                                    <?= lang('add_location_date') ?>
-                                </button>
+
+                                <div>
+                                    <button type="button"
+                                            class="add-location-date btn btn-primary btn-sm">
+                                        <i class="fas fa-plus-square mr-2"></i>
+                                        <?= lang('add_location_date') ?>
+                                    </button>
+                                </div>
+
+                                <table class="service-location-date-overrides table table-striped table-sm mt-2">
+                                    <thead>
+                                    <tr>
+                                        <th><?= lang('date') ?></th>
+                                        <th><?= lang('start') ?></th>
+                                        <th><?= lang('end') ?></th>
+                                        <th><?= lang('location') ?></th>
+                                        <th><?= lang('actions') ?></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody><!-- Dynamic Content --></tbody>
+                                </table>
                             </div>
                         </div>
                     </div>

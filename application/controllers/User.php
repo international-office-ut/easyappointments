@@ -619,6 +619,16 @@ class User extends EA_Controller {
      */
     public function reset_password(string $token = '')
     {
+        $access_key = 'access|client|' . $this->input->ip_address();
+
+        if ($this->rate_limit_has_reached_limit($access_key, 20))
+        {
+            $this->session->set_flashdata('login_message', lang('password_reset_token_invalid'));
+            redirect('user/login');
+        }
+
+        $this->rate_limit_register_attempt($access_key, 1800);
+
         $user_data = $this->user_model->get_access_token_rows($token, 'password_reset');
 
         if (empty($user_data))
@@ -647,6 +657,13 @@ class User extends EA_Controller {
     {
         try
         {
+            $access_key = 'access|client|' . $this->input->ip_address();
+
+            if ($this->rate_limit_has_reached_limit($access_key, 20))
+            {
+                throw new Exception(lang('password_reset_token_invalid'));
+            }
+
             $token = (string) $this->input->post('token');
             $password = (string) $this->input->post('password');
             $password_confirm = (string) $this->input->post('password_confirm');
@@ -694,6 +711,19 @@ class User extends EA_Controller {
      */
     public function access(string $token = '')
     {
+        $access_key = 'access|client|' . $this->input->ip_address();
+
+        if ($this->rate_limit_has_reached_limit($access_key, 20))
+        {
+            log_message('info', 'Admin access rate limit reached for "'
+                . $this->input->ip_address() . '".');
+
+            $this->session->set_flashdata('login_message', lang('password_reset_token_invalid'));
+            redirect('user/login');
+        }
+
+        $this->rate_limit_register_attempt($access_key, 1800);
+
         $user_data = $this->user_model->get_access_token_rows($token, 'admin_access');
 
         if (empty($user_data))

@@ -250,6 +250,9 @@ class Identities_model extends EA_Model {
     public function sync_after_update(array $updated_user, ?string $old_email, ?array $old_settings,
         array $new_settings, ?string $new_password): void
     {
+        $old_login_name = $old_settings['username'] ?? NULL;
+        $new_login_name = $new_settings['username'] ?? ($old_login_name ?? NULL);
+
         if ($old_email !== NULL
             && ! empty($updated_user['email'])
             && $updated_user['email'] !== $old_email)
@@ -257,8 +260,21 @@ class Identities_model extends EA_Model {
             $this->sync_email_and_login_name(
                 $old_email,
                 $updated_user['email'],
-                $new_settings['username'] ?? ($old_settings['username'] ?? NULL),
-                $old_settings['username'] ?? NULL,
+                $new_login_name,
+                $old_login_name,
+                (int)$updated_user['id']
+            );
+        }
+        else if ($old_login_name !== NULL
+            && $new_login_name !== $old_login_name)
+        {
+            // A login name rename without an email change keeps the identity intact too, the
+            // siblings must not keep the old login name.
+            $this->sync_email_and_login_name(
+                $updated_user['email'] ?? $old_email ?? '',
+                NULL,
+                $new_login_name,
+                $old_login_name,
                 (int)$updated_user['id']
             );
         }

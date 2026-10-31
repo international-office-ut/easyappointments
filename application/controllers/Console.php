@@ -83,8 +83,20 @@ class Console extends EA_Controller {
 
         if ($this->migration->current() === FALSE)
         {
-            show_error($this->migration->error_string());
+            show_error('Migration failed: ' . $this->migration->error_string());
         }
+
+        // The migration library is silent on success (only error strings are collected),
+        // so the resulting schema version is echoed for the console user.
+        $version = $this->db
+            ->select('version')
+            ->get('migrations')
+            ->row()
+            ->version;
+
+        $this->output->set_output(PHP_EOL
+            . '⇾ Migrations are up to date. (schema version: ' . $version . ')' . PHP_EOL
+            . PHP_EOL);
     }
 
     /**

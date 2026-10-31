@@ -298,8 +298,10 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-            <!-- CATEGORIES TAB -->
+        <!-- CATEGORIES TAB -->
 
         <div class="tab-pane" id="categories">
             <div class="row">
@@ -381,6 +383,4 @@
             </div>
         </div>
     </div>
-    </div>
-</div>
 </div>

@@ -104,7 +104,7 @@
                     <input type="hidden" id="service-id">
 
                     <div class="row">
-                        <div class="col-12 col-lg-6">
+                        <div class="col-12 col-lg-3">
                             <div class="form-group">
                                 <label for="service-name">
                                     <?= lang('name') ?>
@@ -173,55 +173,9 @@
                                 <input id="service-location" class="form-control">
                             </div>
 
-                            <div class="form-group service-location-overrides">
-                                <label>
-                                    <?= lang('location_weekday_overrides') ?>
-                                </label>
-                                <table class="service-location-weekdays table table-sm table-borderless">
-                                    <tbody>
-                                    <?php
-                                    $weekday_names = ['sunday', 'monday', 'tuesday', 'wednesday',
-                                        'thursday', 'friday', 'saturday'];
+                                                                                </div>
 
-                                    for ($weekday = 0; $weekday <= 6; $weekday++): ?>
-                                        <tr>
-                                            <td class="align-middle weekday-label">
-                                                <?= lang($weekday_names[$weekday]) ?>
-                                            </td>
-                                            <td>
-                                                <div class="location-windows"
-                                                     data-weekday="<?= $weekday ?>"></div>
-                                                <button type="button"
-                                                        class="add-location-window btn btn-outline-secondary btn-sm"
-                                                        data-weekday="<?= $weekday ?>">
-                                                    <i class="fas fa-plus mr-2"></i>
-                                                    <?= lang('add_location_window') ?>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    <?php endfor ?>
-                                    </tbody>
-                                </table>
-
-                                <label class="mt-2">
-                                    <?= lang('location_date_overrides') ?>
-                                </label>
-                                <div class="service-location-date-overrides"></div>
-                                <button type="button" class="add-location-date btn btn-outline-secondary btn-sm">
-                                    <i class="fas fa-plus mr-2"></i>
-                                    <?= lang('add_location_date') ?>
-                                </button>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="service-description">
-                                    <?= lang('description') ?>
-                                </label>
-                                <textarea id="service-description" rows="4" class="form-control"></textarea>
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-lg-6">
+                        <div class="col-12 col-lg-3">
                             <div class="form-group">
                                 <label for="service-appointment-mode">
                                     <?= lang('appointment_mode') ?>
@@ -261,6 +215,55 @@
                                     <?php endfor ?>
                                     </tbody>
                                 </table>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="service-description">
+                                    <?= lang('description') ?>
+                                </label>
+                                <textarea id="service-description" rows="4" class="form-control"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-6">
+                            <div class="form-group service-location-overrides">
+                                <label>
+                                    <?= lang('location_weekday_overrides') ?>
+                                </label>
+                                <table class="service-location-weekdays table table-sm table-borderless">
+                                    <tbody>
+                                    <?php
+                                    $weekday_names = ['sunday', 'monday', 'tuesday', 'wednesday',
+                                        'thursday', 'friday', 'saturday'];
+
+                                    for ($weekday = 0; $weekday <= 6; $weekday++): ?>
+                                        <tr>
+                                            <td class="align-middle weekday-label">
+                                                <?= lang($weekday_names[$weekday]) ?>
+                                            </td>
+                                            <td>
+                                                <div class="location-windows"
+                                                     data-weekday="<?= $weekday ?>"></div>
+                                                <button type="button"
+                                                        class="add-location-window btn btn-outline-secondary btn-sm"
+                                                        data-weekday="<?= $weekday ?>">
+                                                    <i class="fas fa-plus mr-2"></i>
+                                                    <?= lang('add_location_window') ?>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    <?php endfor ?>
+                                    </tbody>
+                                </table>
+
+                                <label class="mt-2">
+                                    <?= lang('location_date_overrides') ?>
+                                </label>
+                                <div class="service-location-date-overrides"></div>
+                                <button type="button" class="add-location-date btn btn-outline-secondary btn-sm">
+                                    <i class="fas fa-plus mr-2"></i>
+                                    <?= lang('add_location_date') ?>
+                                </button>
                             </div>
                         </div>
                     </div>

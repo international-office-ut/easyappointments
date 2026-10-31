@@ -465,6 +465,9 @@ window.FrontendBook = window.FrontendBook || {};
          * Event: Appointment Mode Radio "Changed"
          */
         $('input[name="appointment_mode"]').on('change', function () {
+            // The location complaint becomes obsolete as soon as the customer picks one.
+            $('#booking-message').addClass('d-none').empty();
+
             FrontendBook.updateConfirmFrame();
         });
 
@@ -703,11 +706,15 @@ window.FrontendBook = window.FrontendBook || {};
 
         var hasZoomLink = GeneralFunctions.providerHasZoomLink(provider);
 
+        var modePickRequired = false;
+
         if (isHandledMode)
         {
             $('#appointment-mode-wrapper').show();
 
             var canChoose = appointmentMode === 'BOTH' && hasZoomLink;
+
+            modePickRequired = canChoose;
 
             // Without a Zoom link the online option is not offered.
             $('#appointment-mode-online').closest('.custom-control').toggle(hasZoomLink);
@@ -733,8 +740,12 @@ window.FrontendBook = window.FrontendBook || {};
                 .closest('.custom-control').show();
         }
 
+        var hasModePick = $('input[name="appointment_mode"]:checked').val();
+
+        // While the picker is offered and untouched, the location stays blank instead of
+        // displaying the internal "BOTH" label.
         var selectedMode = isHandledMode
-            ? ($('input[name="appointment_mode"]:checked').val() || appointmentMode)
+            ? (hasModePick || (modePickRequired ? null : appointmentMode))
             : appointmentMode;
 
         $('#appointment-mode-hint').toggle(isHandledMode && selectedMode === 'ONLINE');

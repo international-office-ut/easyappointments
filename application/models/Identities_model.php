@@ -292,15 +292,21 @@ class Identities_model extends EA_Model {
      * records needs the same answer: providers only get their own rows, secretaries the
      * rows of their bound providers and admins every row.
      *
-     * @param string|NULL $role_slug The role slug of the session (a sessionless request is
-     * not allowed to touch anything and therefore gets an empty scope).
+     * @param string|NULL $role_slug The role slug of the session (requests without a usable
+     * session get an empty scope instead of an unrestricted one).
      * @param int|NULL $user_id The user record id of the session.
      *
-     * @return array|NULL Returns the provider ids in scope (empty for no access), or NULL
-     * when all providers are in scope (admin and other unrestricted roles).
+     * @return array|NULL Returns the provider ids in scope (empty when the session carries
+     * no provider or secretary role), or NULL when all providers are in scope (admin and
+     * other unrestricted roles).
      */
     public function providers_in_scope(?string $role_slug, ?int $user_id): ?array
     {
+        if ($role_slug === NULL || ! $user_id)
+        {
+            return []; // No usable session, so the request gets no provider scope (fail closed).
+        }
+
         if ($role_slug === DB_SLUG_PROVIDER)
         {
             return [$user_id];

@@ -69,7 +69,7 @@
                 </div>
 
                 <div class="record-details column col-12 col-md-5">
-                    <div class="btn-toolbar mb-4">
+                    <div class="float-md-left mb-4 mr-4">
                         <div class="add-edit-delete-group btn-group">
                             <button id="add-service" class="btn btn-primary">
                                 <i class="fas fa-plus-square mr-2"></i>
@@ -97,12 +97,6 @@
                         </div>
                     </div>
 
-                    <h3><?= lang('details') ?></h3>
-
-                    <div class="form-message alert" style="display:none;"></div>
-
-                    <input type="hidden" id="service-id">
-
                     <ul class="nav nav-pills switch-view">
                         <li class="nav-item">
                             <a class="nav-link active" href="#service-details" data-toggle="tab">
@@ -118,8 +112,12 @@
 
                     <div class="form-message alert" style="display:none;"></div>
 
+                    <input type="hidden" id="service-id">
+
                     <div class="tab-content">
                         <div class="tab-pane fade show active clearfix" id="service-details">
+                            <h3 class="pb-4"><?= lang('details') ?></h3>
+
                             <div class="row">
                                 <div class="col-12 col-lg-6">
                                     <div class="form-group">
@@ -231,18 +229,13 @@
                                             </tbody>
                                         </table>
                                     </div>
-
-                                    <div class="form-group">
-                                        <label for="service-description">
-                                            <?= lang('description') ?>
-                                        </label>
-                                        <textarea id="service-description" rows="4" class="form-control"></textarea>
-                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="tab-pane fade clearfix" id="service-location-overrides">
+                            <h3 class="pb-4"><?= lang('location') ?></h3>
+
                             <div class="form-group service-location-overrides">
                                 <label>
                                     <?= lang('location_weekday_overrides') ?>
@@ -285,10 +278,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- CATEGORIES TAB -->
+            <!-- CATEGORIES TAB -->
 
         <div class="tab-pane" id="categories">
             <div class="row">
@@ -370,4 +361,6 @@
             </div>
         </div>
     </div>
+    </div>
+</div>
 </div>

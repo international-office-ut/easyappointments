@@ -125,8 +125,6 @@
             $('#service-category').val('null');
             $('#service-availabilities-type').val('fixed');
             $('#service-attendants-number').val('1');
-            $('#service-appointment-mode').val('');
-            $('.service-weekday-modes .weekday-mode').val('');
         });
 
         /**
@@ -153,8 +151,6 @@
                 currency: $('#service-currency').val(),
                 description: $('#service-description').val(),
                 location: $('#service-location').val(),
-                appointment_mode: $('#service-appointment-mode').val() || null,
-                weekday_modes: {},
                 location_weekday_modes: JSON.stringify(
                     ServicesHelper.collectWeekdayLocationWindows()) || null,
                 location_date_overrides: JSON.stringify(
@@ -162,14 +158,6 @@
                 availabilities_type: $('#service-availabilities-type').val(),
                 attendants_number: $('#service-attendants-number').val()
             };
-
-            $('.service-weekday-modes .weekday-mode').each(function (index, select) {
-                var weekday = $(select).attr('data-weekday');
-
-                if ($(select).val()) {
-                    service.weekday_modes[weekday] = $(select).val();
-                }
-            });
 
             if ($('#service-category').val() !== 'null') {
                 service.id_service_categories = $('#service-category').val();
@@ -420,13 +408,6 @@
         $('#service-currency').val(service.currency);
         $('#service-description').val(service.description);
         $('#service-location').val(service.location);
-        $('#service-appointment-mode').val(service.appointment_mode || '');
-        $('.service-weekday-modes .weekday-mode').val('');
-        var weekdayModes = service.weekday_modes || {};
-
-        Object.keys(weekdayModes).forEach(function (weekday) {
-            $('.service-weekday-modes .weekday-mode[data-weekday="' + weekday + '"]').val(weekdayModes[weekday]);
-        });
 
         ServicesHelper.renderLocationWeekdayWindows(service.location_weekday_modes);
         ServicesHelper.renderLocationDateWindows(service.location_date_overrides);

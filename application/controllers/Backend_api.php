@@ -945,8 +945,7 @@ class Backend_api extends EA_Controller {
                 'description'
             ], $key);
 
-            $response = $this->services_model
-                ->attach_weekday_modes($services);
+            $response = $services;
         }
         catch (Exception $exception)
         {

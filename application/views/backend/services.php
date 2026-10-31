@@ -194,49 +194,6 @@
                                         <textarea id="service-description" rows="4" class="form-control"></textarea>
                                     </div>
                                 </div>
-
-                                <div class="col-12 col-lg-6">
-                                    <div class="form-group">
-                                        <label for="service-appointment-mode">
-                                            <?= lang('appointment_mode') ?>
-                                        </label>
-                                        <select id="service-appointment-mode" class="form-control">
-                                            <option value=""><?= lang('mode_provider_default') ?></option>
-                                            <option value="<?= APPOINTMENT_MODE_ONLINE ?>"><?= lang('mode_online') ?></option>
-                                            <option value="<?= APPOINTMENT_MODE_ON_PREMISE ?>"><?= lang('mode_on_premise') ?></option>
-                                            <option value="<?= APPOINTMENT_MODE_BOTH ?>"><?= lang('mode_both') ?></option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>
-                                            <?= lang('weekday_mode_overrides') ?>
-                                        </label>
-                                        <table class="service-weekday-modes table table-sm table-borderless">
-                                            <tbody>
-                                            <?php
-                                            $weekday_names = ['sunday', 'monday', 'tuesday', 'wednesday',
-                                                'thursday', 'friday', 'saturday'];
-
-                                            foreach ([1, 2, 3, 4, 5, 6, 0] as $weekday): ?>
-                                                <tr>
-                                                    <td class="align-middle">
-                                                        <?= lang($weekday_names[$weekday]) ?>
-                                                    </td>
-                                                    <td>
-                                                        <select class="weekday-mode form-control" data-weekday="<?= $weekday ?>">
-                                                            <option value="">—</option>
-                                                            <option value="<?= APPOINTMENT_MODE_ONLINE ?>"><?= lang('mode_online') ?></option>
-                                                            <option value="<?= APPOINTMENT_MODE_ON_PREMISE ?>"><?= lang('mode_on_premise') ?></option>
-                                                            <option value="<?= APPOINTMENT_MODE_BOTH ?>"><?= lang('mode_both') ?></option>
-                                                        </select>
-                                                    </td>
-                                                </tr>
-                                            <?php endforeach ?>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
                             </div>
                         </div>
 

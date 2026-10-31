@@ -265,8 +265,7 @@ class Backend extends EA_Controller {
         $view['date_format'] = $this->settings_model->get_setting('date_format');
         $view['time_format'] = $this->settings_model->get_setting('time_format');
         $view['first_weekday'] = $this->settings_model->get_setting('first_weekday');
-        $view['services'] = $this->services_model
-            ->attach_weekday_modes($this->services_model->get_batch());
+        $view['services'] = $this->services_model->get_batch();
         $view['categories'] = $this->services_model->get_all_categories();
         $view['timezones'] = $this->timezones->to_array();
         $this->set_user_data($view);
@@ -302,8 +301,7 @@ class Backend extends EA_Controller {
         $view['admins'] = $this->admins_model->get_batch();
         $view['providers'] = $this->providers_model->get_batch();
         $view['secretaries'] = $this->secretaries_model->get_batch();
-        $view['services'] = $this->services_model
-            ->attach_weekday_modes($this->services_model->get_batch());
+        $view['services'] = $this->services_model->get_batch();
         $view['working_plan'] = $this->settings_model->get_setting('company_working_plan');
         $view['timezones'] = $this->timezones->to_array();
         $view['working_plan_exceptions'] = '{}';

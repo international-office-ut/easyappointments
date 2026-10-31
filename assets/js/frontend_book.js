@@ -521,8 +521,8 @@ window.FrontendBook = window.FrontendBook || {};
     /**
      * Resolve the effective appointment mode of the current booking selection.
      *
-     * The weekday override of the selected service wins over the service mode, which wins
-     * over the provider default. Missing values fall back to "BOTH" so that the customer
+     * The appointment mode is a provider decision: the per-day provider override wins over
+     * the provider default. Missing values fall back to "BOTH" so that the customer
      * can choose. Manage-mode appointments with legacy free-form location values keep
      * their original value.
      *
@@ -557,10 +557,7 @@ window.FrontendBook = window.FrontendBook || {};
             return 'ONLINE';
         }
 
-        var weekdayModes = (service && service.weekday_modes) || {};
         var weekday = selectedDate ? selectedDate.getDay() : null;
-        var weekdayMode = weekday !== null ? weekdayModes[weekday] : null;
-        var serviceMode = service ? service.appointment_mode : null;
 
         var providerSettings = (provider && provider.settings) || {};
         var providerWeekdayMode = null;
@@ -576,11 +573,9 @@ window.FrontendBook = window.FrontendBook || {};
 
         var providerMode = providerSettings.appointment_mode;
 
-        // First set value wins: service weekday override, then the service mode, then the
-        // per-day provider override, then the provider default. Explicit "BOTH" entries are
-        // deliberate declarations ("customer chooses") and do not let broader rules through;
-        // missing values everywhere fall back to "BOTH".
-        var mode = weekdayMode || serviceMode || providerWeekdayMode || providerMode || 'BOTH';
+        // First set value wins: the per-day provider override has precedence over the
+        // provider default. Missing values everywhere fall back to "BOTH".
+        var mode = providerWeekdayMode || providerMode || 'BOTH';
 
         // Online appointments only make sense when the selected provider has a Zoom link.
         if (mode === 'ONLINE' && provider && !GeneralFunctions.providerHasZoomLink(provider)) {

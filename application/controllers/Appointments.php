@@ -615,7 +615,7 @@ class Appointments extends EA_Controller {
                 [APPOINTMENT_MODE_ONLINE, APPOINTMENT_MODE_ON_PREMISE], TRUE))
             {
                 $selected_weekday = (int)date('w', strtotime(substr($appointment['start_datetime'], 0, 10)));
-                $effective_mode = resolve_appointment_mode($service, $provider['settings'] ?? [], $selected_weekday);
+                $effective_mode = resolve_appointment_mode($provider['settings'] ?? [], $selected_weekday);
 
                 if (in_array($effective_mode,
                     [APPOINTMENT_MODE_ONLINE, APPOINTMENT_MODE_ON_PREMISE], TRUE))

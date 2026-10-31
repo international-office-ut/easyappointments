@@ -182,7 +182,7 @@
 
             $('#services .service-location-weekdays .location-windows[data-weekday="'
                 + $(event.currentTarget).attr('data-weekday') + '"]')
-                .append(instance.buildLocationWindowRow('', '', ''));
+                .append(ServicesHelper.buildLocationWindowRow('', '', ''));
         });
 
         /**
@@ -192,7 +192,7 @@
             event.preventDefault();
 
             $('#services .service-location-date-overrides')
-                .append(instance.buildLocationWindowRow('', '', '', ''));
+                .append(ServicesHelper.buildLocationWindowRow('', '', '', ''));
         });
 
         /**

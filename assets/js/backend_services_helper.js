@@ -100,6 +100,8 @@
             $('#services .record-details')
                 .find('input, select, textarea')
                 .prop('disabled', false);
+            $('#services .add-location-window, #services .add-location-date, #services .remove-location-window')
+                .prop('disabled', false);
             $('#filter-services button').prop('disabled', true);
             $('#filter-services .results').css('color', '#AAA');
 
@@ -217,6 +219,8 @@
             $('#services .save-cancel-group').show();
             $('#services .record-details')
                 .find('input, select, textarea')
+                .prop('disabled', false);
+            $('#services .add-location-window, #services .add-location-date, #services .remove-location-window')
                 .prop('disabled', false);
             $('#filter-services button').prop('disabled', true);
             $('#filter-services .results').css('color', '#AAA');
@@ -375,6 +379,7 @@
         $('#services .service-location-weekdays tbody').empty();
         $('#services .service-location-date-overrides tbody').empty();
         $('#services .record-details h3 a').remove();
+        $('#services .add-location-window, #services .add-location-date').prop('disabled', true);
 
         $('#services .add-edit-delete-group').show();
         $('#services .save-cancel-group').hide();
@@ -410,6 +415,7 @@
 
         ServicesHelper.renderLocationWeekdayWindows(service.location_weekday_modes);
         ServicesHelper.renderLocationDateWindows(service.location_date_overrides);
+        $('#services .location-window-row .remove-location-window').prop('disabled', true);
 
         $('#service-availabilities-type').val(service.availabilities_type);
         $('#service-attendants-number').val(service.attendants_number);

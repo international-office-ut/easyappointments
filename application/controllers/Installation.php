@@ -46,6 +46,8 @@ class Installation extends EA_Controller {
             return;
         }
 
+        $this->assert_valid_installation_origin();
+
         $this->load->view('general/installation', [
             'base_url' => config('base_url')
         ]);
@@ -62,6 +64,8 @@ class Installation extends EA_Controller {
             {
                 return;
             }
+
+            $this->assert_valid_installation_origin();
 
             $admin = $this->input->post('admin');
             $company = $this->input->post('company');
@@ -142,5 +146,89 @@ class Installation extends EA_Controller {
         $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode($response));
+    }
+
+    /**
+     * Verify that the installation request originates from a permitted address.
+     *
+     * The installation routine grants administrative privileges, therefore requests from a
+     * foreign network must be rejected, even while the application is not yet installed.
+     * Loopback and private LAN addresses are always allowed, the "INSTALL_ALLOWED_RANGES"
+     * configuration value can whitelist additional ranges (CIDR notation), e.g. for public
+     * servers that must be configured through their own web interface.
+     */
+    protected function assert_valid_installation_origin(): void
+    {
+        $ip_address = $this->input->ip_address();
+
+        $is_local = preg_match('/^(127\.|10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2[0-9]|3[01])\.|::1$|f[cd][0-9a-f]{0,2}:|fe80:)/i',
+            $ip_address);
+
+        if ($is_local)
+        {
+            return;
+        }
+
+        foreach (defined('\Config::INSTALL_ALLOWED_RANGES')
+            ? (array) Config::INSTALL_ALLOWED_RANGES : [] as $range)
+        {
+            if ($this->ip_in_cidr($ip_address, $range))
+            {
+                return;
+            }
+        }
+
+        show_error(
+            'Installation requests are only allowed from local addresses (loopback or LAN). '
+            . 'Install the application from the server (e.g. via SSH), point a local proxy at '
+            . 'the request or whitelist your address in the "INSTALL_ALLOWED_RANGES" value of '
+            . 'the "config.php" file.', 403);
+    }
+
+    /**
+     * Determine whether an IP address falls into a CIDR range.
+     *
+     * @param string $ip_address The IP address to be checked (v4 or v6).
+     * @param string $range The CIDR range, e.g. "203.0.113.0/24" or "2001:db8::/32".
+     *
+     * @return bool Returns whether the address is inside the range.
+     */
+    protected function ip_in_cidr(string $ip_address, string $range): bool
+    {
+        if (strpos($range, '/') === FALSE)
+        {
+            $range .= strpos($ip_address, ':') !== FALSE ? '/128' : '/32';
+        }
+
+        [$subnet, $mask] = explode('/', $range, 2);
+
+        $address_binary = @inet_pton($ip_address);
+        $subnet_binary = @inet_pton($subnet);
+
+        if ($address_binary === FALSE || $subnet_binary === FALSE
+            || strlen($address_binary) !== strlen($subnet_binary)
+            || strlen($address_binary) * 8 < $mask)
+        {
+            return FALSE;
+        }
+
+        $mask_bytes = (int) floor($mask / 8);
+        $mask_bits = $mask % 8;
+
+        if ($mask_bytes > 0
+            && substr_compare($address_binary, $subnet_binary, 0, $mask_bytes) !== 0)
+        {
+            return FALSE;
+        }
+
+        if ($mask_bits > 0)
+        {
+            $mask_byte = (0xFF << (8 - $mask_bits)) & 0xFF;
+
+            return (ord($address_binary[$mask_bytes]) & $mask_byte)
+                === (ord($subnet_binary[$mask_bytes]) & $mask_byte);
+        }
+
+        return TRUE;
     }
 }

@@ -66,6 +66,12 @@ class Config {
     const ICAL_FEED_INCLUDE_CUSTOMER = TRUE;  // show the customer name, phone and email on feed events
 
     // ------------------------------------------------------------------------
+    // INSTALLATION
+    // ------------------------------------------------------------------------
+
+    const INSTALL_ALLOWED_RANGES = [];  // extra CIDR ranges that may run the setup, e.g. ['203.0.113.0/24', '2001:db8::/32'] — loopback and private LAN addresses are always allowed
+
+    // ------------------------------------------------------------------------
     // DATABASE SETTINGS
     // ------------------------------------------------------------------------
 

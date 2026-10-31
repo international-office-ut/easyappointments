@@ -489,15 +489,24 @@ class Appointments extends EA_Controller {
 
             $require_captcha = $this->settings_model->get_setting('require_captcha');
 
-            // Verify the ALTCHA proof-of-work payload submitted by the widget.
-            if ($require_captcha === '1' && (! defined('\Config::ALTCHA_HMAC_KEY')
-                    || Config::ALTCHA_HMAC_KEY === ''))
+            // Verify the ALTCHA proof-of-work payload submitted by the widget. A required
+            // captcha without a configured HMAC key fails closed, so that bookings cannot
+            // bypass the challenge (the challenge endpoint rejects the same configuration).
+            if ($require_captcha === '1'
+                && (! defined('\Config::ALTCHA_HMAC_KEY') || Config::ALTCHA_HMAC_KEY === ''))
             {
                 log_message('error', 'The "ALTCHA_HMAC_KEY" configuration value is not set.');
+
+                $this->output
+                    ->set_content_type('application/json')
+                    ->set_output(json_encode([
+                        'captcha_verification' => FALSE
+                    ]));
+
+                return;
             }
 
-            if ($require_captcha === '1'
-                && defined('\Config::ALTCHA_HMAC_KEY') && Config::ALTCHA_HMAC_KEY !== '')
+            if ($require_captcha === '1')
             {
                 if ($altcha_solution === '')
                 {

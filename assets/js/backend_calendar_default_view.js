@@ -643,7 +643,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
 
         $(jsEvent.target).popover({
             placement: 'right',
-            title: event.title,
+            title: GeneralFunctions.escapeHtml(event.title),
             content: $html,
             html: true,
             container: '#calendar',
@@ -984,24 +984,6 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
             $(eventElement).popover();
         });
         */
-    }
-
-    /**
-     * Convert titles to HTML
-     *
-     * On some calendar events the titles contain html markup that is not displayed properly due to the
-     * FullCalendar plugin. This plugin sets the .fc-event-title value by using the $.text() method and
-     * not the $.html() method. So in order for the title to display the html properly we convert all the
-     * .fc-event-titles where needed into html.
-     */
-    function convertTitlesToHtml() {
-        // Convert the titles to html code.
-        $('.fc-custom').each(function (index, customEventElement) {
-            var title = $(customEventElement).find('.fc-event-title').text();
-            $(customEventElement).find('.fc-event-title').html(title);
-            var time = $(customEventElement).find('.fc-event-time').text();
-            $(customEventElement).find('.fc-event-time').html(time);
-        });
     }
 
     /**
@@ -1531,8 +1513,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
             dayClick: calendarDayClick,
             eventClick: calendarEventClick,
             eventResize: calendarEventResize,
-            eventDrop: calendarEventDrop,
-            eventAfterAllRender: convertTitlesToHtml
+            eventDrop: calendarEventDrop
         });
 
         // Trigger once to set the proper footer position after calendar initialization.

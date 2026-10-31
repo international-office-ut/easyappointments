@@ -1427,7 +1427,7 @@ window.BackendCalendarTableView = window.BackendCalendarTableView || {};
 
         $(jsEvent.target).popover({
             placement: 'bottom',
-            title: event.title,
+            title: GeneralFunctions.escapeHtml(event.title),
             content: $html,
             html: true,
             container: '#calendar',

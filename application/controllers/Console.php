@@ -81,9 +81,24 @@ class Console extends EA_Controller {
             show_error($this->migration->error_string());
         }
 
-        if ($this->migration->current() === FALSE)
+        try
         {
-            show_error('Migration failed: ' . $this->migration->error_string());
+            if ($this->migration->current() === FALSE)
+            {
+                $message = 'Migration failed: ' . $this->migration->error_string();
+            }
+        }
+        catch (Throwable $exception)
+        {
+            // Database failures must reach the operator driving the command, not only the log.
+            $message = 'Migration failed: ' . $exception->getMessage();
+        }
+
+        if ( ! empty($message))
+        {
+            $this->output->set_output(PHP_EOL . '⇾ ' . $message . PHP_EOL . PHP_EOL);
+
+            return;
         }
 
         // The migration library is silent on success (only error strings are collected),

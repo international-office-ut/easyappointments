@@ -270,12 +270,13 @@ $lang["go_to_login"] = "Gehen Sie zurück auf die Anmeldeseite";
 $lang["account_recovery_email_sent"] =
     "Wenn der Nutzername und die E-Mail-Adresse zu einem Konto gehören, erhalten Sie in Kürze eine E-Mail mit weiteren Anweisungen.";
 $lang["password_reset_email_subject"] = "Passwort-Zurücksetzung";
+// Serialized with single quotes, so that the '$link' placeholder survives file inclusion.
 $lang["password_reset_email_message"] =
-    "Bitte verwenden Sie den folgenden Link, um ein neues Passwort für Ihr Konto festzulegen: $link";
+    'Bitte verwenden Sie den folgenden Link, um ein neues Passwort für Ihr Konto festzulegen: $link';
 $lang["password_reset_email_button"] = "Ein neues Passwort festlegen";
 $lang["admin_access_email_subject"] = "Temporärer Administratorzugriff";
 $lang["admin_access_email_message"] =
-    "Bitte verwenden Sie den folgenden Link, um die Anwendung als Administrator zu öffnen: $link";
+    'Bitte verwenden Sie den folgenden Link, um die Anwendung als Administrator zu öffnen: $link';
 $lang["admin_access_email_button"] = "Anwendung öffnen";
 $lang["admin_access"] = "Administratorzugriff";
 $lang["admin_access_hint"] =

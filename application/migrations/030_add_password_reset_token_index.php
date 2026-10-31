@@ -23,7 +23,7 @@ class Migration_add_password_reset_token_index extends CI_Migration {
      */
     public function up()
     {
-        $this->db->query('ALTER TABLE `user_settings`
+        $this->db->query('ALTER TABLE `' . $this->db->dbprefix('user_settings') . '`
             ADD KEY `password_reset_token_hash` (`password_reset_token_hash`)');
     }
 
@@ -32,7 +32,7 @@ class Migration_add_password_reset_token_index extends CI_Migration {
      */
     public function down()
     {
-        $this->db->query('ALTER TABLE `user_settings`
+        $this->db->query('ALTER TABLE `' . $this->db->dbprefix('user_settings') . '`
             DROP KEY `password_reset_token_hash`');
     }
 }

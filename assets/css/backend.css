@@ -288,6 +288,15 @@ body legend {
     }
 }
 
+/* Very wide screens: cap the content and center it, so forms and tables do not
+   stretch across the whole display. The calendar page (no content-scroll) stays fluid. */
+@media (min-width: 1800px) {
+    .backend-page.content-scroll {
+        max-width: 1800px;
+        margin: 0 auto;
+    }
+}
+
 @media (min-width: 768px) {
     /* The settings page has no independent columns: its tab content scrolls inside the
        fixed frame instead (otherwise e.g. the privacy-policy editor would be clipped

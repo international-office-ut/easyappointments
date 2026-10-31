@@ -57,6 +57,84 @@ class Backend_api extends EA_Controller {
     }
 
     /**
+     * Provider scope of the current session role.
+     *
+     * Providers may only operate on their own records and secretaries only on the records of
+     * their bound providers, so that foreign record ids can never be used from these sessions.
+     *
+     * @return array|NULL Returns the provider ids in scope or NULL when all providers are in
+     * scope (admin).
+     */
+    protected function get_provider_scope(): ?array
+    {
+        $role_slug = $this->session->userdata('role_slug');
+
+        if ($role_slug === DB_SLUG_PROVIDER)
+        {
+            return [$this->session->userdata('user_id')];
+        }
+
+        if ($role_slug === DB_SLUG_SECRETARY)
+        {
+            return $this->secretaries_model->get_row($this->session->userdata('user_id'))['providers'];
+        }
+
+        return NULL;
+    }
+
+    /**
+     * Throw an exception when the provider id is not in the current session's scope.
+     *
+     * @param int $provider_id The provider id that is about to be accessed.
+     */
+    protected function assert_provider_in_scope($provider_id)
+    {
+        $provider_scope = $this->get_provider_scope();
+
+        if ($provider_scope === NULL)
+        {
+            return;
+        }
+
+        if ( ! in_array((int) $provider_id, array_map('intval', $provider_scope), TRUE))
+        {
+            throw new Exception('The record does not belong to your provider scope.');
+        }
+    }
+
+    /**
+     * Keep only the appointment rows that belong to the current session's provider scope.
+     *
+     * The returned array is re-indexed, so that no filtered response can ever contain sparse
+     * keys (they would break the JSON list contract of the frontend).
+     *
+     * @param array $rows Appointment rows to be filtered.
+     *
+     * @return array Returns the in-scope rows.
+     */
+    protected function scope_appointment_rows(array $rows): array
+    {
+        $provider_scope = $this->get_provider_scope();
+
+        if ($provider_scope === NULL)
+        {
+            return $rows;
+        }
+
+        $scoped_rows = [];
+
+        foreach ($rows as $row)
+        {
+            if (in_array((int) $row['id_users_provider'], array_map('intval', $provider_scope), TRUE))
+            {
+                $scoped_rows[] = $row;
+            }
+        }
+
+        return $scoped_rows;
+    }
+
+    /**
      * Get Calendar Events
      *
      * This method will return all the calendar events within a specified period.
@@ -176,6 +254,12 @@ class Backend_api extends EA_Controller {
             $start_date = $this->db->escape($this->input->post('start_date'));
             $end_date = $this->db->escape(date('Y-m-d', strtotime($this->input->post('end_date') . ' +1 day')));
 
+            // Providers and secretaries may not request the calendar of another provider.
+            if ($this->input->post('filter_type') == FILTER_TYPE_PROVIDER)
+            {
+                $this->assert_provider_in_scope($this->input->post('record_id'));
+            }
+
             $where_clause = $where_id . ' = ' . $record_id . '
                 AND ((start_datetime > ' . $start_date . ' AND start_datetime < ' . $end_date . ') 
                 or (end_datetime > ' . $start_date . ' AND end_datetime < ' . $end_date . ') 
@@ -183,7 +267,10 @@ class Backend_api extends EA_Controller {
                 AND is_unavailable = 0
             ';
 
-            $response['appointments'] = $this->appointments_model->get_batch($where_clause);
+            // Service filters span multiple providers, so the rows must be scoped for roles
+            // that are only allowed to work with a subset of the providers.
+            $response['appointments'] = $this->scope_appointment_rows(
+                $this->appointments_model->get_batch($where_clause));
 
             foreach ($response['appointments'] as &$appointment)
             {
@@ -204,7 +291,8 @@ class Backend_api extends EA_Controller {
                     AND is_unavailable = 1
                 ';
 
-                $response['unavailables'] = $this->appointments_model->get_batch($where_clause);
+                $response['unavailables'] = $this->scope_appointment_rows(
+                    $this->appointments_model->get_batch($where_clause));
             }
 
             foreach ($response['unavailables'] as &$unavailable)
@@ -268,6 +356,17 @@ class Backend_api extends EA_Controller {
                 }
 
                 $manage_mode = isset($appointment['id']);
+
+                // Existing appointments may only be changed by roles that can also work with
+                // the provider of the appointment (no foreign reassignment from other roles).
+                if ($manage_mode)
+                {
+                    $existing_appointment = $this->appointments_model->get_row($appointment['id']);
+
+                    $this->assert_provider_in_scope($existing_appointment['id_users_provider']);
+                }
+
+                $this->assert_provider_in_scope($appointment['id_users_provider']);
 
                 // If the appointment does not contain the customer record id, then it means that is is going to be
                 // inserted. Get the customer's record ID.
@@ -333,6 +432,7 @@ class Backend_api extends EA_Controller {
 
             // Store appointment data for later use in this method.
             $appointment = $this->appointments_model->get_row($this->input->post('appointment_id'));
+            $this->assert_provider_in_scope($appointment['id_users_provider']);
             $provider = $this->providers_model->get_row($appointment['id_users_provider']);
             $customer = $this->customers_model->get_row($appointment['id_users_customer']);
             $service = $this->services_model->get_row($appointment['id_services']);
@@ -477,6 +577,10 @@ class Backend_api extends EA_Controller {
             {
                 $appointments = $this->appointments_model->get_batch(['id_users_customer' => $customer['id']]);
 
+                // Roles with a provider scope must not see the appointment history with the
+                // providers that are outside of their scope.
+                $appointments = $this->scope_appointment_rows($appointments);
+
                 foreach ($appointments as &$appointment)
                 {
                     $appointment['service'] = $this->services_model->get_row($appointment['id_services']);
@@ -521,6 +625,16 @@ class Backend_api extends EA_Controller {
                 throw new Exception('You do not have the required privileges for this task.');
             }
 
+            // Unavailable periods may point to another provider on update, so both the final
+            // provider and the original record's provider need to be in scope.
+            $this->assert_provider_in_scope($unavailable['id_users_provider']);
+
+            if (isset($unavailable['id']))
+            {
+                $this->assert_provider_in_scope(
+                    $this->appointments_model->get_row($unavailable['id'])['id_users_provider']);
+            }
+
             $provider = $this->providers_model->get_row($unavailable['id_users_provider']);
 
             // Add appointment
@@ -559,6 +673,7 @@ class Backend_api extends EA_Controller {
             }
 
             $unavailable = $this->appointments_model->get_row($this->input->post('unavailable_id'));
+            $this->assert_provider_in_scope($unavailable['id_users_provider']);
             $provider = $this->providers_model->get_row($unavailable['id_users_provider']);
 
             // Delete unavailable
@@ -599,6 +714,9 @@ class Backend_api extends EA_Controller {
             $date = $this->input->post('date');
             $working_plan_exception = $this->input->post('working_plan_exception');
             $provider_id = $this->input->post('provider_id');
+
+            // Provider or secretary sessions may only change their own working plan exceptions.
+            $this->assert_provider_in_scope($provider_id);
 
             $success = $this->providers_model->save_working_plan_exception($date, $working_plan_exception, $provider_id);
 
@@ -643,6 +761,9 @@ class Backend_api extends EA_Controller {
 
             $date = $this->input->post('date');
             $provider_id = $this->input->post('provider_id');
+
+            // Provider or secretary sessions may only change their own working plan exceptions.
+            $this->assert_provider_in_scope($provider_id);
 
             $success = $this->providers_model->delete_working_plan_exception($date, $provider_id);
 

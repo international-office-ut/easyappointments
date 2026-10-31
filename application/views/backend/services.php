@@ -187,6 +187,13 @@
                                         </label>
                                         <input id="service-location" class="form-control">
                                     </div>
+
+                                    <div class="form-group">
+                                        <label for="service-description">
+                                            <?= lang('description') ?>
+                                        </label>
+                                        <textarea id="service-description" rows="4" class="form-control"></textarea>
+                                    </div>
                                 </div>
 
                                 <div class="col-12 col-lg-6">
@@ -229,13 +236,6 @@
                                             <?php endforeach ?>
                                             </tbody>
                                         </table>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="service-description">
-                                            <?= lang('description') ?>
-                                        </label>
-                                        <textarea id="service-description" rows="4" class="form-control"></textarea>
                                     </div>
                                 </div>
                             </div>

@@ -23,6 +23,23 @@ window.Backend = window.Backend || {};
     'use strict';
 
     /**
+     * Number of silent AJAX requests in flight (e.g. live filter keystrokes). While it is
+     * greater than zero the global loading spinner is suppressed.
+     *
+     * @type {Number}
+     */
+    exports.silentAjaxCount = 0;
+    exports.silentAjaxBegin = function () {
+        exports.silentAjaxCount++;
+    };
+    exports.silentAjaxEnd = function () {
+        if (exports.silentAjaxCount > 0)
+        {
+            exports.silentAjaxCount--;
+        }
+    };
+
+    /**
      * Main javascript code for the backend of Easy!Appointments.
      */
     $(function () {
@@ -33,8 +50,10 @@ window.Backend = window.Backend || {};
             .trigger('resize');
 
         $(document).ajaxStart(function () {
-            // Silent requests (background identity lookups) must not trigger the spinner.
-            if (window.BackendUsers && (BackendUsers.silentAjaxCount || 0) > 0)
+            // Silent requests (background identity lookups, live filter keystrokes) must
+            // not trigger the spinner, otherwise the screen flickers.
+            if ((window.BackendUsers && (BackendUsers.silentAjaxCount || 0) > 0)
+                || (exports.silentAjaxCount || 0) > 0)
             {
                 return;
             }

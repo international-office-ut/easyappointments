@@ -399,6 +399,8 @@
         var requestKey = key;
         this._filterRequestKey = requestKey;
 
+        Backend.silentAjaxBegin();
+
         $.post(url, data)
             .done(function (response) {
                 if (this._filterRequestKey !== requestKey) {
@@ -438,7 +440,10 @@
                     this.select(selectId, display);
                 }
 
-            }.bind(this));
+            }.bind(this))
+            .always(function () {
+                Backend.silentAjaxEnd();
+            });
     };
 
     /**

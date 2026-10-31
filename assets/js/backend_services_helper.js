@@ -635,12 +635,12 @@
             var previous = null;
 
             $rows
+                .slice()
                 .sort(function (first, second) {
-                    return $(first).find('.location-window-from').val()
-                        < $(second).find('.location-window-from').val() ? -1 : 1;
+                    return first.find('.location-window-from').val()
+                        < second.find('.location-window-from').val() ? -1 : 1;
                 })
-                .each(function (index, row) {
-                    var $row = $(row);
+                .forEach(function ($row) {
                     var from = $row.find('.location-window-from').val();
                     var to = $row.find('.location-window-to').val();
                     var location = $row.find('.location-window-location').val();

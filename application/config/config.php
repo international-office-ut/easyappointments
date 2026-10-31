@@ -320,7 +320,7 @@ $config["cache_path"] = __DIR__ . "/../../storage/cache/";
 | new release.
 |
 */
-$config["cache_busting_token"] = "ZW003";
+$config["cache_busting_token"] = "ZW007";
 
 /*
 |--------------------------------------------------------------------------

@@ -547,7 +547,9 @@
                 nextText: EALang.next,
                 currentText: EALang.now,
                 closeText: EALang.close,
-                firstDay: GeneralFunctions.getWeekDayId(GlobalVariables.firstWeekday)
+                firstDay: GlobalVariables.firstWeekday
+                    ? GeneralFunctions.getWeekDayId(GlobalVariables.firstWeekday)
+                    : 0
             });
         });
     };

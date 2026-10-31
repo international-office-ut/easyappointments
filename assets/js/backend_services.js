@@ -67,9 +67,12 @@ window.BackendServices = window.BackendServices || {};
         /**
          * Event: Page Tab Button "Click"
          *
-         * Changes the displayed tab.
+         * Changes the displayed tab. The internal record tabs (details, location) are excluded,
+         * they must not reset the page helper state.
          */
-        $('a[data-toggle="tab"]').on('shown.bs.tab', function () {
+        $('a[data-toggle="tab"]')
+            .not('#services .record-details a[data-toggle="tab"]')
+            .on('shown.bs.tab', function () {
             if (helper) {
                 helper.unbindEventHandlers();
             }

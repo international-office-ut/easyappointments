@@ -105,11 +105,16 @@ class User_model extends EA_Model {
         $user_settings['id_users'] = $user['id'];
         unset($user['settings']);
 
-        // Prepare user password (hash).
-        if (isset($user_settings['password']))
+        // The settings page works with the sanitized rows without credentials (see get_user),
+        // so the old values are read directly from the database for the identity cascade.
+        $old_row = $this->db->get_where('users', ['id' => $user['id']])->row_array();
+        $old_settings = $this->db->get_where('user_settings', ['id_users' => $user['id']])->row_array();
+
+        $new_password = $user_settings['password'] ?? NULL;
+
+        if ($new_password !== NULL)
         {
-            $salt = $this->db->get_where('user_settings', ['id_users' => $user['id']])->row()->salt;
-            $user_settings['password'] = hash_password($salt, $user_settings['password']);
+            $user_settings['password'] = hash_password($old_settings['salt'], $new_password);
         }
 
         if ( ! $this->db->update('users', $user, ['id' => $user['id']]))
@@ -121,6 +126,12 @@ class User_model extends EA_Model {
         {
             return FALSE;
         }
+
+        // Identity cascade: a password change on the settings page of one role row must be
+        // usable for the accounts of the same identity too (same email + login name).
+        $this->load->model('identities_model');
+        $this->identities_model->sync_after_update($user, $old_row['email'], $old_settings,
+            $user_settings, $new_password);
 
         return TRUE;
     }
@@ -358,21 +369,20 @@ class User_model extends EA_Model {
             return FALSE;
         }
 
-        foreach ($rows as $row)
-        {
-            $salt = $this->db->get_where('user_settings', ['id_users' => $row['id']])->row()->salt;
+        // One person one password: the identity sync writes the new password to every role
+        // row of the same identity, each with its own salt (or a fresh salt when missing).
+        $this->load->model('identities_model');
+        $this->identities_model->sync_password($rows[0]['email'], $new_password);
 
-            // One person one password: every role row of the identity gets the same value, each
-            // with its own salt.
-            $this->db->update('user_settings', [
-                'password' => hash_password($salt, $new_password),
-
-                // The token is single-use, so it gets consumed with the password change.
+        // The token is single-use, so it gets consumed everywhere, even on identity rows
+        // that were outside the original match set.
+        $this->db
+            ->where('password_reset_token_hash', hash('sha256', $token))
+            ->update('user_settings', [
                 'password_reset_token_hash' => NULL,
                 'password_reset_expires' => NULL,
                 'password_reset_type' => NULL
-            ], ['id_users' => $row['id']]);
-        }
+            ]);
 
         return $rows;
     }

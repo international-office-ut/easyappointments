@@ -18,6 +18,17 @@
  * secretary): one email, one login name and one password are shared between rows that belong
  * to the same person, while each row keeps its own role-specific settings.
  *
+ * The identity contract for any write path (existing or future ones) is:
+ * - A password write on a single row must ensure that every sibling row of the identity can
+ *   use the same credentials, so password writes are cascaded through sync_password() and
+ *   the update orchestrator sync_after_update().
+ * - An email or login name rename on one row propagates to the sibling rows
+ *   (sync_email_and_login_name()), otherwise the identity silently splits into two persons.
+ * - New role rows of an existing identity inherit the credentials at insert time
+ *   (attach_credentials()), a password must only be requested when the email is new.
+ * - The password scheme stays per-row (own salt, per-row hash), only the plaintext value is
+ *   shared.
+ *
  * @package Models
  */
 class Identities_model extends EA_Model {

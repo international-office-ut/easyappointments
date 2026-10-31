@@ -664,6 +664,8 @@ class User extends EA_Controller {
                 throw new Exception(lang('password_reset_token_invalid'));
             }
 
+            $this->rate_limit_register_attempt($access_key, 1800);
+
             $token = (string) $this->input->post('token');
             $password = (string) $this->input->post('password');
             $password_confirm = (string) $this->input->post('password_confirm');

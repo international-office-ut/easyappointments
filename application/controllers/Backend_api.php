@@ -65,20 +65,55 @@ class Backend_api extends EA_Controller {
     {
         try
         {
+            // This endpoint would expose the whole schedule with customer data, so it must
+            // never respond to requests that do not come from any logged in user.
+            if ($this->privileges[PRIV_APPOINTMENTS]['view'] == FALSE)
+            {
+                throw new Exception('You do not have the required privileges for this task.');
+            }
+
+            $user_id = $this->session->userdata('user_id');
+            $role_slug = $this->session->userdata('role_slug');
+
             $start_date = $this->input->post('startDate') . ' 00:00:00';
             $end_date = $this->input->post('endDate') . ' 23:59:59';
 
+            $where = [
+                'start_datetime >=' => $start_date,
+                'end_datetime <=' => $end_date
+            ];
+
+            // Providers may only see their own events and secretaries only the events of the
+            // providers they are assigned to, so the filter needs to happen already in SQL.
+            if ($role_slug === DB_SLUG_PROVIDER)
+            {
+                $where['id_users_provider'] = $user_id;
+            }
+
+            if ($role_slug === DB_SLUG_SECRETARY)
+            {
+                $providers = $this->secretaries_model->get_row($user_id)['providers'];
+
+                // Secretaries without any provider assignment cannot be filtered with an
+                // empty IN clause, so they directly get an empty response.
+                if (empty($providers))
+                {
+                    return $this->output
+                        ->set_content_type('application/json')
+                        ->set_output(json_encode([
+                            'appointments' => [],
+                            'unavailability_events' => []
+                        ]));
+                }
+
+                $where['id_users_provider'] = $providers;
+            }
+
             $response = [
-                'appointments' => $this->appointments_model->get_batch([
-                    'is_unavailable' => FALSE,
-                    'start_datetime >=' => $start_date,
-                    'end_datetime <=' => $end_date
-                ]),
-                'unavailability_events' => $this->appointments_model->get_batch([
-                    'is_unavailable' => TRUE,
-                    'start_datetime >=' => $start_date,
-                    'end_datetime <=' => $end_date
-                ])
+                'appointments' => $this->appointments_model->get_batch(
+                    array_merge($where, ['is_unavailable' => FALSE])),
+                'unavailability_events' => $this->appointments_model->get_batch(
+                    array_merge($where, ['is_unavailable' => TRUE]))
             ];
 
             foreach ($response['appointments'] as &$appointment)
@@ -88,52 +123,6 @@ class Backend_api extends EA_Controller {
                 $appointment['customer'] = $this->customers_model->get_row($appointment['id_users_customer']);
             }
             unset ($appointment);
-
-            $user_id = $this->session->userdata('user_id');
-            $role_slug = $this->session->userdata('role_slug');
-
-            // If the current user is a provider he must only see his own appointments.
-            if ($role_slug === DB_SLUG_PROVIDER)
-            {
-                foreach ($response['appointments'] as $index => $appointment)
-                {
-                    if ((int)$appointment['id_users_provider'] !== (int)$user_id)
-                    {
-                        unset($response['appointments'][$index]);
-                    }
-                }
-
-                foreach ($response['unavailability_events'] as $index => $unavailability_event)
-                {
-                    if ((int)$unavailability_event['id_users_provider'] !== (int)$user_id)
-                    {
-                        unset($response['unavailability_events'][$index]);
-                    }
-                }
-            }
-
-            // If the current user is a secretary he must only see the appointments of his providers.
-            if ($role_slug === DB_SLUG_SECRETARY)
-            {
-                $providers = $this->secretaries_model->get_row($user_id)['providers'];
-                foreach ($response['appointments'] as $index => $appointment)
-                {
-                    if ( ! in_array((int)$appointment['id_users_provider'], $providers))
-                    {
-                        unset($response['appointments'][$index]);
-                    }
-                }
-
-                foreach ($response['unavailability_events'] as $index => $unavailability_event)
-                {
-                    if ( ! in_array((int)$unavailability_event['id_users_provider'], $providers))
-                    {
-                        unset($response['unavailability_events'][$index]);
-                    }
-                }
-            }
-
-            $this->output->set_output(json_encode($response));
         }
         catch (Exception $exception)
         {
@@ -1528,6 +1517,13 @@ class Backend_api extends EA_Controller {
                     }
 
                     $settings = json_decode($this->input->post('settings'), TRUE);
+
+                    // Users are only allowed to save their own user row, otherwise roles that
+                    // hold the user-settings edit slot could take over any other account.
+                    if ((int) $settings['id'] !== (int) $this->session->userdata('user_id'))
+                    {
+                        throw new Exception('You cannot update the settings of another user.');
+                    }
 
                     $this->user_model->save_user($settings);
 

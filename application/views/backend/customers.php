@@ -31,14 +31,13 @@
         <div id="filter-customers" class="filter-records col col-12 col-md-5">
             <form class="mb-4">
                 <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    </div>
                     <input type="text" class="key form-control">
 
                     <div class="input-group-addon">
                         <div>
-                            <button class="filter btn btn-outline-secondary" type="submit"
-                                    data-tippy-content="<?= lang('filter') ?>">
-                                <i class="fas fa-search"></i>
-                            </button>
                             <button class="clear btn btn-outline-secondary" type="button"
                                     data-tippy-content="<?= lang('clear') ?>">
                                 <i class="fas fa-redo-alt"></i>

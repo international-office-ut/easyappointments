@@ -50,7 +50,7 @@
          * Event: Filter Providers Key Input "Keyup" (live filter while typing)
          */
         $('#providers').on('keyup', '#filter-providers .key', GeneralFunctions.debounce(function () {
-            if ($('#filter-providers .filter').prop('disabled')) {
+            if ($('#filter-providers .key').prop('disabled')) {
                 return;
             }
 
@@ -75,7 +75,7 @@
          * Display the selected provider data to the user.
          */
         $('#providers').on('click', '.provider-row', function (event) {
-            if ($('#filter-providers .filter').prop('disabled')) {
+            if ($('#filter-providers .key').prop('disabled')) {
                 $('#filter-providers .results').css('color', '#AAA');
                 return; // Exit because we are currently on edit mode.
             }
@@ -96,7 +96,7 @@
          */
         $('#providers').on('click', '#add-provider', function () {
             this.resetForm();
-            $('#filter-providers button').prop('disabled', true);
+            $('#filter-providers .key, #filter-providers .clear').prop('disabled', true);
             $('#filter-providers .results').css('color', '#AAA');
             $('#providers .add-edit-delete-group').hide();
             $('#providers .save-cancel-group').show();
@@ -117,7 +117,7 @@
         $('#providers').on('click', '#edit-provider', function () {
             $('#providers .add-edit-delete-group').hide();
             $('#providers .save-cancel-group').show();
-            $('#filter-providers button').prop('disabled', true);
+            $('#filter-providers .key, #filter-providers .clear').prop('disabled', true);
             $('#filter-providers .results').css('color', '#AAA');
             $('#providers .record-details').find('input, select, textarea').prop('disabled', false);
             $('#provider-password, #provider-password-confirm').removeClass('required');
@@ -468,7 +468,7 @@
     ProvidersHelper.prototype.resetForm = function () {
         var tz = jstz.determine();
         $('#filter-providers .selected').removeClass('selected');
-        $('#filter-providers button').prop('disabled', false);
+        $('#filter-providers .key, #filter-providers .clear').prop('disabled', false);
         $('#filter-providers .results').css('color', '');
 
         $('#providers .add-edit-delete-group').show();

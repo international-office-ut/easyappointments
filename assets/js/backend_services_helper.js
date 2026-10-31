@@ -43,7 +43,7 @@
          * Event: Filter Services Key Input "Keyup" (live filter while typing)
          */
         $('#services').on('keyup', '#filter-services .key', GeneralFunctions.debounce(function () {
-            if ($('#filter-services .filter').prop('disabled')) {
+            if ($('#filter-services .key').prop('disabled')) {
                 return;
             }
 
@@ -68,7 +68,7 @@
          * Display the selected service data to the user.
          */
         $('#services').on('click', '.service-row', function () {
-            if ($('#filter-services .filter').prop('disabled')) {
+            if ($('#filter-services .key').prop('disabled')) {
                 $('#filter-services .results').css('color', '#AAA');
                 return; // exit because we are on edit mode
             }
@@ -114,7 +114,7 @@
                 .prop('disabled', false);
             $('#services .add-location-window, #services .add-location-date, #services .remove-location-window')
                 .prop('disabled', false);
-            $('#filter-services button').prop('disabled', true);
+            $('#filter-services .key, #filter-services .clear').prop('disabled', true);
             $('#filter-services .results').css('color', '#AAA');
 
             // Default values
@@ -234,7 +234,7 @@
                 .prop('disabled', false);
             $('#services .add-location-window, #services .add-location-date, #services .remove-location-window')
                 .prop('disabled', false);
-            $('#filter-services button').prop('disabled', true);
+            $('#filter-services .key, #filter-services .clear').prop('disabled', true);
             $('#filter-services .results').css('color', '#AAA');
         });
 
@@ -384,7 +384,7 @@
      */
     ServicesHelper.prototype.resetForm = function () {
         $('#filter-services .selected').removeClass('selected');
-        $('#filter-services button').prop('disabled', false);
+        $('#filter-services .key, #filter-services .clear').prop('disabled', false);
         $('#filter-services .results').css('color', '');
 
         $('#services .record-details')

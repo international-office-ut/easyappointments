@@ -50,7 +50,7 @@
          * Event: Filter Secretaries Key Input "Keyup" (live filter while typing)
          */
         $('#secretaries').on('keyup', '#filter-secretaries .key', GeneralFunctions.debounce(function () {
-            if ($('#filter-secretaries .filter').prop('disabled')) {
+            if ($('#filter-secretaries .key').prop('disabled')) {
                 return;
             }
 
@@ -75,7 +75,7 @@
          * Display the selected secretary data to the user.
          */
         $('#secretaries').on('click', '.secretary-row', function (event) {
-            if ($('#filter-secretaries .filter').prop('disabled')) {
+            if ($('#filter-secretaries .key').prop('disabled')) {
                 $('#filter-secretaries .results').css('color', '#AAA');
                 return; // exit because we are currently on edit mode
             }
@@ -98,7 +98,7 @@
          */
         $('#secretaries').on('click', '#add-secretary', function () {
             this.resetForm();
-            $('#filter-secretaries button').prop('disabled', true);
+            $('#filter-secretaries .key, #filter-secretaries .clear').prop('disabled', true);
             $('#filter-secretaries .results').css('color', '#AAA');
 
             $('#secretaries .add-edit-delete-group').hide();
@@ -113,7 +113,7 @@
          * Event: Edit Secretary Button "Click"
          */
         $('#secretaries').on('click', '#edit-secretary', function () {
-            $('#filter-secretaries button').prop('disabled', true);
+            $('#filter-secretaries .key, #filter-secretaries .clear').prop('disabled', true);
             $('#filter-secretaries .results').css('color', '#AAA');
             $('#secretaries .add-edit-delete-group').hide();
             $('#secretaries .save-cancel-group').show();
@@ -346,7 +346,7 @@
     SecretariesHelper.prototype.resetForm = function () {
         var tz = jstz.determine();
         $('#filter-secretaries .selected').removeClass('selected');
-        $('#filter-secretaries button').prop('disabled', false);
+        $('#filter-secretaries .key, #filter-secretaries .clear').prop('disabled', false);
         $('#filter-secretaries .results').css('color', '');
 
         $('#secretaries .record-details')

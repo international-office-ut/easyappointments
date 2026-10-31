@@ -56,7 +56,7 @@
          * Event: Filter Categories Key Input "Keyup" (live filter while typing)
          */
         $('#categories').on('keyup', '#filter-categories .key', GeneralFunctions.debounce(function () {
-            if ($('#filter-categories .filter').prop('disabled')) {
+            if ($('#filter-categories .key').prop('disabled')) {
                 return;
             }
 
@@ -72,7 +72,7 @@
          * Displays the selected row data on the right side of the page.
          */
         $('#categories').on('click', '.category-row', function () {
-            if ($('#filter-categories .filter').prop('disabled')) {
+            if ($('#filter-categories .key').prop('disabled')) {
                 $('#filter-categories .results').css('color', '#AAA');
                 return; // exit because we are on edit mode
             }
@@ -97,7 +97,7 @@
             $('#categories .add-edit-delete-group').hide();
             $('#categories .save-cancel-group').show();
             $('#categories .record-details').find('input, select, textarea').prop('disabled', false);
-            $('#filter-categories button').prop('disabled', true);
+            $('#filter-categories .key, #filter-categories .clear').prop('disabled', true);
             $('#filter-categories .results').css('color', '#AAA');
         });
 
@@ -108,7 +108,7 @@
             $('#categories .add-edit-delete-group').hide();
             $('#categories .save-cancel-group').show();
             $('#categories .record-details').find('input, select, textarea').prop('disabled', false);
-            $('#filter-categories button').prop('disabled', true);
+            $('#filter-categories .key, #filter-categories .clear').prop('disabled', true);
             $('#filter-categories .results').css('color', '#AAA');
         });
 
@@ -351,7 +351,7 @@
      */
     CategoriesHelper.prototype.resetForm = function () {
         $('#filter-categories .selected').removeClass('selected');
-        $('#filter-categories button').prop('disabled', false);
+        $('#filter-categories .key, #filter-categories .clear').prop('disabled', false);
         $('#filter-categories .results').css('color', '');
 
         $('#categories .add-edit-delete-group').show();

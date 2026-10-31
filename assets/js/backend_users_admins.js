@@ -48,7 +48,7 @@
          * Event: Filter Admins Key Input "Keyup" (live filter while typing)
          */
         $('#admins').on('keyup', '#filter-admins .key', GeneralFunctions.debounce(function () {
-            if ($('#filter-admins .filter').prop('disabled')) {
+            if ($('#filter-admins .key').prop('disabled')) {
                 return;
             }
 
@@ -73,7 +73,7 @@
          * Display the selected admin data to the user.
          */
         $('#admins').on('click', '.admin-row', function (event) {
-            if ($('#filter-admins .filter').prop('disabled')) {
+            if ($('#filter-admins .key').prop('disabled')) {
                 $('#filter-admins .results').css('color', '#AAA');
                 return; // exit because we are currently on edit mode
             }
@@ -100,7 +100,7 @@
             $('#admins .record-details').find('input, textarea').prop('disabled', false);
             $('#admins .record-details').find('select').prop('disabled', false);
             $('#admin-password, #admin-password-confirm').addClass('required');
-            $('#filter-admins button').prop('disabled', true);
+            $('#filter-admins .key, #filter-admins .clear').prop('disabled', true);
             $('#filter-admins .results').css('color', '#AAA');
         }.bind(this));
 
@@ -113,7 +113,7 @@
             $('#admins .record-details').find('input, textarea').prop('disabled', false);
             $('#admins .record-details').find('select').prop('disabled', false);
             $('#admin-password, #admin-password-confirm').removeClass('required');
-            $('#filter-admins button').prop('disabled', true);
+            $('#filter-admins .key, #filter-admins .clear').prop('disabled', true);
             $('#filter-admins .results').css('color', '#AAA');
         });
 
@@ -331,7 +331,7 @@
     AdminsHelper.prototype.resetForm = function () {
         var tz = jstz.determine();
         $('#filter-admins .selected').removeClass('selected');
-        $('#filter-admins button').prop('disabled', false);
+        $('#filter-admins .key, #filter-admins .clear').prop('disabled', false);
         $('#filter-admins .results').css('color', '');
 
         $('#admins .add-edit-delete-group').show();

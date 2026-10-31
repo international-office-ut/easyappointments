@@ -49,7 +49,7 @@
          * Event: Filter Customers Key Input "Keyup" (live filter while typing)
          */
         $('#customers').on('keyup', '#filter-customers .key', GeneralFunctions.debounce(function () {
-            if ($('#filter-customers .filter').prop('disabled')) {
+            if ($('#filter-customers .key').prop('disabled')) {
                 return;
             }
 
@@ -76,7 +76,7 @@
          * Display the customer data of the selected row.
          */
         $('#customers').on('click', '.customer-row', function () {
-            if ($('#filter-customers .filter').prop('disabled')) {
+            if ($('#filter-customers .key').prop('disabled')) {
                 return; // Do nothing when user edits a customer record.
             }
 
@@ -101,7 +101,7 @@
             $('.record-details')
                 .find('input, select, textarea')
                 .prop('disabled', false);
-            $('#filter-customers button').prop('disabled', true);
+            $('#filter-customers .key, #filter-customers .clear').prop('disabled', true);
             $('#filter-customers .results').css('color', '#AAA');
         });
 
@@ -114,7 +114,7 @@
                 .prop('disabled', false);
             $('#add-edit-delete-group').hide();
             $('#save-cancel-group').show();
-            $('#filter-customers button').prop('disabled', true);
+            $('#filter-customers .key, #filter-customers .clear').prop('disabled', true);
             $('#filter-customers .results').css('color', '#AAA');
         });
 
@@ -289,7 +289,7 @@
         $('.record-details .has-error').removeClass('has-error');
         $('.record-details #form-message').hide();
 
-        $('#filter-customers button').prop('disabled', false);
+        $('#filter-customers .key, #filter-customers .clear').prop('disabled', false);
         $('#filter-customers .selected').removeClass('selected');
         $('#filter-customers .results').css('color', '');
     };

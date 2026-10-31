@@ -375,6 +375,13 @@ body legend {
 }
 
 
+/* The record search fields carry a magnifying glass hint on their left. */
+.backend-page .filter-records .input-group-prepend .input-group-text {
+    background-color: #fff;
+    border-color: #ced4da;
+    color: #adb5bd;
+}
+
 /* BACKEND CALENDAR PAGE
    -------------------------------------------------------------------- */
 

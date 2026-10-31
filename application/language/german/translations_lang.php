@@ -245,6 +245,7 @@ $lang["feed_copied"] = "Feed-URL in die Zwischenablage kopiert.";
 $lang["feed_revoked"] = "Der Kalender-Feed wurde widerrufen.";
 $lang["location_weekday_overrides"] = "Standort-Überschreibungen (Zeitfenster je Wochentag)";
 $lang["location_date_overrides"] = "Standort-Überschreibungen (Zeitfenster je Datum)";
+$lang["location_overrides"] = "Standort-Überschreibungen";
 $lang["add_location_window"] = "Fenster hinzufügen";
 $lang["add_location_date"] = "Datum hinzufügen";
 $lang["remove_location_window"] = "Entfernen";

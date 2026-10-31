@@ -742,6 +742,17 @@ body .form-horizontal .controls {
     opacity: 1;
 }
 
+#services-page .record-details .switch-view {
+    overflow: auto;
+    background: none;
+    padding: 0;
+    margin: 0;
+}
+
+#services-page .record-details .switch-view .nav-item {
+    margin: 0;
+}
+
 #services-page #service-duration {
     margin: 0;
 }

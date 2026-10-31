@@ -78,7 +78,7 @@
                 ]
             });
 
-            $('#services .record-details h3')
+            $('#services .record-details #service-details h3')
                 .find('a')
                 .remove()
                 .end()

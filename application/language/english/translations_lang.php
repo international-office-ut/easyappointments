@@ -244,6 +244,7 @@ $lang["feed_copied"] = "Feed URL copied to clipboard.";
 $lang["feed_revoked"] = "The calendar feed is revoked.";
 $lang["location_weekday_overrides"] = "Location overrides (weekday time windows)";
 $lang["location_date_overrides"] = "Location overrides (date time windows)";
+$lang["location_overrides"] = "Location overrides";
 $lang["add_location_window"] = "Add window";
 $lang["add_location_date"] = "Add date";
 $lang["remove_location_window"] = "Remove";

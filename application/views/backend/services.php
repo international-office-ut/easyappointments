@@ -105,7 +105,7 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#service-location-overrides" data-toggle="tab">
-                                <?= lang('location') ?>
+                                <?= lang('location_overrides') ?>
                             </a>
                         </li>
                     </ul>
@@ -211,7 +211,7 @@
                                             $weekday_names = ['sunday', 'monday', 'tuesday', 'wednesday',
                                                 'thursday', 'friday', 'saturday'];
 
-                                            for ($weekday = 0; $weekday <= 6; $weekday++): ?>
+                                            foreach ([1, 2, 3, 4, 5, 6, 0] as $weekday): ?>
                                                 <tr>
                                                     <td class="align-middle">
                                                         <?= lang($weekday_names[$weekday]) ?>
@@ -225,16 +225,23 @@
                                                         </select>
                                                     </td>
                                                 </tr>
-                                            <?php endfor ?>
+                                            <?php endforeach ?>
                                             </tbody>
                                         </table>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="service-description">
+                                            <?= lang('description') ?>
+                                        </label>
+                                        <textarea id="service-description" rows="4" class="form-control"></textarea>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="tab-pane fade clearfix" id="service-location-overrides">
-                            <h3 class="pb-4"><?= lang('location') ?></h3>
+                            <h3 class="pb-4"><?= lang('location_overrides') ?></h3>
 
                             <div class="form-group service-location-overrides">
                                 <label>
@@ -246,7 +253,7 @@
                                     $weekday_names = ['sunday', 'monday', 'tuesday', 'wednesday',
                                         'thursday', 'friday', 'saturday'];
 
-                                    for ($weekday = 0; $weekday <= 6; $weekday++): ?>
+                                    foreach ([1, 2, 3, 4, 5, 6, 0] as $weekday): ?>
                                         <tr>
                                             <td class="align-middle weekday-label">
                                                 <?= lang($weekday_names[$weekday]) ?>
@@ -262,7 +269,7 @@
                                                 </button>
                                             </td>
                                         </tr>
-                                    <?php endfor ?>
+                                    <?php endforeach ?>
                                     </tbody>
                                 </table>
 

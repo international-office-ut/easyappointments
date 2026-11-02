@@ -13,9 +13,7 @@
 
 namespace EA\Engine\Api\V1;
 
-use CI_Controller;
 use EA\Engine\Types\NonEmptyText;
-use EA_Controller;
 
 /**
  * API v1 Authorization Class
@@ -35,9 +33,9 @@ class Authorization {
     /**
      * Class Constructor
      *
-     * @param CI_Controller $CI
+     * @param object $CI Framework instance (CI3 controller or the CI4 bridge).
      */
-    public function __construct(EA_Controller $CI)
+    public function __construct($CI)
     {
         $this->CI = $CI;
     }

@@ -533,23 +533,7 @@ class User extends BaseController {
      */
     protected function email_client(): EmailClient
     {
-        $deployment = config(Deployment::class);
-
-        $email_config = [
-            'useragent' => 'Easy!Appointments',
-            'protocol' => $deployment->email_protocol,
-            'mailtype' => 'html',
-            'smtp_debug' => '0',
-            'smtp_auth' => $deployment->smtp_auth,
-            'smtp_host' => $deployment->smtp_host,
-            'smtp_crypto' => $deployment->smtp_crypto,
-            'smtp_port' => $deployment->smtp_port,
-            'smtp_user' => $deployment->smtp_user,
-            'smtp_pass' => $deployment->smtp_pass,
-            'charset' => 'UTF-8',
-        ];
-
-        return new EmailClient(new Notifications_Bridge($email_config), $email_config);
+        return $this->buildEmailClient();
     }
 
     /**

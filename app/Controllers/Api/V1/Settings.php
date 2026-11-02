@@ -1,0 +1,172 @@
+<?php
+
+/* ----------------------------------------------------------------------------
+ * Easy!Appointments - Open Source Web Scheduler
+ *
+ * @package     EasyAppointments
+ * @author      A.Tselegidis <alextselegidis@gmail.com>
+ * @copyright   Copyright (c) 2013 - 2020, Alex Tselegidis
+ * @license     https://opensource.org/licenses/GPL-3.0 - GPLv3
+ * @link        https://easyappointments.org
+ * @since       v1.2.0
+ * ---------------------------------------------------------------------------- */
+
+namespace App\Controllers\Api\V1;
+
+use App\Models\Settings_Model;
+use EA\Engine\Api\V1\Parsers\Settings as SettingsParser;
+use EA\Engine\Api\V1\Request;
+use EA\Engine\Api\V1\Response;
+
+/**
+ * Settings Controller (API v1)
+ *
+ * (CI4 port of the CI3 application/controllers/api/v1/Settings.php)
+ */
+class Settings extends API_V1_Controller {
+    /**
+     * Protected settings are never exposed through the API.
+     */
+    protected $protected_settings = ['api_token', 'require_captcha'];
+
+    /**
+     * Settings Resource Parser
+     *
+     * @var \EA\Engine\Api\V1\Parsers\Settings
+     */
+    protected $parser;
+
+    public function initController($request, $response, $logger)
+    {
+        parent::initController($request, $response, $logger);
+
+        $this->settings_model = new Settings_Model;
+        $this->parser = new SettingsParser;
+    }
+
+    /**
+     * GET API Method
+     *
+     * @param string $name Optional (null), the setting name to be returned.
+     */
+    public function get($name = NULL)
+    {
+        try
+        {
+            $settings = $this->settings_model->get_settings();
+
+            $settings = array_values(array_filter($settings, function (array $entry) {
+                return ! in_array(strtolower($entry['name']), $this->protected_settings, TRUE);
+            }));
+
+            if ($name !== NULL)
+            {
+                $setting = NULL;
+
+                foreach ($settings as $entry)
+                {
+                    if ($entry['name'] === $name)
+                    {
+                        $setting = $entry;
+                        break;
+                    }
+                }
+
+                if (empty($setting))
+                {
+                    $this->throw_record_not_found();
+                }
+
+                unset($setting['id']);
+
+                $settings = [
+                    $setting
+                ];
+            }
+
+            $response = new Response($settings);
+
+            $response->encode($this->parser)
+                ->search()
+                ->sort()
+                ->paginate()
+                ->minimize()
+                ->singleEntry($name)
+                ->output();
+
+        }
+        catch (Exception $exception)
+        {
+            $this->handle_exception($exception);
+        }
+    }
+
+    /**
+     * Ensures that the provided setting name is not protected.
+     *
+     * @throws \EA\Engine\Api\V1\Exception
+     */
+    protected function assert_setting_is_not_protected($name)
+    {
+        if (in_array(strtolower((string) $name), $this->protected_settings, TRUE))
+        {
+            throw new \EA\Engine\Api\V1\Exception('The requested setting is protected!', 403, 'Forbidden');
+        }
+    }
+
+    /**
+     * PUT API Method
+     *
+     * @param string $name The setting name to be inserted/updated.
+     */
+    public function put($name)
+    {
+        try
+        {
+            $this->assert_setting_is_not_protected($name);
+
+            $request = new Request();
+            $value = $request->get_body()['value'];
+            $this->settings_model->set_setting($name, $value);
+
+            // Fetch the updated object from the database and return it to the client.
+            $response = new Response([
+                [
+                    'name' => $name,
+                    'value' => $value
+                ]
+            ]);
+            $response->encode($this->parser)->singleEntry($name)->output();
+        }
+        catch (Exception $exception)
+        {
+            $this->handle_exception($exception);
+        }
+    }
+
+    /**
+     * DELETE API Method
+     *
+     * @param string $name The setting name to be deleted.
+     */
+    public function delete($name)
+    {
+        try
+        {
+            $this->assert_setting_is_not_protected($name);
+
+            $this->settings_model->remove_setting($name);
+
+            $response = new Response([
+                'code' => 200,
+                'message' => 'Record was deleted successfully!'
+            ]);
+
+            $response->output();
+        }
+        catch (Exception $exception)
+        {
+            $this->handle_exception($exception);
+        }
+    }
+}

@@ -8,7 +8,9 @@ use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Config\Deployment;
+use EA\Engine\Notifications\Email as EmailClient;
 use Psr\Log\LoggerInterface;
+use App\Libraries\Notifications_Bridge;
 
 /**
  * Easy!Appointments base controller: ports the CI3 EA_Controller
@@ -57,5 +59,29 @@ abstract class BaseController extends Controller
             session()->set('language', $languageCookie);
             config(App::class)->defaultLocale = $languageCookie;
         }
+    }
+
+    /**
+     * Build the CI3-shaped email client for the CI4 stack.
+     */
+    protected function buildEmailClient(): EmailClient
+    {
+        $deployment = config(Deployment::class);
+
+        $email_config = [
+            'useragent' => 'Easy!Appointments',
+            'protocol' => $deployment->email_protocol,
+            'mailtype' => 'html',
+            'smtp_debug' => '0',
+            'smtp_auth' => $deployment->smtp_auth,
+            'smtp_host' => $deployment->smtp_host,
+            'smtp_crypto' => $deployment->smtp_crypto,
+            'smtp_port' => $deployment->smtp_port,
+            'smtp_user' => $deployment->smtp_user,
+            'smtp_pass' => $deployment->smtp_pass,
+            'charset' => 'UTF-8',
+        ];
+
+        return new EmailClient(new Notifications_Bridge($email_config), $email_config);
     }
 }

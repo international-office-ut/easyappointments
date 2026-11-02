@@ -61,26 +61,4 @@ class PasswordsTest extends TestCase {
     {
         $this->assertFalse(Passwords::verify('anything', 'salt', ''));
     }
-
-    public function test_needs_rehash_for_legacy_and_modern()
-    {
-        $this->assertTrue(Passwords::needsRehash(str_repeat('0', 64)));
-
-        $modern = Passwords::hash('x');
-        $this->assertFalse(Passwords::needsRehash($modern));
-    }
-
-    public function test_algorithm_drift_schedules_rehash()
-    {
-        if ( ! in_array('argon2id', password_algos(), true))
-        {
-            $this->markTestSkipped('argon2id not available on this runtime.');
-        }
-
-        $bcrypt = password_hash('drift', PASSWORD_BCRYPT);
-
-        $this->assertTrue(str_starts_with($bcrypt, '$2y$'));
-        $this->assertTrue(Passwords::needsRehash($bcrypt));
-        $this->assertTrue(Passwords::verify('drift', '', $bcrypt));
-    }
 }

@@ -21,11 +21,8 @@ use InvalidArgumentException;
  * it, bcrypt otherwise). Modern hashes carry their own salt and cost
  * parameters, so the legacy "user_settings.salt" column is not part of
  * them anymore; the column and the CI3 key derivation stay only as the
- * fallback path for pre-cutover accounts.
- *
- * Legacy format (pre-argon2): salted, iterated SHA-256 hex digest
- * (`hash_password()`), which gets re-hashed into the modern format with the
- * lazy rehash of a successful login.
+ * verification fallback for pre-cutover accounts, which modernize their
+ * hash with the password reset / settings-save flows.
  */
 class Passwords {
     /**
@@ -77,26 +74,6 @@ class Passwords {
         }
 
         return self::legacyHash($salt, $password) === $password_hash;
-    }
-
-    /**
-     * Whether the stored hash must be re-hashed into the modern format.
-     *
-     * Legacy digests always need it; modern hashes follow the standard
-     * password_needs_rehash contract (cost/algorithm drift).
-     *
-     * @param string $password_hash Stored hash string.
-     *
-     * @return bool Returns TRUE when the row should be upgraded.
-     */
-    public static function needsRehash(string $password_hash): bool
-    {
-        if ( ! self::isMod($password_hash))
-        {
-            return TRUE;
-        }
-
-        return password_needs_rehash($password_hash, self::algorithm());
     }
 
     /**

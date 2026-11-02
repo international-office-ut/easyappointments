@@ -177,18 +177,6 @@ class User_Model extends Ea_Model {
                 continue;
             }
 
-            // Lazy rehash: pre-cutover accounts upgrade their hash to the modern
-            // format (argon2id/bcrypt) on the first successful login.
-            if (Passwords::needsRehash($user_settings['password']))
-            {
-                $this->db->table('user_settings')
-                    ->where('id_users', $user_settings['id_users'])
-                    ->update([
-                        'salt' => '',
-                        'password' => Passwords::hash($password)
-                    ]);
-            }
-
             $user = $this->db->table('users')->where(['id' => $user_settings['id_users']])->get()->getRowArray();
 
             if (empty($user))

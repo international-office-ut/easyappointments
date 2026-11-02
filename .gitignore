@@ -14,9 +14,15 @@
 /config.php
 /.env
 /writable/cache/*
+/writable/debugbar/*
 /writable/logs/*
+/writable/session/*
+/writable/uploads/*
 !/writable/cache/index.html
 !/writable/logs/index.html
+!/writable/session/index.html
+!/writable/debugbar/index.html
+!/writable/uploads/index.html
 /storage/backups/*
 !/storage/backups/.htaccess
 !/storage/backups/index.html

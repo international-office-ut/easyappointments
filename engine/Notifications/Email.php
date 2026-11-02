@@ -34,13 +34,6 @@ use RuntimeException;
  */
 class Email {
     /**
-     * Framework Instance
-     *
-     * @var EA_Controller
-     */
-    protected $CI;
-
-    /**
      * Contains email configuration.
      *
      * @var array
@@ -48,16 +41,31 @@ class Email {
     protected $config;
 
     /**
+     * View renderer: receives ($view, $data) and returns the rendered string.
+     *
+     * @var callable
+     */
+    protected $view_renderer;
+
+    /**
+     * Flat timezone map (same content the Timezones library exposes).
+     *
+     * @var array
+     */
+    protected $timezones;
+
+    /**
      * Class Constructor
      *
-     * @param object $CI Framework instance (CI3 controller or the CI4 bridge).
      * @param array $config Contains the email configuration to be used.
+     * @param callable $view_renderer Renders the email templates (CI4 view() helper).
+     * @param array $timezones The grouped timezone map "to_array()" data.
      */
-    public function __construct($CI, array $config)
+    public function __construct(array $config, callable $view_renderer, array $timezones)
     {
-        $this->CI = $CI;
-        $this->CI->load->helper('appointment_location');
         $this->config = $config;
+        $this->view_renderer = $view_renderer;
+        $this->timezones = $timezones;
     }
 
     /**
@@ -96,7 +104,7 @@ class Email {
         $timezone = NULL
     )
     {
-        $timezones = $this->CI->timezones->to_array();
+        $timezones = $this->timezones;
 
         switch ($settings['date_format'])
         {
@@ -139,7 +147,7 @@ class Email {
             $appointment_end->setTimezone($appointment_timezone);
         }
 
-        $html = $this->CI->load->view('emails/appointment_details', [
+        $html = ($this->view_renderer)('emails/appointment_details', [
             'email_title' => $title->get(),
             'email_message' => $message->get(),
             'appointment_service' => $service['name'],
@@ -212,7 +220,7 @@ class Email {
         $timezone = NULL
     )
     {
-        $timezones = $this->CI->timezones->to_array();
+        $timezones = $this->timezones;
 
         switch ($settings['date_format'])
         {
@@ -253,7 +261,7 @@ class Email {
             $appointment_start->setTimezone($appointment_timezone);
         }
 
-        $html = $this->CI->load->view('emails/delete_appointment', [
+        $html = ($this->view_renderer)('emails/delete_appointment', [
             'appointment_service' => $service['name'],
             'appointment_provider' => $provider['first_name'] . ' ' . $provider['last_name'],
             'appointment_date' => $appointment_start->format($date_format . ' ' . $time_format),
@@ -329,7 +337,7 @@ class Email {
     protected function send_link_email(Text $link, EmailAddress $recipientEmail, array $settings,
         string $key, string $message_key, string $template, string $subject_key)
     {
-        $html = $this->CI->load->view('emails/' . $template, [
+        $html = ($this->view_renderer)('emails/' . $template, [
             'email_title' => lang($subject_key),
             'email_message' => str_replace('$link', '<a href="' . $link->get() . '" class="btn btn-primary">'
                 . lang($key) . '</a>', lang($message_key)),

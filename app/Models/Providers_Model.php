@@ -13,6 +13,9 @@
 
 namespace App\Models;
 
+use App\Helpers\General_helper;
+use EA\Engine\Security\Passwords;
+
 use Exception;
 
 /**
@@ -322,8 +325,8 @@ class Providers_Model extends Ea_Model {
 
         if (isset($settings['password']))
         {
-            $settings['salt'] = generate_salt();
-            $settings['password'] = hash_password($settings['salt'], $settings['password']);
+            $settings['salt'] = '';
+            $settings['password'] = Passwords::hash($settings['password']);
         }
         else
         {
@@ -484,8 +487,8 @@ class Providers_Model extends Ea_Model {
 
         if (isset($settings['password']))
         {
-            $salt = $this->db->table('user_settings')->where(['id_users' => $provider['id']])->get()->getRow()->salt;
-            $settings['password'] = hash_password($salt, $settings['password']);
+            $settings['salt'] = '';
+            $settings['password'] = Passwords::hash($settings['password']);
         }
 
         // Update provider record.

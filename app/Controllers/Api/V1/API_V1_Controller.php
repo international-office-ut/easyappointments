@@ -16,6 +16,7 @@ namespace App\Controllers\Api\V1;
 use Exception;
 use App\Controllers\BaseController;
 use App\Models\Settings_Model;
+use App\Models\User_Model;
 use EA\Engine\Api\V1\Authorization;
 use EA\Engine\Types\NonEmptyText;
 
@@ -54,7 +55,12 @@ abstract class API_V1_Controller extends BaseController {
 
             $api_token = $this->settings_model->get_setting('api_token');
 
-            $authorization = new Authorization(new Api_Auth_Bridge);
+            $user_model = new User_Model;
+
+            $authorization = new Authorization(
+                [$user_model, 'check_login'],
+                DB_SLUG_ADMIN
+            );
 
             $provided_token = $this->get_bearer_token();
 

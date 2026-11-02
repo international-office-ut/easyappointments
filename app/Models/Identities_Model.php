@@ -13,6 +13,9 @@
 
 namespace App\Models;
 
+use App\Helpers\General_helper;
+use EA\Engine\Security\Passwords;
+
 use Exception;
 
 /**
@@ -121,20 +124,13 @@ class Identities_Model extends Ea_Model {
 
         foreach ($siblings as $sibling)
         {
-            if (empty($sibling['salt']))
-            {
-                $salt = generate_salt();
-            }
-            else
-            {
-                $salt = $sibling['salt'];
-            }
-
+            // Modern hashes carry their own salt; the legacy salt column is only
+            // kept for pre-argon2 (HAS legacy hash) rows and resets here anyway.
             $this->db->table('user_settings')
                 ->where('id_users', $sibling['id'])
                 ->update([
-                    'salt' => $salt,
-                    'password' => hash_password($salt, $plaintext_password)
+                    'salt' => '',
+                    'password' => Passwords::hash($plaintext_password)
                 ]);
         }
     }

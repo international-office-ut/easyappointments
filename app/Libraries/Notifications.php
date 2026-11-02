@@ -19,6 +19,7 @@ use App\Models\Admins_Model;
 use App\Models\Appointments_Model;
 use App\Models\Providers_Model;
 use App\Models\Secretaries_Model;
+use App\Libraries\Timezones;
 use App\Models\Settings_Model;
 use Config\Deployment;
 use EA\Engine\Notifications\Email as EmailClient;
@@ -37,7 +38,7 @@ class Notifications {
     }
 
     /**
-     * Build the CI3-shaped email client for the CI4 stack.
+     * Build the email contractor with the CI4-native view renderer.
      *
      * @return EmailClient
      */
@@ -59,7 +60,10 @@ class Notifications {
             'charset' => 'UTF-8',
         ];
 
-        return new EmailClient(new Notifications_Bridge($email_config), $email_config);
+        $view_renderer = static fn (string $view, array $data = []): string
+            => view($view, $data);
+
+        return new EmailClient($email_config, $view_renderer, (new Timezones)->to_array());
     }
 
     /**

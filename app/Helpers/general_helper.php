@@ -45,16 +45,14 @@ function date3339($timestamp = 0)
 }
 
 /**
- * Generate a hash of password string.
+ * Hash a password with the legacy salted-iteration scheme (kept for the
+ * pre-argon2 verification path inside EA\Engine\Security\Passwords; writes
+ * of new passwords always hash modern and no longer use this helper).
  *
- * For user security, all system passwords are stored in hash string into the database. Use this method to produce the
- * hashed password.
+ * @param string $salt Stored salt of the user row.
+ * @param string $password Plaintext password.
  *
- * @param string $salt Salt value for current user. This value is stored on the database and is used when generating
- * the password hash.
- * @param string $password Given string password.
- *
- * @return string Returns the hash string of the given password.
+ * @return string Returns the legacy hex digest.
  */
 function hash_password($salt, $password)
 {

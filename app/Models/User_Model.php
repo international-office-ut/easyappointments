@@ -13,6 +13,9 @@
 
 namespace App\Models;
 
+use App\Helpers\General_helper;
+use EA\Engine\Security\Passwords;
+
 use Exception;
 
 use App\Libraries\Timezones;
@@ -114,7 +117,8 @@ class User_Model extends Ea_Model {
 
         if ($new_password !== NULL)
         {
-            $user_settings['password'] = hash_password($old_settings['salt'], $new_password);
+            $user_settings['salt'] = '';
+            $user_settings['password'] = Passwords::hash($new_password);
         }
 
         if ( ! $this->db->table('users')->where(['id' => $user['id']])->update($user))
@@ -168,16 +172,21 @@ class User_Model extends Ea_Model {
 
         foreach ($settings_rows as $user_settings)
         {
-            if (empty($user_settings['salt']))
+            if ( ! Passwords::verify($password, $user_settings['salt'], $user_settings['password']))
             {
                 continue;
             }
 
-            $password_hash = hash_password($user_settings['salt'], $password);
-
-            if ($password_hash !== $user_settings['password'])
+            // Lazy rehash: pre-cutover accounts upgrade their hash to the modern
+            // format (argon2id/bcrypt) on the first successful login.
+            if (Passwords::needsRehash($user_settings['password']))
             {
-                continue;
+                $this->db->table('user_settings')
+                    ->where('id_users', $user_settings['id_users'])
+                    ->update([
+                        'salt' => '',
+                        'password' => Passwords::hash($password)
+                    ]);
             }
 
             $user = $this->db->table('users')->where(['id' => $user_settings['id_users']])->get()->getRowArray();

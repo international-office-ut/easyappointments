@@ -8,11 +8,10 @@ use CodeIgniter\HTTP\CLIRequest;
 use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
+use App\Libraries\Timezones;
 use Config\Deployment;
 use EA\Engine\Notifications\Email as EmailClient;
 use Psr\Log\LoggerInterface;
-use App\Libraries\Notifications_Bridge;
-use EA\Engine\Types\NonEmptyText;
 
 /**
  * Easy!Appointments base controller: ports the CI3 EA_Controller
@@ -86,6 +85,9 @@ abstract class BaseController extends Controller
             'charset' => 'UTF-8',
         ];
 
-        return new EmailClient(new Notifications_Bridge($email_config), $email_config);
+        $view_renderer = static fn (string $view, array $data = []): string
+            => view($view, $data);
+
+        return new EmailClient($email_config, $view_renderer, (new Timezones)->to_array());
     }
 }

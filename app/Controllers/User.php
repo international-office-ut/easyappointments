@@ -14,7 +14,6 @@
 namespace App\Controllers;
 
 use Exception;
-use App\Libraries\Notifications_Bridge;
 use App\Models\Settings_Model;
 use App\Models\User_Model;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -530,14 +529,6 @@ class User extends BaseController {
     }
 
     /**
-     * Build the CI3-shaped email client for the CI4 stack.
-     */
-    protected function email_client(): EmailClient
-    {
-        return $this->buildEmailClient();
-    }
-
-    /**
      * Request the link that either sets a new password or, in SSO-only deployments, provides
      * a temporary administrator login.
      *
@@ -594,7 +585,7 @@ class User extends BaseController {
 
             if ($token !== FALSE)
             {
-                $email = $this->email_client();
+                $email = $this->buildEmailClient();
 
                 $company_settings = [
                     'company_name' => $this->settings_model->get_setting('company_name'),

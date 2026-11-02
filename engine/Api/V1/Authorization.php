@@ -5,7 +5,6 @@
  *
  * @package     EasyAppointments
  * @author      A.Tselegidis <alextselegidis@gmail.com>
- * @copyright   Copyright (c) 2013 - 2020, Alex Tselegidis
  * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
  * @link        http://easyappointments.org
  * @since       v1.2.0
@@ -24,20 +23,30 @@ use EA\Engine\Types\NonEmptyText;
  */
 class Authorization {
     /**
-     * Framework Instance
+     * Login resolver: maps the credentials to a user row (array with "role_slug")
+     * or a falsy value when the credentials do not match.
      *
-     * @var EA_Controller
+     * @var callable
      */
-    protected $CI;
+    protected $check_login;
+
+    /**
+     * Role slug that marks the user as admin.
+     *
+     * @var string
+     */
+    protected $admin_role_slug;
 
     /**
      * Class Constructor
      *
-     * @param object $CI Framework instance (CI3 controller or the CI4 bridge).
+     * @param callable $check_login Login resolver (a User_Model::check_login callable).
+     * @param string $admin_role_slug Role slug that marks the user as admin.
      */
-    public function __construct($CI)
+    public function __construct(callable $check_login, string $admin_role_slug)
     {
-        $this->CI = $CI;
+        $this->check_login = $check_login;
+        $this->admin_role_slug = $admin_role_slug;
     }
 
     /**
@@ -50,13 +59,11 @@ class Authorization {
      */
     public function basic(NonEmptyText $username, NonEmptyText $password)
     {
-        $this->CI->load->model('user_model');
-
         self::check_admin_credentials(
             $username->get(),
             $password->get(),
-            [$this->CI->user_model, 'check_login'],
-            DB_SLUG_ADMIN
+            $this->check_login,
+            $this->admin_role_slug
         );
     }
 

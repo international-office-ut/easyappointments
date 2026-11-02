@@ -18,6 +18,77 @@ $routes->get('appointments', '\App\Controllers\Appointments::index');
 $routes->setDefaultController('Home');
 $routes->set404Override('\App\Controllers\Errors::error404');
 
+
+/*
+| -------------------------------------------------------------------------
+| BACKEND AREA (defined routes with session filters)
+| -------------------------------------------------------------------------
+| CI4 filters only attach to Defined Routes, so the backend pages and the
+| AJAX endpoints get explicit entries. The controller-level privilege checks
+| stay as the defense-in-depth layer.
+|
+*/
+
+$routes->get('backend', '\\App\\Controllers\\Backend::index', ['filter' => 'eaBackendPage']);
+$routes->get('backend/index/(:any)', '\\App\\Controllers\\Backend::index/$1', ['filter' => 'eaBackendPage']);
+
+$backendPages = [
+    'customers',
+    'services',
+    'users',
+    'settings',
+    'update',
+];
+
+foreach ($backendPages as $backendPage)
+{
+    $routes->get('backend/' . $backendPage, '\\App\\Controllers\\Backend::' . $backendPage,
+        ['filter' => 'eaBackendPage']);
+}
+
+$backendApiMethods = [
+    'ajax_get_calendar_events',
+    'ajax_get_calendar_appointments',
+    'ajax_save_appointment',
+    'ajax_delete_appointment',
+    'ajax_filter_customers',
+    'ajax_save_unavailable',
+    'ajax_delete_unavailable',
+    'ajax_save_working_plan_exception',
+    'ajax_delete_working_plan_exception',
+    'ajax_save_customer',
+    'ajax_delete_customer',
+    'ajax_save_service',
+    'ajax_delete_service',
+    'ajax_filter_services',
+    'ajax_save_service_category',
+    'ajax_delete_service_category',
+    'ajax_filter_service_categories',
+    'ajax_filter_admins',
+    'ajax_save_admin',
+    'ajax_delete_admin',
+    'ajax_filter_providers',
+    'ajax_save_provider',
+    'ajax_delete_provider',
+    'ajax_filter_secretaries',
+    'ajax_save_secretary',
+    'ajax_delete_secretary',
+    'ajax_save_settings',
+    'ajax_get_identity_info',
+    'ajax_validate_username',
+    'ajax_apply_global_working_plan',
+    'ajax_maintain',
+    'ajax_ical_feed_state',
+    'ajax_generate_ical_feed',
+    'ajax_revoke_ical_feed',
+];
+
+foreach ($backendApiMethods as $backendApiMethod)
+{
+    $routes->add('backend_api/' . $backendApiMethod, '\\App\\Controllers\\Backend_api::' . $backendApiMethod,
+        ['filter' => 'eaBackendApi']);
+}
+
 // Provider calendar feed: the token lives in the URL path (never in a query string).
 $routes->get('ical/(:any)', '\App\Controllers\Ical::fetch/$1');
 

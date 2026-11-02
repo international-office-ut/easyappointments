@@ -70,7 +70,7 @@ class Migration_Ea022AddAppointmentTypesSupport extends Migration {
                         FOREIGN KEY (`id_services`) REFERENCES `' . $this->db->prefixTable('services') . '` (`id`)
                         ON DELETE CASCADE ON UPDATE CASCADE
                 )
-                ENGINE = InnoDB DEFAULT CHARSET = utf8;
+                ENGINE = InnoDB;
             ');
         }
 

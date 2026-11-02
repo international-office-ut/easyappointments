@@ -71,7 +71,7 @@ class Migration_Ea031RemoveServiceAppointmentModes extends Migration {
                     FOREIGN KEY (`id_services`)
                     REFERENCES ' . $this->db->prefixTable('services') . ' (`id`)
                     ON DELETE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;');
+            ) ENGINE=InnoDB;');
         }
     }
 }

@@ -144,10 +144,14 @@ class Console extends BaseController {
 
             if ($type === 'fresh')
             {
-                $migrations->version(0);
+                // CI4-native refresh semantics (CI3 mapped through "version(0)"
+                // + current()): roll the schema back through every down() and
+                // then reapply the whole chain.
+                $migrations->regress(0);
+                $migrations->latest();
+            } else {
+                $migrations->latest();
             }
-
-            $migrations->latest();
         }
         catch (Throwable $exception)
         {

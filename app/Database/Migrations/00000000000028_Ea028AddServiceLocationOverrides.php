@@ -65,7 +65,7 @@ class Migration_Ea028AddServiceLocationOverrides extends Migration {
 
         foreach ($columns as $column)
         {
-            if ($this->db->field_exists($column, 'services'))
+            if (in_array($column, array_column($this->db->getFieldData('services'), 'name'), TRUE))
             {
                 $this->db->query('
                     ALTER TABLE `' . $this->db->prefixTable('services') . '`

@@ -11,6 +11,7 @@
  * @since       v1.3.0
  * ---------------------------------------------------------------------------- */
 
+use Config\App;
 use Config\Deployment;
 
 /**
@@ -33,7 +34,7 @@ function ea_config($key)
         case 'release_label':              return config(Deployment::class)->release_label;
         case 'available_languages':        return config(Deployment::class)->available_languages;
         case 'language':                   return config(App::class)->defaultLocale;
-        case 'base_url':                   return rtrim((string) env('app.baseURL', ''), '/') . '/';
+        case 'base_url':                   return rtrim(config(App::class)->baseURL, '/ ') . '/';
 
         default:
             throw new \LogicException('Unknown configuration key: ' . $key);

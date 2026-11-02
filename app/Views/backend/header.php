@@ -18,7 +18,7 @@
 
     <script>
         // Global JavaScript Variables - Used in all backend pages.
-        var availableLanguages = <?= json_data(config('available_languages')) ?>;
+        var availableLanguages = <?= json_data(ea_config('available_languages')) ?>;
         var EALang = <?= json_data(ea_langs()) ?>;
     </script>
 

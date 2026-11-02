@@ -5,9 +5,9 @@
             Easy!Appointments
         </a>
 
-        v<?= config('version') ?>
-        <?php if (config('release_label')): ?>
-            - <?= config('release_label') ?>
+        v<?= ea_config('version') ?>
+        <?php if (ea_config('release_label')): ?>
+            - <?= ea_config('release_label') ?>
         <?php endif ?>
 
         |
@@ -29,7 +29,7 @@
 
         <span id="select-language" class="badge badge-secondary">
             <i class="fas fa-language mr-2"></i>
-        	<?= ucfirst(config('language')) ?>
+        	<?= ucfirst(ea_config('language')) ?>
         </span>
 
         |

@@ -136,7 +136,7 @@
 <script>
     var GlobalVariables = {
         csrfToken: <?= json_data(csrf_hash()) ?>,
-        baseUrl: <?= json_data(config('base_url')) ?>
+        baseUrl: <?= json_data(ea_config('base_url')) ?>
     };
 
     var EALang = <?= json_data(ea_langs()) ?>;

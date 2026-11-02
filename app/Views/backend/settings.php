@@ -550,9 +550,9 @@
 
             <div class="current-version card card-body bg-light border-light mb-3">
                 <?= lang('current_version') ?>
-                <?= config('version') ?>
-                <?php if (config('release_label')): ?>
-                    - <?= config('release_label') ?>
+                <?= ea_config('version') ?>
+                <?php if (ea_config('release_label')): ?>
+                    - <?= ea_config('release_label') ?>
                 <?php endif ?>
             </div>
 

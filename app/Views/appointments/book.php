@@ -435,7 +435,7 @@
                     <span class="footer-options">
                         <span id="select-language" class="badge badge-secondary">
                             <i class="fas fa-language mr-2"></i>
-                            <?= ucfirst(config('language')) ?>
+                            <?= ucfirst(ea_config('language')) ?>
                         </span>
 
                         <a class="backend-link badge badge-primary" href="<?= site_url('backend'); ?>">
@@ -465,7 +465,7 @@
     var GlobalVariables = {
         availableServices: <?= json_data($available_services) ?>,
         availableProviders: <?= json_data($available_providers) ?>,
-        baseUrl: <?= json_data(config('base_url')) ?>,
+        baseUrl: <?= json_data(ea_config('base_url')) ?>,
         manageMode: <?= $manage_mode ? 'true' : 'false' ?>,
         customerToken: <?= json_data($customer_token) ?>,
         dateFormat: <?= json_data($date_format) ?>,
@@ -480,7 +480,7 @@
     };
 
     var EALang = <?= json_data(ea_langs()) ?>;
-    var availableLanguages = <?= json_data(config('available_languages')) ?>;
+    var availableLanguages = <?= json_data(ea_config('available_languages')) ?>;
 </script>
 
 <script src="<?= asset_url('assets/js/general_functions.js') ?>"></script>

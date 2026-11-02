@@ -37,7 +37,7 @@
                 <h3><?= $message_title ?></h3>
                 <p><?= $message_text ?></p>
 
-                <?php if (isset($exceptions) && config('debug')): ?>
+                <?php if (isset($exceptions) && ea_config('debug')): ?>
                     <div>
                         <h4><?= lang('unexpected_issues') ?></h4>
                         <?php foreach ($exceptions as $exception): ?>

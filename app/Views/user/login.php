@@ -34,7 +34,7 @@
 
         var EALang = <?= json_data(ea_langs()) ?>;
 
-        var availableLanguages = <?= json_data(config('available_languages')) ?>;
+        var availableLanguages = <?= json_data(ea_config('available_languages')) ?>;
 
         $(function () {
             GeneralFunctions.enableLanguageSelection($('#select-language'));
@@ -126,7 +126,7 @@
         <?php endif; ?>
         |
         <span id="select-language" class="badge badge-success">
-              <?= ucfirst(config('language')) ?>
+              <?= ucfirst(ea_config('language')) ?>
             </span>
 
         <div class="mt-4">

@@ -12,6 +12,8 @@
  * ---------------------------------------------------------------------------- */
 
 // Bootstrap Easy!Appointments PHPUnit Tests
+//
+// The engine layer carries no framework dependencies, so the PHPUnit boot
+// only wires the composer autoloader (the CI4 classes are not exercised here).
 
-require_once __DIR__ . '/../../config.php';
 require_once __DIR__ . '/../../vendor/autoload.php';

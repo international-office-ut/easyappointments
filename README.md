@@ -5,15 +5,13 @@ business with a clear and stylish approach, using the power of PHP and
 AJAX. It provides you with appointment scheduling, customer management and
 calendar syncing via iCal feeds.
 
-This fork runs a dual-stack layout during the CodeIgniter 4 migration:
+This fork runs on **CodeIgniter 4** (the CI3 stack was removed at the
+cutover): `public/index.php` front controller, `app/` application layer,
+`spark` CLI and the `engine/` business-logic seam that carries no framework
+coupling.
 
-- **CI3 legacy stack** — `index.php` + `application/` (still boots unchanged
-  until the cutover completes).
-- **CI4 stack** — `public/index.php`, `app/`, `spark` (CLI) and the same
-  `engine/` business-logic seam both stacks share.
-
-The CI4 side is the migration target — see `docs/ci4-config-mapping.md` for
-the CI3→CI4 configuration mapping and `docs/security-ops.md` for the ops
+`docs/ci4-config-mapping.md` keeps the CI3→CI4 configuration mapping as a
+reference for upgrade paths; `docs/security-ops.md` carries the ops
 checklist.
 
 ## Requirements
@@ -46,17 +44,15 @@ checklist.
 Both CLI surfaces run the same console actions:
 
 ```sh
-php index.php console migrate         # CI3 style (still working during transition)
-php index.php console migrate fresh
-php index.php console seed
-php index.php console install
-php index.php console backup [path]
-
-php spark ea:migrate fresh            # CI4 style
+php spark ea migrate [fresh]
 php spark ea:seed
-php spark ea:backup [path]
-php spark ea:maintain [dry]
+php spark ea install
+php spark ea backup [path]
+php spark ea maintain [dry]
 ```
+
+The `ea` command also supports the dotted forms (`ea:migrate` and friends:
+same subcommands, one handler).
 
 ## Local development
 

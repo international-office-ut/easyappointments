@@ -21,8 +21,6 @@ $routes->set404Override('\App\Controllers\Errors::error404');
 // Provider calendar feed: the token lives in the URL path (never in a query string).
 $routes->get('ical/(:any)', '\App\Controllers\Ical::fetch/$1');
 
-// Route smoke for the CI4 cutover QA (plain header dump, removed with the QA).
-$routes->get('route-smoke', '\App\Controllers\RouteSmoke::index');
 
 /*
 | -------------------------------------------------------------------------

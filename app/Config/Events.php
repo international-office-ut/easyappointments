@@ -39,17 +39,6 @@ Events::on('pre_system', static function (): void {
     }
 
     /*
-     * Migration SQL trace (CI4 cutover QA): echo every executed statement to
-     * STDERR when a migration chain runs from the CLI.
-     */
-    if (is_cli() && getenv('EA_TRACE_SQL') === '1') {
-        Events::on('DBQuery', static function ($query): void {
-            $sql = is_object($query) && method_exists($query, 'getQuery') ? $query->getQuery() : (string) $query;
-            fwrite(STDERR, 'SQL: ' . $sql . "\n\n");
-        });
-    }
-
-    /*
      * --------------------------------------------------------------------
      * Debug Toolbar Listeners.
      * --------------------------------------------------------------------

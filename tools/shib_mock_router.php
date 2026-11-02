@@ -56,4 +56,4 @@ if (getenv('SHIB_MOCK') === '1')
     }
 }
 
-require $root . '/index.php';
+require $root . '/public/index.php';

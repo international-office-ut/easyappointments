@@ -1,4 +1,6 @@
-# CI3 → CI4 configuration mapping (Phase 0 deliverable)
+# CI3 → CI4 configuration mapping (Phase 0 deliverable — cutover complete)
+
+**Status: the CI3 stack (`application/`, root `index.php`, `system/`, `config.php`) was removed at the cutover. This document stays as the historical mapping between the CI3 key names and their CI4 homes; every deployment-relevant value now lives in `.env` (see `.env.example`).**
 
 Authoritative inventory of every CI3 configuration key and its CI4 target.
 Port each key exactly once during Phase 1; mark the checkbox in the table

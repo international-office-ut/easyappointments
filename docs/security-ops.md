@@ -8,12 +8,10 @@ this list for every fresh installation and after every major infrastructure chan
 - Terminate TLS on the web server and force `https` (`Config::BASE_URL` included).
 - HSTS header on the backend and booking pages (`Strict-Transport-Security`) once TLS is stable.
 
-## Application configuration (`config.php`)
+## Application configuration (`.env`)
 
-- `DEBUG_MODE = FALSE` in production: exception traces, submitted payloads and stack traces are
-  only surfaced to AJAX clients when this is on.
-- `encryption_key`: replace the deterministic default with a one-time random value
-  (e.g. `bin2hex(random_bytes(32))` in PHP CLI), especially when session encryption is used.
+- `DEBUG_MODE = 0` (i.e. `CI_ENVIRONMENT = production`) in production: exception traces,
+  submitted payloads and stack traces are only surfaced to AJAX clients when this is on.
 - `ALTCHA_HMAC_KEY`: required whenever `require_captcha = '1'` (the booking flow fails closed
   otherwise).
 - `INSTALL_ALLOWED_RANGES`: only relevant while the app is not installed; loopback/LAN is always
@@ -37,9 +35,8 @@ this list for every fresh installation and after every major infrastructure chan
   indistinguishable from values set by the SSO module.
 - When using nginx: forward the Shibboleth attributes explicitly with `fastcgi_param` and never
   map client-supplied headers into unprefixed environment keys.
-- Keep `X-Forwarded-For` handling off unless the proxy allowlist of CodeIgniter is configured
-  (`config.php[$config['proxy_ips'] = []`); otherwise rate limiting can be bypassed by header
-  spoofing.
+- Keep `X-Forwarded-For` handling off unless the proxy allowlist of CodeIgniter 4 is configured
+  (`app.proxyIPs`); otherwise rate limiting can be bypassed by header spoofing.
 
 ## Records
 
@@ -51,8 +48,7 @@ this list for every fresh installation and after every major infrastructure chan
 ## Maintenance
 
 - Re-run `composer audit` and `npm audit` on every dependency update and before releases.
-- Keep PHP on a supported minor version; Easy!Appointments requires >= 7.3 but the development
-  gate in `composer.json` targets 8.3.
+- Keep PHP on a supported minor version; the development gate in `composer.json` is PHP >= 8.3.
 - No passwords or password-reset links are emailed in plaintext: every flow needs the operator
   to click a single-use, time-limited access link (30 minutes for password resets, 15 minutes
   for SSO break-glass admin access). Keep the outbound mail channel trustworthy (authenticated

@@ -33,9 +33,13 @@ gulp.task('package', (done) => {
     fs.removeSync(archive);
 
     fs.mkdirsSync('build');
-    fs.copySync('application', 'build/application');
+    fs.copySync('app', 'build/app');
     fs.copySync('assets', 'build/assets');
+    fs.copySync('public', 'build/public');
     fs.copySync('engine', 'build/engine');
+    if (fs.existsSync('docs/security-ops.md')) {
+        fs.copySync('docs/security-ops.md', 'build/docs/security-ops.md');
+    }
 
     fs.ensureDirSync('build/storage/backups');
     fs.copySync('storage/backups/.htaccess', 'build/storage/backups/.htaccess');
@@ -56,10 +60,11 @@ gulp.task('package', (done) => {
     fs.ensureDirSync('build/storage/uploads');
     fs.copySync('storage/uploads/index.html', 'build/storage/uploads/index.html');
 
-    fs.copySync('index.php', 'build/index.php');
+    fs.copySync('spark', 'build/spark');
+    fs.copySync('preload.php', 'build/preload.php');
+    fs.copySync('.env.example', 'build/.env.example');
     fs.copySync('composer.json', 'build/composer.json');
     fs.copySync('composer.lock', 'build/composer.lock');
-    fs.copySync('config-sample.php', 'build/config-sample.php');
     fs.copySync('CHANGELOG.md', 'build/CHANGELOG.md');
     fs.copySync('README.md', 'build/README.md');
     fs.copySync('LICENSE', 'build/LICENSE');
@@ -75,7 +80,7 @@ gulp.task('package', (done) => {
 
     del.sync('**/.DS_Store');
 
-    del.sync('build/vendor/codeigniter/framework/user_guide');
+    del.sync('build/vendor/codeigniter4/framework/user_guide');
 
     zip('build', {saveTo: archive}, function (err) {
         if (err) {
@@ -102,9 +107,7 @@ gulp.task('docs', (done) => {
     fs.mkdirSync('docs/plato/html');
 
     const commands = [
-        'php docs/apigen/apigen.phar generate ' +
-        '-s "application/controllers,application/models,application/libraries" ' +
-        '-d "docs/apigen/html" --exclude "*external*" --tree --todo --template-theme "bootstrap"',
+        'npx jsdoc "engine" -d "docs/apigen/html"',
 
         'npx jsdoc "assets/js" -d "docs/jsdoc/html"',
 

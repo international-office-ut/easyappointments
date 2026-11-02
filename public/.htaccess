@@ -1,6 +1,22 @@
 # Disable directory browsing
 Options -Indexes
 
+# --------------------------------------------------------------------
+# Security response headers (server-layer parity; also covers error responses).
+# CSP stays out until the frontend baseline is evaluated report-only first.
+# --------------------------------------------------------------------
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "DENY"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+
+    # Only meaningful on TLS connections; prod runs HTTPS (docs/security-ops.md).
+    <If "%{HTTPS} == 'on'">
+        Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    </If>
+</IfModule>
+
 # ----------------------------------------------------------------------
 # Rewrite engine
 # ----------------------------------------------------------------------

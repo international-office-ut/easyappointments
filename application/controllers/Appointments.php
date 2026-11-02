@@ -20,6 +20,7 @@ use AltchaOrg\Altcha\Altcha;
 use AltchaOrg\Altcha\Algorithm\Pbkdf2;
 use AltchaOrg\Altcha\HmacAlgorithm;
 use AltchaOrg\Altcha\VerifySolutionOptions;
+use EA\Engine\Booking\Guard;
 
 class Appointments extends EA_Controller {
     /**
@@ -452,44 +453,14 @@ class Appointments extends EA_Controller {
         {
             $post_data = $this->input->post('post_data');
             $altcha_solution = (string) $this->input->post('altcha');
-            // Only the known location values are accepted, anything else (e.g. legacy or
-            // hand-crafted payloads) falls back to the provider resolution ladder.
-            if (isset($post_data['appointment']['location'])
-                && ! in_array($post_data['appointment']['location'],
-                    [APPOINTMENT_MODE_ONLINE, APPOINTMENT_MODE_ON_PREMISE, APPOINTMENT_MODE_BOTH, NULL, ''],
-                    TRUE))
-            {
-                $post_data['appointment']['location'] = NULL;
-            }
 
             $manage_mode = filter_var($post_data['manage_mode'], FILTER_VALIDATE_BOOLEAN);
 
             // The booking form cannot be allowed to write arbitrary record columns, so the
             // payloads are reduced to the fields the booking flow actually works with
             // (mass-assignment protection).
-            $appointment = array_intersect_key($post_data['appointment'], array_flip([
-                'id',
-                'id_users_provider',
-                'id_services',
-                'start_datetime',
-                'end_datetime',
-                'notes',
-                'location'
-            ]));
-
-            $customer = array_intersect_key($post_data['customer'], array_flip([
-                'id',
-                'first_name',
-                'last_name',
-                'email',
-                'phone_number',
-                'address',
-                'city',
-                'zip_code',
-                'notes',
-                'timezone',
-                'language'
-            ]));
+            $appointment = Guard::appointment($post_data['appointment']);
+            $customer = Guard::customer($post_data['customer']);
 
             // Only trust a posted appointment ID when the request carries the hash of that record. This
             // prevents third parties from modifying the appointments of other customers.
@@ -498,10 +469,7 @@ class Appointments extends EA_Controller {
                 $appointment_rows = $this->appointments_model
                     ->get_batch(['hash' => $this->input->post('appointment_hash')]);
 
-                if (empty($appointment_rows) || (int) $appointment_rows[0]['id'] !== (int) $appointment['id'])
-                {
-                    throw new Exception('Invalid appointment hash provided.');
-                }
+                Guard::check_manage_hash($appointment_rows[0] ?? [], (int) $appointment['id']);
 
                 $customer['id'] = $appointment_rows[0]['id_users_customer'];
             }
@@ -509,8 +477,7 @@ class Appointments extends EA_Controller {
             {
                 // A new booking must never carry the ID of an existing appointment, otherwise the
                 // availability check would exclude this slot and the save would overwrite the record.
-                unset($appointment['id']);
-                unset($customer['id']);
+                [$appointment, $customer] = Guard::strip_new_booking_ids($appointment, $customer);
             }
 
             // Check appointment availability before registering it to the database.

@@ -13,7 +13,7 @@
 
 namespace EA\Engine\Api\V1;
 
-use EA\Engine\Type\NonEmptyText;
+use EA\Engine\Types\NonEmptyText;
 use PHPUnit\Framework\TestCase;
 
 class AuthorizationTest extends TestCase {

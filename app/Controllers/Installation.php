@@ -90,11 +90,20 @@ class Installation extends BaseController {
             // tables already exist, so CI4 marks the whole CI3 migration chain as
             // applied without replaying any DDL. On a fresh database the tables do
             // not exist yet and the full chain runs below.
-            $has_tables = db_connect()->tableExists('appointments');
-
-            if ($has_tables)
+            if (db_connect()->tableExists('appointments'))
             {
-                $this->baseline_stamp($migrations);
+                if ($this->legacy_history_present(db_connect()))
+                {
+                    $this->archive_legacy_history(db_connect());
+
+                    $migrations = new MigrationRunner(config(\Config\Migrations::class));
+
+                    $this->baseline_stamp($migrations);
+                }
+                elseif (count($migrations->getHistory()) === 0)
+                {
+                    $this->baseline_stamp($migrations);
+                }
             }
 
             $migrations->latest();

@@ -106,21 +106,40 @@ class Console extends BaseController {
 
         try
         {
-            $schema_exists = $db->tableExists('appointments');
-
             // Transitioned from CI3: the schema already exists and no CI4 history
             // was written yet, so the migration chain gets baselined instead of
             // replaying the DDL (a fresh empty database runs or finishes the chain
             // below).
-            if ($schema_exists && count($migrations->getHistory()) === 0)
+            if ($db->tableExists('appointments'))
             {
-                $this->baseline_stamp($migrations);
+                // CI3-shaped tracker first: the CI4 runner cannot query it and the
+                // archive step keeps it as a backup table.
+                if ($this->legacy_history_present($db))
+                {
+                    $this->archive_legacy_history($db);
 
-                echo PHP_EOL
-                    . '⇾ Existing schema detected: the CI3 migration chain was marked '
-                    . 'as applied (no DDL replayed).' . PHP_EOL . PHP_EOL;
+                    $migrations = new MigrationRunner(config(\Config\Migrations::class));
 
-                return;
+                    $this->baseline_stamp($migrations);
+
+                    echo PHP_EOL
+                        . '⇾ CI3 migration tracker detected: archived as "'
+                        . $db->prefixTable('migrations_c3_backup') . '" and the CI3 chain '
+                        . 'marked as applied (no DDL replayed).' . PHP_EOL . PHP_EOL;
+
+                    return;
+                }
+
+                if (count($migrations->getHistory()) === 0)
+                {
+                    $this->baseline_stamp($migrations);
+
+                    echo PHP_EOL
+                        . '⇾ Existing schema detected: the CI3 migration chain was marked '
+                        . 'as applied (no DDL replayed).' . PHP_EOL . PHP_EOL;
+
+                    return;
+                }
             }
 
             if ($type === 'fresh')

@@ -469,6 +469,7 @@ class Appointments extends EA_Controller {
             // (mass-assignment protection).
             $appointment = array_intersect_key($post_data['appointment'], array_flip([
                 'id',
+                'id_users_provider',
                 'id_services',
                 'start_datetime',
                 'end_datetime',

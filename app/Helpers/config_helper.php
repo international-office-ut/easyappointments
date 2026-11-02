@@ -32,9 +32,36 @@ function ea_config($key)
         case 'version':                    return config(Deployment::class)->version;
         case 'release_label':              return config(Deployment::class)->release_label;
         case 'available_languages':        return config(Deployment::class)->available_languages;
+        case 'language':                   return config(App::class)->defaultLocale;
         case 'base_url':                   return rtrim((string) env('app.baseURL', ''), '/') . '/';
 
         default:
             throw new LogicException('Unknown configuration key: ' . $key);
     }
+}
+
+/**
+ * Fetch a system setting quickly from the CI3-style magic in the old view data.
+ *
+ * The CI3 views called "$this->settings_model->get_setting(...)" from within the
+ * template scope; the ported views use this tiny helper instead so that no template
+ * magic reaches the model layer.
+ *
+ * @param string $name The database setting name.
+ *
+ * @return string Returns the setting value.
+ */
+function ea_setting($name)
+{
+    return (new \App\Models\Settings_Model)->get_setting($name);
+}
+
+/**
+ * All translated lines of the active locale (the CI3 "$this->lang->language" parity).
+ *
+ * @return array
+ */
+function ea_langs()
+{
+    return service('language')->all();
 }

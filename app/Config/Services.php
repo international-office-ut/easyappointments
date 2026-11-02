@@ -1,32 +1,38 @@
 <?php
 
+/* ----------------------------------------------------------------------------
+ * Easy!Appointments - Open Source Web Scheduler
+ *
+ * @package     EasyAppointments
+ * @author      A.Tselegidis <alextselegidis@gmail.com>
+ * @copyright   Copyright (c) 2013 - 2020, Alex Tselegidis
+ * @license     http://opensource.org/licenses/GPL-3.0 - GPLv3
+ * @link        http://easyappointments.org
+ * @since       v1.5.0
+ * ---------------------------------------------------------------------------- */
+
 namespace Config;
 
+use App\Libraries\Ea_Language;
 use CodeIgniter\Config\BaseService;
+use CodeIgniter\Language\LanguageInterface;
 
 /**
- * Services Configuration file.
+ * Services Overrides
  *
- * Services are simply other classes/libraries that the system uses
- * to do its job. This is used by CodeIgniter to allow the core of the
- * framework to be swapped out easily without affecting the usage within
- * the rest of your application.
- *
- * This file holds any application-specific services, or service overrides
- * that you might need. An example has been included with the general
- * method format you should use for your service methods. For more examples,
- * see the core Services file at system/Config/Services.php.
+ * (CI4 port of the CI3 language bootstrapping into a custom Language service
+ * so that the bare `lang('key')` style of the EA code works on both stacks.)
  */
-class Services extends BaseService
-{
-    /*
-     * public static function example($getShared = true)
-     * {
-     *     if ($getShared) {
-     *         return static::getSharedInstance('example');
-     *     }
-     *
-     *     return new \CodeIgniter\Example();
-     * }
-     */
+class Services extends BaseService {
+    public static function language(?string $locale = null, bool $getShared = true): LanguageInterface | Language
+    {
+        if ($getShared)
+        {
+            return static::getSharedInstance('language', $locale);
+        }
+
+        $locale = $locale ?? config(App::class)->defaultLocale;
+
+        return new Ea_Language($locale);
+    }
 }

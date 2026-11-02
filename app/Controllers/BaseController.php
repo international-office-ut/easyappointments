@@ -11,6 +11,7 @@ use Config\Deployment;
 use EA\Engine\Notifications\Email as EmailClient;
 use Psr\Log\LoggerInterface;
 use App\Libraries\Notifications_Bridge;
+use EA\Engine\Types\NonEmptyText;
 
 /**
  * Easy!Appointments base controller: ports the CI3 EA_Controller
@@ -47,6 +48,7 @@ abstract class BaseController extends Controller
         if (session()->has('language'))
         {
             config(App::class)->defaultLocale = session()->get('language');
+            service('language')->setLocale(session()->get('language'));
 
             return;
         }
@@ -58,6 +60,7 @@ abstract class BaseController extends Controller
         {
             session()->set('language', $languageCookie);
             config(App::class)->defaultLocale = $languageCookie;
+            service('language')->setLocale($languageCookie);
         }
     }
 

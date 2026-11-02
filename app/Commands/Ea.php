@@ -17,10 +17,8 @@ use App\Controllers\Console as Console_Controller;
 use CodeIgniter\CLI\BaseCommand;
 
 /**
- * Easy!Appointments console passthrough for `spark`.
- *
- * The CI3 CLI controller keeps working through `php index.php console <cmd>`;
- * this command gives the same surface to `spark`:
+ * Easy!Appointments console command. Exposes the console flows to the
+ * `spark` CLI:
  *
  *   php spark ea:install
  *   php spark ea:migrate [fresh]

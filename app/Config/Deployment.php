@@ -24,7 +24,7 @@ use CodeIgniter\Config\BaseConfig;
  */
 class Deployment extends BaseConfig
 {
-    public ?string $debug_mode = NULL;
+    public bool $debug_mode = FALSE;
 
     public ?string $altcha_hmac_key = NULL;
 
@@ -64,27 +64,27 @@ class Deployment extends BaseConfig
     {
         parent::__construct();
 
-        $this->debug_mode = (bool) env('DEBUG_MODE', FALSE);
+        $this->debug_mode = self::env_bool('DEBUG_MODE', FALSE);
         $this->altcha_hmac_key = (string) env('ALTCHA_HMAC_KEY', '');
 
         $this->email_protocol = (string) env('EMAIL_PROTOCOL', 'smtp');
         $this->smtp_host = (string) env('SMTP_HOST', '');
         $this->smtp_port = (int) env('SMTP_PORT', 587);
-        $this->smtp_auth = (bool) env('SMTP_AUTH', FALSE);
+        $this->smtp_auth = self::env_bool('SMTP_AUTH', FALSE);
         $this->smtp_user = (string) env('SMTP_USER', '');
         $this->smtp_pass = (string) env('SMTP_PASS', '');
         $this->smtp_crypto = (string) env('SMTP_CRYPTO', 'tls');
 
-        $this->shib_enabled = (bool) env('SHIB_ENABLED', '0');
+        $this->shib_enabled = self::env_bool('SHIB_ENABLED', FALSE);
         $this->shib_attr_email = (string) env('SHIB_ATTR_EMAIL', 'mail');
         $this->shib_attr_name = (string) env('SHIB_ATTR_NAME', 'displayName');
-        $this->shib_password_login = (bool) env('SHIB_PASSWORD_LOGIN', '1');
+        $this->shib_password_login = self::env_bool('SHIB_PASSWORD_LOGIN', TRUE);
         $this->shib_login_path = (string) env('SHIB_LOGIN_PATH', '/Shibboleth.sso/Login');
         $this->shib_logout_path = (string) env('SHIB_LOGOUT_PATH', '/Shibboleth.sso/Logout');
 
         $this->ical_feed_range_past = (int) env('ICAL_FEED_RANGE_PAST', 30);
         $this->ical_feed_range_future = (int) env('ICAL_FEED_RANGE_FUTURE', 365);
-        $this->ical_feed_include_customer = (bool) env('ICAL_FEED_INCLUDE_CUSTOMER', '1');
+        $this->ical_feed_include_customer = self::env_bool('ICAL_FEED_INCLUDE_CUSTOMER', TRUE);
 
         $ranges = (string) env('INSTALL_ALLOWED_RANGES', '');
         $this->install_allowed_ranges = $ranges === '' ? [] : array_filter(array_map('trim', explode(',', $ranges)));
@@ -92,5 +92,34 @@ class Deployment extends BaseConfig
         $this->version = (string) env('EA_VERSION', '2.0.0');
         $this->release_label = (string) env('EA_RELEASE_LABEL', '');
         $this->cache_busting_token = (string) env('EA_CACHE_BUSTING_TOKEN', 'ZW007');
+    }
+
+    /**
+     * Boolean env reader.
+     *
+     * Accepts the truthy/falsy spellings used by deployment files (true/false,
+     * 1/0, yes/no) because a plain "(bool)" cast would happily evaluate the
+     * string "false" as TRUE.
+     *
+     * @param string $key Env variable name.
+     * @param bool $fallback Value used when the key is absent or empty.
+     *
+     * @return bool Returns the parsed boolean.
+     */
+    protected static function env_bool(string $key, bool $fallback): bool
+    {
+        $value = env($key);
+
+        if ($value === NULL || $value === '')
+        {
+            return $fallback;
+        }
+
+        if (is_bool($value))
+        {
+            return $value;
+        }
+
+        return in_array(strtolower((string) $value), ['1', 'true', 'yes', 'on'], TRUE);
     }
 }

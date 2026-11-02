@@ -41,24 +41,21 @@ gulp.task('package', (done) => {
         fs.copySync('docs/security-ops.md', 'build/docs/security-ops.md');
     }
 
+    // CI4 runtime trees: writable/ (server-guarded) + storage/ (rate-limit files
+    // and logs keep their CI3-era home here), placeholders ship so dirs land.
+    const writableDirs = ['cache', 'debugbar', 'logs', 'session', 'uploads'];
+
+    writableDirs.forEach(function (dir) {
+        fs.ensureDirSync('build/writable/' + dir);
+        fs.copySync('writable/' + dir + '/index.html', 'build/writable/' + dir + '/index.html');
+    });
+    fs.copySync('writable/.htaccess', 'build/writable/.htaccess');
+
     fs.ensureDirSync('build/storage/backups');
     fs.copySync('storage/backups/.htaccess', 'build/storage/backups/.htaccess');
     fs.copySync('storage/backups/index.html', 'build/storage/backups/index.html');
-
     fs.ensureDirSync('build/storage/cache');
     fs.copySync('storage/cache/index.html', 'build/storage/cache/index.html');
-    fs.copySync('storage/cache/.htaccess', 'build/storage/cache/.htaccess');
-
-    fs.ensureDirSync('build/storage/logs');
-    fs.copySync('storage/logs/.htaccess', 'build/storage/logs/.htaccess');
-    fs.copySync('storage/logs/index.html', 'build/storage/logs/index.html');
-
-    fs.ensureDirSync('build/storage/sessions');
-    fs.copySync('storage/sessions/.htaccess', 'build/storage/sessions/.htaccess');
-    fs.copySync('storage/sessions/index.html', 'build/storage/sessions/index.html');
-
-    fs.ensureDirSync('build/storage/uploads');
-    fs.copySync('storage/uploads/index.html', 'build/storage/uploads/index.html');
 
     fs.copySync('spark', 'build/spark');
     fs.copySync('preload.php', 'build/preload.php');

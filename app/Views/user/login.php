@@ -47,7 +47,7 @@
     <p><?= lang('you_need_to_login') ?></p>
     <hr>
     <?php if ( ! empty($login_message)): ?>
-        <div class="alert alert-warning"><?= html_escape($login_message) ?></div>
+        <div class="alert alert-warning"><?= esc($login_message) ?></div>
     <?php endif; ?>
     <?php if ( ! empty($shib_error)): ?>
         <div class="alert alert-danger"><?= lang('shib_user_not_found') ?></div>

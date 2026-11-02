@@ -25,7 +25,7 @@
     <?php endif; ?>
     <form method="post" action="<?= site_url('user/ajax_reset_password') ?>">
         <input type="hidden" name="csrfToken" value="<?= csrf_hash() ?>"/>
-        <input type="hidden" name="token" value="<?= html_escape($token) ?>"/>
+        <input type="hidden" name="token" value="<?= esc($token) ?>"/>
 
         <div class="form-group">
             <label for="password"><?= lang('password') ?></label>

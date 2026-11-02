@@ -47,9 +47,7 @@ class API_V1_Controller extends EA_Controller {
 
             $provided_token = $this->get_bearer_token();
 
-            // The comparison must use a constant-time function, so that request timing does
-            // not leak any part of the configured token.
-            if ( ! empty($api_token) && ! empty($provided_token) && hash_equals($api_token, $provided_token))
+            if (Authorization::verify_bearer($api_token, $provided_token))
             {
                 return;
             }

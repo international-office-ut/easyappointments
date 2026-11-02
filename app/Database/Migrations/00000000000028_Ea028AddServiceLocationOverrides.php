@@ -13,6 +13,8 @@
 
 namespace App\Database\Migrations;
 
+use CodeIgniter\Database\Migration;
+
 
 /**
  * (CI4 port of the CI3 application/migrations/028_add_service_location_overrides.php)
@@ -37,7 +39,7 @@ class Migration_Ea028AddServiceLocationOverrides extends Migration {
      */
     public function up()
     {
-        if ( ! $this->db->field_exists('location_weekday_modes', 'services'))
+        if ( ! in_array('location_weekday_modes', array_column($this->db->getFieldData('services'), 'name'), TRUE))
         {
             $this->db->query('
                 ALTER TABLE `' . $this->db->prefixTable('services') . '`
@@ -45,7 +47,7 @@ class Migration_Ea028AddServiceLocationOverrides extends Migration {
             ');
         }
 
-        if ( ! $this->db->field_exists('location_date_overrides', 'services'))
+        if ( ! in_array('location_date_overrides', array_column($this->db->getFieldData('services'), 'name'), TRUE))
         {
             $this->db->query('
                 ALTER TABLE `' . $this->db->prefixTable('services') . '`

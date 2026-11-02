@@ -13,6 +13,7 @@
 
 namespace App\Controllers;
 
+use Exception;
 use App\Models\Consents_Model;
 
 /**
@@ -60,6 +61,6 @@ class Consents extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 }

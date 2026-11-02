@@ -13,6 +13,8 @@
 
 namespace App\Database\Migrations;
 
+use CodeIgniter\Database\Migration;
+
 
 /**
  * (CI4 port of the CI3 application/migrations/026_convert_retention_to_days.php)
@@ -30,26 +32,29 @@ class Migration_Ea026ConvertRetentionToDays extends Migration {
      */
     public function up()
     {
-        if ( ! $this->db->table_exists('settings'))
+        if ( ! $this->db->tableExists('settings'))
         {
             return;
         }
 
         // The days row already wins (poor-man idempotency check).
-        $days_row = $this->db->get_where('settings', ['name' => 'record_retention_days'])->row();
+        $days_row = $this->db->table('settings')->where(['name' => 'record_retention_days'])->get()->getRow();
 
         if ($days_row)
         {
             return;
         }
 
-        $months_row = $this->db->get_where('settings', ['name' => 'record_retention_months'])->row();
+        $months_row = $this->db->table('settings')->where(['name' => 'record_retention_months'])->get()->getRow();
 
         $days = ($months_row && ! empty($months_row->value)) ? ((int)$months_row->value * 30) : 90;
 
-        $this->db->insert('settings', ['name' => 'record_retention_days', 'value' => (string) $days]);
+        $this->db->table('settings')->insert([
+            'name' => 'record_retention_days',
+            'value' => (string) $days
+        ]);
 
-        $this->db->delete('settings', ['name' => 'record_retention_months']);
+        $this->db->table('settings')->where(['name' => 'record_retention_months'])->delete();
     }
 
     /**
@@ -57,22 +62,22 @@ class Migration_Ea026ConvertRetentionToDays extends Migration {
      */
     public function down()
     {
-        if ( ! $this->db->table_exists('settings'))
+        if ( ! $this->db->tableExists('settings'))
         {
             return;
         }
 
-        $days_row = $this->db->get_where('settings', ['name' => 'record_retention_days'])->row();
+        $days_row = $this->db->table('settings')->where(['name' => 'record_retention_days'])->get()->getRow();
 
         $days = ($days_row && ! empty($days_row->value)) ? (int)$days_row->value : 90;
 
-        $this->db->delete('settings', ['name' => 'record_retention_days']);
+        $this->db->table('settings')->where(['name' => 'record_retention_days'])->delete();
 
-        $months_row = $this->db->get_where('settings', ['name' => 'record_retention_months'])->row();
+        $months_row = $this->db->table('settings')->where(['name' => 'record_retention_months'])->get()->getRow();
 
         if ( ! $months_row)
         {
-            $this->db->insert('settings',
+            $this->db->table('settings',
                 ['name' => 'record_retention_months', 'value' => (string) floor($days / 30)]);
         }
     }

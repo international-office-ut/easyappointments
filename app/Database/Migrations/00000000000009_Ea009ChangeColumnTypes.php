@@ -13,6 +13,8 @@
 
 namespace App\Database\Migrations;
 
+use CodeIgniter\Database\Migration;
+
 
 /**
  * (CI4 port of the CI3 application/migrations/009_change_column_types.php)

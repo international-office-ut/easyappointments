@@ -13,6 +13,8 @@
 
 namespace App\Database\Migrations;
 
+use CodeIgniter\Database\Migration;
+
 
 /**
  * (CI4 port of the CI3 application/migrations/020_add_language_to_users.php)
@@ -28,7 +30,7 @@ class Migration_Ea020AddLanguageToUsers extends Migration {
      */
     public function up()
     {
-        if ( ! $this->db->field_exists('language', 'users'))
+        if ( ! in_array('language', array_column($this->db->getFieldData('users'), 'name'), TRUE))
         {
             $fields = [
                 'language' => [

@@ -13,6 +13,8 @@
 
 namespace App\Database\Migrations;
 
+use CodeIgniter\Database\Migration;
+
 
 /**
  * (CI4 port of the CI3 application/migrations/012_legal_contents.php)
@@ -28,32 +30,32 @@ class Migration_Ea012LegalContents extends Migration {
      */
     public function up()
     {
-        $this->db->insert('settings', [
+        $this->db->table('settings')->insert([
             'name' => 'display_cookie_notice',
             'value' => '0'
         ]);
 
-        $this->db->insert('settings', [
+        $this->db->table('settings')->insert([
             'name' => 'cookie_notice_content',
             'value' => 'Cookie notice content.'
         ]);
 
-        $this->db->insert('settings', [
+        $this->db->table('settings')->insert([
             'name' => 'display_terms_and_conditions',
             'value' => '0'
         ]);
 
-        $this->db->insert('settings', [
+        $this->db->table('settings')->insert([
             'name' => 'terms_and_conditions_content',
             'value' => 'Terms and conditions content.'
         ]);
 
-        $this->db->insert('settings', [
+        $this->db->table('settings')->insert([
             'name' => 'display_privacy_policy',
             'value' => '0'
         ]);
 
-        $this->db->insert('settings', [
+        $this->db->table('settings')->insert([
             'name' => 'privacy_policy_content',
             'value' => 'Privacy policy content.'
         ]);
@@ -109,29 +111,29 @@ class Migration_Ea012LegalContents extends Migration {
      */
     public function down()
     {
-        $this->db->delete('settings', [
+        $this->db->table('settings')->where([
             'name' => 'display_cookie_notice'
-        ]);
+        ])->delete();
 
-        $this->db->delete('settings', [
+        $this->db->table('settings')->where([
             'name' => 'cookie_notice_content'
-        ]);
+        ])->delete();
 
-        $this->db->delete('settings', [
+        $this->db->table('settings')->where([
             'name' => 'display_terms_and_conditions'
-        ]);
+        ])->delete();
 
-        $this->db->delete('settings', [
+        $this->db->table('settings')->where([
             'name' => 'terms_and_conditions_content'
-        ]);
+        ])->delete();
 
-        $this->db->delete('settings', [
+        $this->db->table('settings')->where([
             'name' => 'display_privacy_policy'
-        ]);
+        ])->delete();
 
-        $this->db->delete('settings', [
+        $this->db->table('settings')->where([
             'name' => 'privacy_policy_content'
-        ]);
+        ])->delete();
 
         $this->forge->dropTable('consents');
     }

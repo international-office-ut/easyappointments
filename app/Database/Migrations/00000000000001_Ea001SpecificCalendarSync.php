@@ -13,6 +13,8 @@
 
 namespace App\Database\Migrations;
 
+use CodeIgniter\Database\Migration;
+
 
 /**
  * (CI4 port of the CI3 application/migrations/001_specific_calendar_sync.php)
@@ -240,8 +242,11 @@ class Migration_Ea001SpecificCalendarSync extends Migration {
             ],
         ]);
         $this->forge->addKey('id', TRUE);
-        $this->forge->addKey('id_service_categories');
-        $this->forge->createTable('service_categories', TRUE, ['engine' => 'InnoDB']);
+        // NOTE: the upstream CI3 chain carried a stray "add_key('id_service_categories')"
+        // here. The column does not exist in this table (it belongs to "services"), CI3
+        // silently produces a broken "KEY ()" block for it and every fresh install of
+        // that chain fails on this statement. Dropped in the CI4 port accordingly.
+        $this->forge->createTable('service_categories', TRUE, ['ENGINE' => 'InnoDB']);
 
         $this->forge->addField([
             'id' => [
@@ -424,7 +429,7 @@ class Migration_Ea001SpecificCalendarSync extends Migration {
 
         ');
 
-        $this->db->insert('roles', [
+        $this->db->table('roles')->insert([
             'name' => 'Administrator',
             'slug' => 'admin',
             'is_admin' => TRUE,
@@ -436,7 +441,7 @@ class Migration_Ea001SpecificCalendarSync extends Migration {
             'user_settings' => 15,
         ]);
 
-        $this->db->insert('roles', [
+        $this->db->table('roles')->insert([
             'name' => 'Provider',
             'slug' => 'provider',
             'is_admin' => FALSE,
@@ -448,7 +453,7 @@ class Migration_Ea001SpecificCalendarSync extends Migration {
             'user_settings' => 15,
         ]);
 
-        $this->db->insert('roles', [
+        $this->db->table('roles')->insert([
             'name' => 'Customer',
             'slug' => 'customer',
             'is_admin' => FALSE,
@@ -460,7 +465,7 @@ class Migration_Ea001SpecificCalendarSync extends Migration {
             'user_settings' => 0,
         ]);
 
-        $this->db->insert('roles', [
+        $this->db->table('roles')->insert([
             'name' => 'Secretary',
             'slug' => 'secretary',
             'is_admin' => FALSE,
@@ -472,12 +477,12 @@ class Migration_Ea001SpecificCalendarSync extends Migration {
             'user_settings' => 15,
         ]);
 
-        $this->db->insert('settings', [
+        $this->db->table('settings')->insert([
             'name' => 'company_working_plan',
             'value' => '{"monday":{"start":"09:00","end":"18:00","breaks":[{"start":"14:30","end":"15:00"}]},"tuesday":{"start":"09:00","end":"18:00","breaks":[{"start":"14:30","end":"15:00"}]},"wednesday":{"start":"09:00","end":"18:00","breaks":[{"start":"14:30","end":"15:00"}]},"thursday":{"start":"09:00","end":"18:00","breaks":[{"start":"14:30","end":"15:00"}]},"friday":{"start":"09:00","end":"18:00","breaks":[{"start":"14:30","end":"15:00"}]},"saturday":{"start":"09:00","end":"18:00","breaks":[{"start":"14:30","end":"15:00"}]},"sunday":{"start":"09:00","end":"18:00","breaks":[{"start":"14:30","end":"15:00"}]}}'
         ]);
 
-        $this->db->insert('settings', [
+        $this->db->table('settings')->insert([
             'name' => 'book_advance_timeout',
             'value' => '30'
         ]);

@@ -13,6 +13,8 @@
 
 namespace App\Database\Migrations;
 
+use CodeIgniter\Database\Migration;
+
 
 /**
  * (CI4 port of the CI3 application/migrations/018_add_timezone_to_users.php)
@@ -28,7 +30,7 @@ class Migration_Ea018AddTimezoneToUsers extends Migration {
      */
     public function up()
     {
-        if ( ! $this->db->field_exists('timezone', 'users'))
+        if ( ! in_array('timezone', array_column($this->db->getFieldData('users'), 'name'), TRUE))
         {
             $fields = [
                 'timezone' => [

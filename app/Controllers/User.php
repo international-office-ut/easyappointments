@@ -13,6 +13,7 @@
 
 namespace App\Controllers;
 
+use Exception;
 use App\Libraries\Notifications_Bridge;
 use App\Models\Settings_Model;
 use App\Models\User_Model;
@@ -468,7 +469,7 @@ class User extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -525,7 +526,7 @@ class User extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -631,7 +632,7 @@ class User extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**

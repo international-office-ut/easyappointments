@@ -13,6 +13,7 @@
 
 namespace App\Controllers\Api\V1;
 
+use Exception;
 use App\Models\Services_Model;
 use EA\Engine\Api\V1\Parsers\Categories as CategoriesParser;
 use EA\Engine\Api\V1\Request;

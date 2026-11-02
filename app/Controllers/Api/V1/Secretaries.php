@@ -13,6 +13,7 @@
 
 namespace App\Controllers\Api\V1;
 
+use Exception;
 use App\Models\Secretaries_Model;
 use EA\Engine\Api\V1\Parsers\Secretaries as SecretariesParser;
 use EA\Engine\Api\V1\Request;

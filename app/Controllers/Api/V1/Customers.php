@@ -13,6 +13,7 @@
 
 namespace App\Controllers\Api\V1;
 
+use Exception;
 use App\Models\Customers_Model;
 use EA\Engine\Api\V1\Parsers\Customers as CustomersParser;
 use EA\Engine\Api\V1\Request;

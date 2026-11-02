@@ -13,6 +13,8 @@
 
 namespace App\Controllers;
 
+use Exception;
+use App\Controllers\Concerns\Baseline_Migration;
 use App\Models\Admins_Model;
 use App\Models\Customers_Model;
 use App\Models\Maintenance_Model;
@@ -28,6 +30,8 @@ use CodeIgniter\Database\MigrationRunner;
  * CLI commands of Easy!Appointments, can only be executed from a terminal and not with a direct request.
  */
 class Console extends BaseController {
+    use Baseline_Migration;
+
     protected Admins_Model $admins_model;
     protected Customers_Model $customers_model;
     protected Providers_Model $providers_model;
@@ -42,8 +46,6 @@ class Console extends BaseController {
         {
             exit('No direct script access allowed');
         }
-
-        parent::__construct();
     }
 
     public function initController($request, $response, $logger)
@@ -96,12 +98,31 @@ class Console extends BaseController {
      */
     public function migrate($type = '')
     {
-        $migrations = new MigrationRunner('default');
+        $db = db_connect();
+
+        $migrations = new MigrationRunner(config(\Config\Migrations::class));
 
         $message = '';
 
         try
         {
+            $schema_exists = $db->tableExists('appointments');
+
+            // Transitioned from CI3: the schema already exists and no CI4 history
+            // was written yet, so the migration chain gets baselined instead of
+            // replaying the DDL (a fresh empty database runs or finishes the chain
+            // below).
+            if ($schema_exists && count($migrations->getHistory()) === 0)
+            {
+                $this->baseline_stamp($migrations);
+
+                echo PHP_EOL
+                    . '⇾ Existing schema detected: the CI3 migration chain was marked '
+                    . 'as applied (no DDL replayed).' . PHP_EOL . PHP_EOL;
+
+                return;
+            }
+
             if ($type === 'fresh')
             {
                 $migrations->version(0);

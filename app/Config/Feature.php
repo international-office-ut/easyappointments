@@ -12,7 +12,13 @@ class Feature extends BaseConfig
     /**
      * Use improved new auto routing instead of the legacy version.
      */
-    public bool $autoRoutesImproved = true;
+    /**
+     * The improved auto-router refuses the CI3-style legacy paths (it blocks
+     * "defined-route controller names" and the default-controller-by-name
+     * resolution), so the legacy AutoRouter is used for the cutover: it walks
+     * the controller namespace exactly the CI3 way.
+     */
+    public bool $autoRoutesImproved = false;
 
     /**
      * Use filter execution order in 4.4 or before.

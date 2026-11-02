@@ -13,6 +13,8 @@
 
 namespace App\Database\Migrations;
 
+use CodeIgniter\Database\Migration;
+
 
 /**
  * (CI4 port of the CI3 application/migrations/010_add_time_format_setting.php)
@@ -28,7 +30,7 @@ class Migration_Ea010AddTimeFormatSetting extends Migration {
      */
     public function up()
     {
-        $this->db->insert('settings', [
+        $this->db->table('settings')->insert([
             'name' => 'time_format',
             'value' => 'regular'
         ]);
@@ -39,6 +41,6 @@ class Migration_Ea010AddTimeFormatSetting extends Migration {
      */
     public function down()
     {
-        $this->db->delete('settings', ['name' => 'time_format']);
+        $this->db->table('settings')->where(['name' => 'time_format'])->delete();
     }
 }

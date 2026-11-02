@@ -13,6 +13,8 @@
 
 namespace App\Database\Migrations;
 
+use CodeIgniter\Database\Migration;
+
 
 /**
  * (CI4 port of the CI3 application/migrations/023_add_provider_weekday_modes_support.php)
@@ -30,7 +32,7 @@ class Migration_Ea023AddProviderWeekdayModesSupport extends Migration {
      */
     public function up()
     {
-        if ( ! $this->db->field_exists('weekday_modes', 'user_settings'))
+        if ( ! in_array('weekday_modes', array_column($this->db->getFieldData('user_settings'), 'name'), TRUE))
         {
             $this->db->query('
                 ALTER TABLE `' . $this->db->prefixTable('user_settings') . '`
@@ -44,7 +46,7 @@ class Migration_Ea023AddProviderWeekdayModesSupport extends Migration {
      */
     public function down()
     {
-        if ($this->db->field_exists('weekday_modes', 'user_settings'))
+        if (in_array('weekday_modes', array_column($this->db->getFieldData('user_settings'), 'name'), TRUE))
         {
             $this->db->query('
                 ALTER TABLE `' . $this->db->prefixTable('user_settings') . '`

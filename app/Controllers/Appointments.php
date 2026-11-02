@@ -152,11 +152,11 @@ class Appointments extends BaseController {
                 $appointment = $results[0];
                 $provider = $this->providers_model->get_row($appointment['id_users_provider']);
 
-                $provider_timezone = new DateTimeZone($provider['timezone']);
+                $provider_timezone = new \DateTimeZone($provider['timezone']);
 
-                $appointment_start = new DateTime($appointment['start_datetime'], $provider_timezone);
+                $appointment_start = new \DateTime($appointment['start_datetime'], $provider_timezone);
 
-                $limit = new DateTime('now', $provider_timezone);
+                $limit = new \DateTime('now', $provider_timezone);
 
                 $limit->modify('+' . $book_advance_timeout . ' minutes');
 
@@ -369,7 +369,7 @@ class Appointments extends BaseController {
             // Do not continue if there was no provider selected (more likely there is no provider in the system).
             if (empty($provider_id))
             {
-                return $this->response->setContentType('application/json')->setOutput(json_encode([]));
+                return $this->response->setContentType('application/json')->setBody(json_encode([]));
             }
 
             $exclude_appointment_id = $this->get_exclude_appointment_id(
@@ -385,7 +385,7 @@ class Appointments extends BaseController {
 
                 if ($provider_id === NULL)
                 {
-                    return $this->response->setContentType('application/json')->setOutput(json_encode([]));
+                    return $this->response->setContentType('application/json')->setBody(json_encode([]));
                 }
             }
 
@@ -405,7 +405,7 @@ class Appointments extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -514,7 +514,7 @@ class Appointments extends BaseController {
 
                 return $this->response
                     ->setContentType('application/json')
-                    ->setOutput(json_encode(['captcha_verification' => FALSE]));
+                    ->setBody(json_encode(['captcha_verification' => FALSE]));
             }
 
             if ($require_captcha === '1')
@@ -525,7 +525,7 @@ class Appointments extends BaseController {
                     // show the hint instead of blowing up on the malformed payload.
                     return $this->response
                         ->setContentType('application/json')
-                        ->setOutput(json_encode(['captcha_verification' => FALSE]));
+                        ->setBody(json_encode(['captcha_verification' => FALSE]));
                 }
 
                 $altcha = new Altcha(hmacSignatureSecret: config(Deployment::class)->altcha_hmac_key);
@@ -541,7 +541,7 @@ class Appointments extends BaseController {
                     {
                         return $this->response
                             ->setContentType('application/json')
-                            ->setOutput(json_encode(['captcha_verification' => FALSE]));
+                            ->setBody(json_encode(['captcha_verification' => FALSE]));
                     }
                 }
                 catch (Throwable $exception)
@@ -550,7 +550,7 @@ class Appointments extends BaseController {
 
                     return $this->response
                         ->setContentType('application/json')
-                        ->setOutput(json_encode(['captcha_verification' => FALSE]));
+                        ->setBody(json_encode(['captcha_verification' => FALSE]));
                 }
 
                 // A solved challenge may only be redeemed once: cache the payload hash until
@@ -561,7 +561,7 @@ class Appointments extends BaseController {
                 {
                     return $this->response
                         ->setContentType('application/json')
-                        ->setOutput(json_encode(['captcha_verification' => FALSE]));
+                        ->setBody(json_encode(['captcha_verification' => FALSE]));
                 }
 
                 cache()->save($payload_key, 1, 900);
@@ -635,7 +635,7 @@ class Appointments extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -687,7 +687,7 @@ class Appointments extends BaseController {
             throw new Exception(lang('select_provider'));
         }
 
-        $appointment_start = new DateTime($appointment['start_datetime']);
+        $appointment_start = new \DateTime($appointment['start_datetime']);
         $date = $appointment_start->format('Y-m-d');
         $hour = $appointment_start->format('H:i');
 
@@ -738,7 +738,7 @@ class Appointments extends BaseController {
             $provider_id = $this->request->getGet('provider_id');
             $service_id = $this->request->getGet('service_id');
             $selected_date_string = $this->request->getGet('selected_date');
-            $selected_date = new DateTime($selected_date_string);
+            $selected_date = new \DateTime($selected_date_string);
             $number_of_days_in_month = (int)$selected_date->format('t');
             $unavailable_dates = [];
 
@@ -756,9 +756,9 @@ class Appointments extends BaseController {
 
             for ($i = 1; $i <= $number_of_days_in_month; $i++)
             {
-                $current_date = new DateTime($selected_date->format('Y-m') . '-' . $i);
+                $current_date = new \DateTime($selected_date->format('Y-m') . '-' . $i);
 
-                if ($current_date < new DateTime(date('Y-m-d 00:00:00')))
+                if ($current_date < new \DateTime(date('Y-m-d 00:00:00')))
                 {
                     // Past dates become immediately unavailable.
                     $unavailable_dates[] = $current_date->format('Y-m-d');
@@ -805,7 +805,7 @@ class Appointments extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**

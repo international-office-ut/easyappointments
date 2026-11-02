@@ -13,6 +13,8 @@
 
 namespace App\Database\Migrations;
 
+use CodeIgniter\Database\Migration;
+
 
 /**
  * (CI4 port of the CI3 application/migrations/031_remove_service_appointment_modes.php)
@@ -29,12 +31,12 @@ class Migration_Ea031RemoveServiceAppointmentModes extends Migration {
      */
     public function up()
     {
-        if ($this->db->table_exists('service_weekday_modes'))
+        if ($this->db->tableExists('service_weekday_modes'))
         {
             $this->forge->dropTable('service_weekday_modes', TRUE);
         }
 
-        if ($this->db->field_exists('appointment_mode', 'services'))
+        if (in_array('appointment_mode', array_column($this->db->getFieldData('services'), 'name'), TRUE))
         {
             $this->forge->dropColumn('services', 'appointment_mode');
         }
@@ -45,7 +47,7 @@ class Migration_Ea031RemoveServiceAppointmentModes extends Migration {
      */
     public function down()
     {
-        if ( ! $this->db->field_exists('appointment_mode', 'services'))
+        if ( ! in_array('appointment_mode', array_column($this->db->getFieldData('services'), 'name'), TRUE))
         {
             $this->forge->addColumn('services', [
                 'appointment_mode' => [
@@ -57,7 +59,7 @@ class Migration_Ea031RemoveServiceAppointmentModes extends Migration {
             ]);
         }
 
-        if ( ! $this->db->table_exists('service_weekday_modes'))
+        if ( ! $this->db->tableExists('service_weekday_modes'))
         {
             $this->db->query('CREATE TABLE `' . $this->db->prefixTable('service_weekday_modes') . '` (
                 `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,

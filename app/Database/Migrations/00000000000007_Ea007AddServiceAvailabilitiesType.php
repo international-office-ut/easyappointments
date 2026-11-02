@@ -13,6 +13,8 @@
 
 namespace App\Database\Migrations;
 
+use CodeIgniter\Database\Migration;
+
 
 /**
  * (CI4 port of the CI3 application/migrations/007_add_service_availabilities_type.php)
@@ -28,7 +30,7 @@ class Migration_Ea007AddServiceAvailabilitiesType extends Migration {
      */
     public function up()
     {
-        if ( ! $this->db->field_exists('availabilities_type', 'services'))
+        if ( ! in_array('availabilities_type', array_column($this->db->getFieldData('services'), 'name'), TRUE))
         {
             $fields = [
                 'availabilities_type' => [
@@ -41,7 +43,7 @@ class Migration_Ea007AddServiceAvailabilitiesType extends Migration {
 
             $this->forge->addColumn('services', $fields);
 
-            $this->db->update('services', ['availabilities_type' => 'flexible']);
+            $this->db->table('services')->update(['availabilities_type' => 'flexible']);
         }
     }
 
@@ -50,7 +52,7 @@ class Migration_Ea007AddServiceAvailabilitiesType extends Migration {
      */
     public function down()
     {
-        if ($this->db->field_exists('availabilities_type', 'services'))
+        if (in_array('availabilities_type', array_column($this->db->getFieldData('services'), 'name'), TRUE))
         {
             $this->forge->dropColumn('services', 'availabilities_type');
         }

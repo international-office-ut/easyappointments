@@ -13,6 +13,8 @@
 
 namespace App\Database\Migrations;
 
+use CodeIgniter\Database\Migration;
+
 
 /**
  * (CI4 port of the CI3 application/migrations/008_add_service_attendants_number.php)
@@ -28,7 +30,7 @@ class Migration_Ea008AddServiceAttendantsNumber extends Migration {
      */
     public function up()
     {
-        if ( ! $this->db->field_exists('attendants_number', 'services'))
+        if ( ! in_array('attendants_number', array_column($this->db->getFieldData('services'), 'name'), TRUE))
         {
             $fields = [
                 'attendants_number' => [
@@ -48,7 +50,7 @@ class Migration_Ea008AddServiceAttendantsNumber extends Migration {
      */
     public function down()
     {
-        if ($this->db->field_exists('attendants_number', 'services'))
+        if (in_array('attendants_number', array_column($this->db->getFieldData('services'), 'name'), TRUE))
         {
             $this->forge->dropColumn('services', 'attendants_number');
         }

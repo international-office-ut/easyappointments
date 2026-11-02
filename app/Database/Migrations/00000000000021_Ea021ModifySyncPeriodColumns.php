@@ -13,6 +13,8 @@
 
 namespace App\Database\Migrations;
 
+use CodeIgniter\Database\Migration;
+
 
 /**
  * (CI4 port of the CI3 application/migrations/021_modify_sync_period_columns.php)
@@ -45,25 +47,11 @@ class Migration_Ea021ModifySyncPeriodColumns extends Migration {
 
         $this->forge->modifyColumn('user_settings', $fields);
 
-        $this->db->update(
-            'user_settings',
-            [
-                'sync_past_days' => '30'
-            ],
-            [
-                'sync_past_days' => '5'
-            ]
-        );
+        $this->db->table('user_settings')->where('sync_past_days', '5')
+            ->update(['sync_past_days' => '30']);
 
-        $this->db->update(
-            'user_settings',
-            [
-                'sync_future_days' => '90'
-            ],
-            [
-                'sync_future_days' => '5'
-            ]
-        );
+        $this->db->table('user_settings')->where('sync_future_days', '5')
+            ->update(['sync_future_days' => '90']);
     }
 
     /**
@@ -88,24 +76,10 @@ class Migration_Ea021ModifySyncPeriodColumns extends Migration {
 
         $this->forge->modifyColumn('user_settings', $fields);
 
-        $this->db->update(
-            'user_settings',
-            [
-                'sync_past_days' => '5'
-            ],
-            [
-                'sync_past_days' => '30'
-            ]
-        );
+        $this->db->table('user_settings')->where('sync_past_days', '30')
+            ->update(['sync_past_days' => '5']);
 
-        $this->db->update(
-            'user_settings',
-            [
-                'sync_future_days' => '5'
-            ],
-            [
-                'sync_future_days' => '90'
-            ]
-        );
+        $this->db->table('user_settings')->where('sync_future_days', '90')
+            ->update(['sync_future_days' => '5']);
     }
 }

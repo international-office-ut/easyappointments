@@ -13,6 +13,8 @@
 
 namespace App\Database\Migrations;
 
+use CodeIgniter\Database\Migration;
+
 
 /**
  * (CI4 port of the CI3 application/migrations/004_add_date_format_setting.php)
@@ -30,7 +32,7 @@ class Migration_Ea004AddDateFormatSetting extends Migration {
      */
     public function up()
     {
-        $this->db->insert('settings', [
+        $this->db->table('settings')->insert([
             'name' => 'date_format',
             'value' => 'DMY'
         ]);
@@ -43,6 +45,6 @@ class Migration_Ea004AddDateFormatSetting extends Migration {
      */
     public function down()
     {
-        $this->db->delete('settings', ['name' => 'date_format']);
+        $this->db->table('settings')->where(['name' => 'date_format'])->delete();
     }
 }

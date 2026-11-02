@@ -13,6 +13,7 @@
 
 namespace App\Controllers\Api\V1;
 
+use Exception;
 use App\Libraries\Notifications;
 use App\Models\Appointments_Model;
 use App\Models\Customers_Model;
@@ -126,8 +127,8 @@ class Appointments extends API_V1_Controller {
 
                 if (isset($service['duration']))
                 {
-                    $end_datetime = new DateTime($appointment['start_datetime']);
-                    $end_datetime->add(new DateInterval('PT' . $service['duration'] . 'M'));
+                    $end_datetime = new \DateTime($appointment['start_datetime']);
+                    $end_datetime->add(new \DateInterval('PT' . $service['duration'] . 'M'));
                     $appointment['end_datetime'] = $end_datetime->format('Y-m-d H:i:s');
                 }
             }

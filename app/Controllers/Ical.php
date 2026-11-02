@@ -13,6 +13,7 @@
 
 namespace App\Controllers;
 
+use Exception;
 use App\Models\Providers_Model;
 use App\Models\Services_Model;
 use CodeIgniter\Database\BaseConnection;
@@ -110,7 +111,7 @@ class Ical extends BaseController {
 
         $this->response->setStatusCode(200);
 
-        return $this->response->setOutput($stream);
+        return $this->response->setBody($stream);
     }
 
     /**
@@ -150,9 +151,9 @@ class Ical extends BaseController {
             ->join('users customers', 'customers.id = appointments.id_users_customer', 'left')
             ->where('appointments.id_users_provider', $provider_id)
             ->where('appointments.is_unavailable', FALSE)
-            ->where('appointments.end_datetime >=', (new DateTime('now'))
+            ->where('appointments.end_datetime >=', (new \DateTime('now'))
                 ->modify('-' . max(0, (int)$past_days) . ' days')->format('Y-m-d H:i:s'))
-            ->where('appointments.start_datetime <=', (new DateTime('now'))
+            ->where('appointments.start_datetime <=', (new \DateTime('now'))
                 ->modify('+' . max(0, (int)$future_days) . ' days')->format('Y-m-d H:i:s'))
             ->orderBy('appointments.start_datetime', 'ASC')
             ->get()
@@ -173,7 +174,7 @@ class Ical extends BaseController {
      */
     protected function build_feed_stream(array $provider, array $appointments): string
     {
-        $timezone = new DateTimeZone($provider['timezone'] ?? 'UTC');
+        $timezone = new \DateTimeZone($provider['timezone'] ?? 'UTC');
 
         $calendar = new Calendar();
         $calendar
@@ -234,8 +235,8 @@ class Ical extends BaseController {
             }
 
             $event
-                ->setStart(new DateTime($appointment['start_datetime'], $timezone))
-                ->setEnd(new DateTime($appointment['end_datetime'], $timezone))
+                ->setStart(new \DateTime($appointment['start_datetime'], $timezone))
+                ->setEnd(new \DateTime($appointment['end_datetime'], $timezone))
                 ->setStatus('CONFIRMED')
                 ->setSummary($summary)
                 ->setUid((string)$appointment['id']);

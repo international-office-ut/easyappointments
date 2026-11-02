@@ -13,6 +13,8 @@
 
 namespace App\Database\Migrations;
 
+use CodeIgniter\Database\Migration;
+
 
 /**
  * (CI4 port of the CI3 application/migrations/015_add_working_plan_exceptions_to_user_settings.php)
@@ -28,7 +30,7 @@ class Migration_Ea015AddWorkingPlanExceptionsToUserSettings extends Migration {
      */
     public function up()
     {
-        if ( ! $this->db->field_exists('working_plan_exceptions', 'user_settings'))
+        if ( ! in_array('working_plan_exceptions', array_column($this->db->getFieldData('user_settings'), 'name'), TRUE))
         {
             $fields = [
                 'working_plan_exceptions' => [
@@ -47,7 +49,7 @@ class Migration_Ea015AddWorkingPlanExceptionsToUserSettings extends Migration {
      */
     public function down()
     {
-        if ( ! $this->db->field_exists('working_plan_exceptions', 'user_settings'))
+        if ( ! in_array('working_plan_exceptions', array_column($this->db->getFieldData('user_settings'), 'name'), TRUE))
         {
             $this->forge->dropColumn('user_settings', 'working_plan_exceptions');
         }

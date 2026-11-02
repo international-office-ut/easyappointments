@@ -13,6 +13,7 @@
 
 namespace App\Controllers;
 
+use Exception;
 use App\Models\Settings_Model;
 
 /**

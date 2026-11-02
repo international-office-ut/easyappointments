@@ -13,6 +13,8 @@
 
 namespace App\Models;
 
+use Exception;
+
 /**
  * Appointments Model (CI4 port, from the CI3 application/models/Appointments_model.php)
  */
@@ -509,15 +511,15 @@ class Appointments_Model extends Ea_Model {
     /**
      * Returns the attendants number for selection period.
      *
-     * @param DateTime $slot_start When the slot starts
-     * @param DateTime $slot_end When the slot ends.
+     * @param \DateTime $slot_start When the slot starts
+     * @param \DateTime $slot_end When the slot ends.
      * @param int $service_id Selected service ID.
      * @param int $provider_id Selected provider ID.
      * @param int|null $exclude_appointment_id Exclude an appointment from the availability generation.
      *
      * @return int Returns the number of attendants for selected time period.
      */
-    public function get_attendants_number_for_period(DateTime $slot_start, DateTime $slot_end, $service_id, $provider_id, $exclude_appointment_id = NULL)
+    public function get_attendants_number_for_period(\DateTime $slot_start, \DateTime $slot_end, $service_id, $provider_id, $exclude_appointment_id = NULL)
     {
         $builder = $this->db->table('appointments');
 
@@ -546,14 +548,14 @@ class Appointments_Model extends Ea_Model {
     /**
      * Returns the number of the other service attendants number for the provided time slot.
      *
-     * @param DateTime $slot_start When the slot starts
-     * @param DateTime $slot_end When the slot ends.
+     * @param \DateTime $slot_start When the slot starts
+     * @param \DateTime $slot_end When the slot ends.
      * @param int $service_id Selected service ID.
      * @param int|null $exclude_appointment_id Exclude an appointment from the availability generation.
      *
      * @return int Returns the number of attendants for selected time period.
      */
-    public function get_other_service_attendants_number(DateTime $slot_start, DateTime $slot_end, $service_id, $provider_id, $exclude_appointment_id = NULL)
+    public function get_other_service_attendants_number(\DateTime $slot_start, \DateTime $slot_end, $service_id, $provider_id, $exclude_appointment_id = NULL)
     {
         $builder = $this->db->table('appointments');
 

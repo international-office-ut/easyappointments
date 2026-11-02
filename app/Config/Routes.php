@@ -8,12 +8,21 @@ use CodeIgniter\Router\RouteCollection;
 // cutover. Session-based controllers resolve through the legacy "auto
 // routing" convention (controller/method/parameter) to keep every booking
 // page URL byte-identical; only the explicit table below needs ports.
+//
+// CI4's improved auto-routing refuses the "default controller by name" path,
+// so the root route and the appointments entry get explicit definitions and
+// the default controller stays the skeleton stub (Home).
 
-$routes->setDefaultController('Appointments');
-$routes->set404Override('Errors::error404');
+$routes->get('/', '\App\Controllers\Appointments::index');
+$routes->get('appointments', '\App\Controllers\Appointments::index');
+$routes->setDefaultController('Home');
+$routes->set404Override('\App\Controllers\Errors::error404');
 
 // Provider calendar feed: the token lives in the URL path (never in a query string).
-$routes->get('ical/(:any)', 'Ical::fetch/$1');
+$routes->get('ical/(:any)', '\App\Controllers\Ical::fetch/$1');
+
+// Route smoke for the CI4 cutover QA (plain header dump, removed with the QA).
+$routes->get('route-smoke', '\App\Controllers\RouteSmoke::index');
 
 /*
 | -------------------------------------------------------------------------

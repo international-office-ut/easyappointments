@@ -13,6 +13,8 @@
 
 namespace App\Models;
 
+use Exception;
+
 /**
  * Settings Model (CI4 port, from the CI3 application/models/Settings_model.php)
  */

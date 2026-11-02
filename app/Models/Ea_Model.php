@@ -13,17 +13,26 @@
 
 namespace App\Models;
 
-use CodeIgniter\BaseModel;
+use Exception;
+
+use CodeIgniter\Database\BaseConnection;
 
 /**
  * Easy!Appointments model base: ports the CI3 EA_Model to CI4.
  *
- * Deliberately extends BaseModel (not Model): the CI3 model methods carry
- * names like insert()/update() that would collide with the CRUD API of the
- * CI4 Model class, so each EA model keeps its own methods and uses
- * $this->db->table(...) query-builder chains directly.
+ * Deliberately standalone (not extending the CI4 BaseModel/Model): the CI3
+ * model methods carry names like insert()/update() and protected visibility
+ * that would collide with the CRUD API of the CI4 classes, so each EA model
+ * keeps its own methods and drives $this->db->table(...) chains directly.
+ *
+ * @property BaseConnection $db
  */
-class Ea_Model extends BaseModel {
+class Ea_Model {
+    /**
+     * @var BaseConnection
+     */
+    protected $db;
+
     /**
      * EA_Model constructor.
      */

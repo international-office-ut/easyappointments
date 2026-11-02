@@ -13,6 +13,8 @@
 
 namespace App\Libraries;
 
+use Exception;
+
 /**
  * Email framework bridge for the CI4 stack.
  *

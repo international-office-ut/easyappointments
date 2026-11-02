@@ -13,6 +13,8 @@
 
 namespace App\Libraries;
 
+use Exception;
+
 /**
  * Timezones (CI4 port of the CI3 application/libraries/Timezones.php)
  */
@@ -488,11 +490,11 @@ class Timezones {
             return $value;
         }
 
-        $from = new DateTimeZone($from_timezone);
+        $from = new \DateTimeZone($from_timezone);
 
-        $to = new DateTimeZone($to_timezone);
+        $to = new \DateTimeZone($to_timezone);
 
-        $result = new DateTime($value, $from);
+        $result = new \DateTime($value, $from);
 
         $result->setTimezone($to);
 

@@ -13,6 +13,8 @@
 
 namespace App\Models;
 
+use Exception;
+
 use CodeIgniter\Database\BaseConnection;
 
 /**
@@ -167,7 +169,7 @@ class Maintenance_Model extends Ea_Model {
      */
     public function cutoff_date(int $days): string
     {
-        return (new DateTime('now'))
+        return (new \DateTime('now'))
             ->modify('-' . max(0, $days) . ' days')
             ->format('Y-m-d 00:00:00');
     }

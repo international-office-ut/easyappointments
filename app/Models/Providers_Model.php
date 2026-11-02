@@ -13,6 +13,8 @@
 
 namespace App\Models;
 
+use Exception;
+
 /**
  * Providers Model (CI4 port, from the CI3 application/models/Providers_model.php)
  *

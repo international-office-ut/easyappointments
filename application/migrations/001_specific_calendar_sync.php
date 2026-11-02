@@ -235,7 +235,10 @@ class Migration_Specific_calendar_sync extends CI_Migration {
             ],
         ]);
         $this->dbforge->add_key('id', TRUE);
-        $this->dbforge->add_key('id_service_categories');
+        // NOTE: the stray "add_key('id_service_categories')" that used to live here (the
+        // column does not exist in this table; CI3 rendered a broken "KEY ()" statement
+        // for it and every fresh install failed there) is dropped — the index on the
+        // "services" table column is the intended one.
         $this->dbforge->create_table('service_categories', TRUE, ['engine' => 'InnoDB']);
 
         $this->dbforge->add_field([

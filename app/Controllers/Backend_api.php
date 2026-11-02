@@ -13,6 +13,7 @@
 
 namespace App\Controllers;
 
+use Exception;
 use App\Libraries\Ics_file;
 use App\Libraries\Notifications;
 use App\Libraries\Timezones;
@@ -197,7 +198,7 @@ class Backend_api extends BaseController {
                 if (empty($providers))
                 {
                     return $this->response->setContentType('application/json')
-                        ->setOutput(json_encode([
+                        ->setBody(json_encode([
                             'appointments' => [],
                             'unavailability_events' => []
                         ]));
@@ -231,7 +232,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -252,7 +253,7 @@ class Backend_api extends BaseController {
             if ( ! $this->request->getPost('filter_type'))
             {
                 return $this->response->setContentType('application/json')
-                    ->setOutput(json_encode(['appointments' => []]));
+                    ->setBody(json_encode(['appointments' => []]));
             }
 
             if ($this->request->getPost('filter_type') == FILTER_TYPE_PROVIDER)
@@ -318,7 +319,7 @@ class Backend_api extends BaseController {
                 $unavailable['provider'] = $this->providers_model->get_row($unavailable['id_users_provider']);
             }
 
-            return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+            return $this->response->setContentType('application/json')->setBody(json_encode($response));
         }
         catch (Exception $exception)
         {
@@ -330,7 +331,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -421,7 +422,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -548,7 +549,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -612,7 +613,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -650,7 +651,7 @@ class Backend_api extends BaseController {
             $unavailable['id'] = $this->appointments_model->add_unavailable($unavailable);
             $unavailable = $this->appointments_model->get_row($unavailable['id']); // fetch all inserted data
 
-            return $this->response->setContentType('application/json')->setOutput(json_encode(AJAX_SUCCESS));
+            return $this->response->setContentType('application/json')->setBody(json_encode(AJAX_SUCCESS));
         }
         catch (Exception $exception)
         {
@@ -662,7 +663,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -696,7 +697,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -742,7 +743,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -787,7 +788,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -825,7 +826,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -854,7 +855,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -891,7 +892,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -920,7 +921,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -959,7 +960,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -997,7 +998,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -1026,7 +1027,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -1057,7 +1058,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -1097,7 +1098,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -1135,7 +1136,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -1164,7 +1165,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -1204,7 +1205,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -1236,7 +1237,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -1272,7 +1273,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -1303,7 +1304,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -1360,7 +1361,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -1428,7 +1429,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -1457,7 +1458,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -1497,7 +1498,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -1535,7 +1536,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -1564,7 +1565,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -1625,7 +1626,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -1701,7 +1702,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     public function ajax_validate_username()
@@ -1728,7 +1729,7 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**
@@ -1764,6 +1765,6 @@ class Backend_api extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 }

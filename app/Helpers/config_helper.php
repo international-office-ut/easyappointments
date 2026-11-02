@@ -36,7 +36,7 @@ function ea_config($key)
         case 'base_url':                   return rtrim((string) env('app.baseURL', ''), '/') . '/';
 
         default:
-            throw new LogicException('Unknown configuration key: ' . $key);
+            throw new \LogicException('Unknown configuration key: ' . $key);
     }
 }
 

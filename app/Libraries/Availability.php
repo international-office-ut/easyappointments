@@ -19,6 +19,8 @@
  */
 namespace App\Libraries;
 
+use Exception;
+
 class Availability {
     /**
      * Availability constructor.
@@ -114,14 +116,14 @@ class Availability {
                 'end' => $date_working_plan['end']
             ];
 
-            $day_start = new DateTime($date_working_plan['start']);
-            $day_end = new DateTime($date_working_plan['end']);
+            $day_start = new \DateTime($date_working_plan['start']);
+            $day_end = new \DateTime($date_working_plan['end']);
 
             // Split the working plan to available time periods that do not contain the breaks in them.
             foreach ($date_working_plan['breaks'] as $index => $break)
             {
-                $break_start = new DateTime($break['start']);
-                $break_end = new DateTime($break['end']);
+                $break_start = new \DateTime($break['start']);
+                $break_end = new \DateTime($break['end']);
 
                 if ($break_start < $day_start)
                 {
@@ -140,8 +142,8 @@ class Availability {
 
                 foreach ($periods as $key => $period)
                 {
-                    $period_start = new DateTime($period['start']);
-                    $period_end = new DateTime($period['end']);
+                    $period_start = new \DateTime($period['start']);
+                    $period_end = new \DateTime($period['end']);
 
                     $remove_current_period = FALSE;
 
@@ -183,16 +185,16 @@ class Availability {
         {
             foreach ($periods as $index => &$period)
             {
-                $appointment_start = new DateTime($appointment['start_datetime']);
-                $appointment_end = new DateTime($appointment['end_datetime']);
+                $appointment_start = new \DateTime($appointment['start_datetime']);
+                $appointment_end = new \DateTime($appointment['end_datetime']);
 
                 if ($appointment_start >= $appointment_end)
                 {
                     continue;
                 }
 
-                $period_start = new DateTime($date . ' ' . $period['start']);
-                $period_end = new DateTime($date . ' ' . $period['end']);
+                $period_start = new \DateTime($date . ' ' . $period['start']);
+                $period_end = new \DateTime($date . ' ' . $period['end']);
 
                 if ($appointment_start <= $period_start && $appointment_end <= $period_end && $appointment_end <= $period_start)
                 {
@@ -289,8 +291,8 @@ class Availability {
 
         foreach ($empty_periods as $period)
         {
-            $start_hour = new DateTime($date . ' ' . $period['start']);
-            $end_hour = new DateTime($date . ' ' . $period['end']);
+            $start_hour = new \DateTime($date . ' ' . $period['start']);
+            $end_hour = new \DateTime($date . ' ' . $period['end']);
             $interval = $service['availabilities_type'] === AVAILABILITIES_TYPE_FIXED ? (int)$service['duration'] : 15;
 
             $current_hour = $start_hour;
@@ -299,7 +301,7 @@ class Availability {
             while (($diff->h * 60 + $diff->i) >= (int)$service['duration'] && $diff->invert === 0)
             {
                 $available_hours[] = $current_hour->format('H:i');
-                $current_hour->add(new DateInterval('PT' . $interval . 'M'));
+                $current_hour->add(new \DateInterval('PT' . $interval . 'M'));
                 $diff = $current_hour->diff($end_hour);
             }
         }
@@ -355,8 +357,8 @@ class Availability {
 
         $periods = [
             [
-                'start' => new DateTime($date . ' ' . $date_working_plan['start']),
-                'end' => new DateTime($date . ' ' . $date_working_plan['end'])
+                'start' => new \DateTime($date . ' ' . $date_working_plan['start']),
+                'end' => new \DateTime($date . ' ' . $date_working_plan['end'])
             ]
         ];
 
@@ -366,8 +368,8 @@ class Availability {
         $hours = [];
 
         $interval_value = $service['availabilities_type'] == AVAILABILITIES_TYPE_FIXED ? $service['duration'] : '15';
-        $interval = new DateInterval('PT' . (int)$interval_value . 'M');
-        $duration = new DateInterval('PT' . (int)$service['duration'] . 'M');
+        $interval = new \DateInterval('PT' . (int)$interval_value . 'M');
+        $duration = new \DateInterval('PT' . (int)$service['duration'] . 'M');
 
         foreach ($periods as $period)
         {
@@ -434,8 +436,8 @@ class Availability {
 
         foreach ($breaks as $break)
         {
-            $break_start = new DateTime($selected_date . ' ' . $break['start']);
-            $break_end = new DateTime($selected_date . ' ' . $break['end']);
+            $break_start = new \DateTime($selected_date . ' ' . $break['start']);
+            $break_end = new \DateTime($selected_date . ' ' . $break['end']);
 
             foreach ($periods as &$period)
             {
@@ -493,8 +495,8 @@ class Availability {
     {
         foreach ($unavailability_events as $unavailability_event)
         {
-            $unavailability_start = new DateTime($unavailability_event['start_datetime']);
-            $unavailability_end = new DateTime($unavailability_event['end_datetime']);
+            $unavailability_start = new \DateTime($unavailability_event['start_datetime']);
+            $unavailability_end = new \DateTime($unavailability_event['end_datetime']);
 
             foreach ($periods as &$period)
             {
@@ -555,17 +557,17 @@ class Availability {
      */
     protected function consider_book_advance_timeout($selected_date, $available_hours, $provider)
     {
-        $provider_timezone = new DateTimeZone($provider['timezone']);
+        $provider_timezone = new \DateTimeZone($provider['timezone']);
 
         $book_advance_timeout = (new \App\Models\Settings_Model)->get_setting('book_advance_timeout');
 
-        $threshold = new DateTime('now', $provider_timezone);
+        $threshold = new \DateTime('now', $provider_timezone);
 
         $threshold->modify('+' . $book_advance_timeout . ' minutes');
 
         foreach ($available_hours as $index => $value)
         {
-            $available_hour = new DateTime($selected_date . ' ' . $value, $provider_timezone);
+            $available_hour = new \DateTime($selected_date . ' ' . $value, $provider_timezone);
 
             if ($available_hour->getTimestamp() <= $threshold->getTimestamp())
             {

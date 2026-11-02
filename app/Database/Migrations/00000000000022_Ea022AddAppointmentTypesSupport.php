@@ -13,6 +13,8 @@
 
 namespace App\Database\Migrations;
 
+use CodeIgniter\Database\Migration;
+
 
 /**
  * (CI4 port of the CI3 application/migrations/022_add_appointment_types_support.php)
@@ -32,7 +34,7 @@ class Migration_Ea022AddAppointmentTypesSupport extends Migration {
      */
     public function up()
     {
-        if ( ! $this->db->field_exists('appointment_mode', 'services'))
+        if ( ! in_array('appointment_mode', array_column($this->db->getFieldData('services'), 'name'), TRUE))
         {
             $this->db->query('
                 ALTER TABLE `' . $this->db->prefixTable('services') . '`
@@ -40,7 +42,7 @@ class Migration_Ea022AddAppointmentTypesSupport extends Migration {
             ');
         }
 
-        if ( ! $this->db->field_exists('appointment_mode', 'user_settings'))
+        if ( ! in_array('appointment_mode', array_column($this->db->getFieldData('user_settings'), 'name'), TRUE))
         {
             $this->db->query('
                 ALTER TABLE `' . $this->db->prefixTable('user_settings') . '`
@@ -48,7 +50,7 @@ class Migration_Ea022AddAppointmentTypesSupport extends Migration {
             ');
         }
 
-        if ( ! $this->db->field_exists('zoom_link', 'user_settings'))
+        if ( ! in_array('zoom_link', array_column($this->db->getFieldData('user_settings'), 'name'), TRUE))
         {
             $this->db->query('
                 ALTER TABLE `' . $this->db->prefixTable('user_settings') . '`
@@ -56,7 +58,7 @@ class Migration_Ea022AddAppointmentTypesSupport extends Migration {
             ');
         }
 
-        if ( ! $this->db->table_exists('service_weekday_modes'))
+        if ( ! $this->db->tableExists('service_weekday_modes'))
         {
             $this->db->query('
                 CREATE TABLE `' . $this->db->prefixTable('service_weekday_modes') . '` (
@@ -96,7 +98,7 @@ class Migration_Ea022AddAppointmentTypesSupport extends Migration {
             DROP TABLE IF EXISTS `' . $this->db->prefixTable('service_weekday_modes') . '`;
         ');
 
-        if ($this->db->field_exists('zoom_link', 'user_settings'))
+        if (in_array('zoom_link', array_column($this->db->getFieldData('user_settings'), 'name'), TRUE))
         {
             $this->db->query('
                 ALTER TABLE `' . $this->db->prefixTable('user_settings') . '`
@@ -104,7 +106,7 @@ class Migration_Ea022AddAppointmentTypesSupport extends Migration {
             ');
         }
 
-        if ($this->db->field_exists('appointment_mode', 'user_settings'))
+        if (in_array('appointment_mode', array_column($this->db->getFieldData('user_settings'), 'name'), TRUE))
         {
             $this->db->query('
                 ALTER TABLE `' . $this->db->prefixTable('user_settings') . '`
@@ -112,7 +114,7 @@ class Migration_Ea022AddAppointmentTypesSupport extends Migration {
             ');
         }
 
-        if ($this->db->field_exists('appointment_mode', 'services'))
+        if (in_array('appointment_mode', array_column($this->db->getFieldData('services'), 'name'), TRUE))
         {
             $this->db->query('
                 ALTER TABLE `' . $this->db->prefixTable('services') . '`

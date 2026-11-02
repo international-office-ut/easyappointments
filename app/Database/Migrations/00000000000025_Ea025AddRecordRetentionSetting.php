@@ -13,6 +13,8 @@
 
 namespace App\Database\Migrations;
 
+use CodeIgniter\Database\Migration;
+
 
 /**
  * (CI4 port of the CI3 application/migrations/025_add_record_retention_setting.php)
@@ -30,10 +32,13 @@ class Migration_Ea025AddRecordRetentionSetting extends Migration {
      */
     public function up()
     {
-        if ($this->db->table_exists('settings')
-            && $this->db->get_where('settings', ['name' => 'record_retention_days'])->num_rows() === 0)
+        if ($this->db->tableExists('settings')
+            && $this->db->table('settings')->where(['name' => 'record_retention_days'])->countAllResults() === 0)
         {
-            $this->db->insert('settings', ['name' => 'record_retention_days', 'value' => '90']);
+            $this->db->table('settings')->insert([
+                'name' => 'record_retention_days',
+                'value' => '90'
+            ]);
         }
     }
 
@@ -42,9 +47,9 @@ class Migration_Ea025AddRecordRetentionSetting extends Migration {
      */
     public function down()
     {
-        if ($this->db->table_exists('settings'))
+        if ($this->db->tableExists('settings'))
         {
-            $this->db->delete('settings', ['name' => 'record_retention_days']);
+            $this->db->table('settings')->where(['name' => 'record_retention_days'])->delete();
         }
     }
 }

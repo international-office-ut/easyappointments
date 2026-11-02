@@ -13,6 +13,7 @@
 
 namespace App\Controllers\Api\V1;
 
+use Exception;
 use App\Libraries\Availability;
 use App\Models\Appointments_Model;
 use App\Models\Providers_Model;
@@ -71,7 +72,7 @@ class Availabilities extends API_V1_Controller {
 
             return $this->response
                 ->setContentType('application/json')
-                ->setOutput(json_encode($available_hours));
+                ->setBody(json_encode($available_hours));
         }
         catch (Exception $exception)
         {

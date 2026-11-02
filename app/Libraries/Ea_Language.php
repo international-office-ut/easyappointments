@@ -13,6 +13,8 @@
 
 namespace App\Libraries;
 
+use Exception;
+
 use CodeIgniter\Language\Language;
 
 /**

@@ -151,7 +151,7 @@ if ( ! function_exists('resolve_service_location'))
     {
         try
         {
-            $start = new DateTime($start_datetime, new DateTimeZone($timezone));
+            $start = new \DateTime($start_datetime, new \DateTimeZone($timezone));
         }
         catch (Exception $exception)
         {

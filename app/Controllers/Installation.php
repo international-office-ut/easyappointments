@@ -13,6 +13,8 @@
 
 namespace App\Controllers;
 
+use Exception;
+use App\Controllers\Concerns\Baseline_Migration;
 use App\Models\Admins_Model;
 use App\Models\Customers_Model;
 use App\Models\Providers_Model;
@@ -29,6 +31,8 @@ use Config\Deployment;
  * (CI4 port of the CI3 application/controllers/Installation.php)
  */
 class Installation extends BaseController {
+    use Baseline_Migration;
+
     protected Admins_Model $admins_model;
     protected Settings_Model $settings_model;
     protected Services_Model $services_model;
@@ -72,7 +76,7 @@ class Installation extends BaseController {
         {
             if (is_app_installed())
             {
-                return $this->response->setContentType('application/json')->setOutput(json_encode(AJAX_SUCCESS));
+                return $this->response->setContentType('application/json')->setBody(json_encode(AJAX_SUCCESS));
             }
 
             $this->assert_valid_installation_origin();
@@ -80,7 +84,7 @@ class Installation extends BaseController {
             $admin = $this->request->getPost('admin');
             $company = $this->request->getPost('company');
 
-            $migrations = $migrations = new MigrationRunner('default');
+            $migrations = new MigrationRunner(config(\Config\Migrations::class));
 
             // Baseline stamp: on an existing database (installed through CI3) the
             // tables already exist, so CI4 marks the whole CI3 migration chain as
@@ -165,53 +169,7 @@ class Installation extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
-    }
-
-    /**
-     * Baseline migration stamp: marks the entire CI3 chain as done on the CI4
-     * migration history table, so that the transitioned databases do not replay
-     * the DDL of the already-migrated schema.
-     *
-     * @param MigrationRunner $migrations Runner bound to the default DB group.
-     *
-     * @return void
-     */
-    protected function baseline_stamp(MigrationRunner $migrations): void
-    {
-        $db = db_connect();
-
-        $migrations_found = $migrations->findMigrations();
-
-        if ($migrations_found === []) {
-            return;
-        }
-
-        $batch_next = ((int) $db->table($this->migration_table())
-            ->selectMax('batch')
-            ->get()
-            ->getRow()
-            ?->batch ?? 0) + 1;
-
-        foreach ($migrations_found as $row)
-        {
-            $db->table($this->migration_table())->insert([
-                'version'   => $row->version,
-                'class'     => $row->class,
-                'group'     => $row->group ?? 'default',
-                'namespace' => $row->namespace ?? 'App',
-                'time'      => time(),
-                'batch'     => $batch_next,
-            ]);
-        }
-    }
-
-    /**
-     * History table name with the DB prefix applied (the CI4 table naming).
-     */
-    protected function migration_table(): string
-    {
-        return db_connect()->prefixTable('migrations');
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 
     /**

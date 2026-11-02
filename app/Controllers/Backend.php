@@ -401,7 +401,7 @@ class Backend extends BaseController {
                 throw new Exception('You do not have the required privileges for this task!');
             }
 
-            $migrations = new MigrationRunner('default');
+            $migrations = new MigrationRunner(config(\Config\Migrations::class));
 
             $migrations->latest();
 

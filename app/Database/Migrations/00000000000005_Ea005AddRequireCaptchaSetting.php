@@ -13,6 +13,8 @@
 
 namespace App\Database\Migrations;
 
+use CodeIgniter\Database\Migration;
+
 
 /**
  * (CI4 port of the CI3 application/migrations/005_add_require_captcha_setting.php)
@@ -30,7 +32,7 @@ class Migration_Ea005AddRequireCaptchaSetting extends Migration {
      */
     public function up()
     {
-        $this->db->insert('settings', [
+        $this->db->table('settings')->insert([
             'name' => 'require_captcha',
             'value' => '0'
         ]);
@@ -43,6 +45,6 @@ class Migration_Ea005AddRequireCaptchaSetting extends Migration {
      */
     public function down()
     {
-        $this->db->delete('settings', ['name' => 'require_captcha']);
+        $this->db->table('settings')->where(['name' => 'require_captcha'])->delete();
     }
 }

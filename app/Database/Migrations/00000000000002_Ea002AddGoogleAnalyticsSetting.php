@@ -13,6 +13,8 @@
 
 namespace App\Database\Migrations;
 
+use CodeIgniter\Database\Migration;
+
 
 /**
  * (CI4 port of the CI3 application/migrations/002_add_google_analytics_setting.php)
@@ -30,7 +32,7 @@ class Migration_Ea002AddGoogleAnalyticsSetting extends Migration {
      */
     public function up()
     {
-        $this->db->insert('settings', [
+        $this->db->table('settings')->insert([
             'name' => 'google_analytics_code',
             'value' => ''
         ]);
@@ -43,6 +45,6 @@ class Migration_Ea002AddGoogleAnalyticsSetting extends Migration {
      */
     public function down()
     {
-        $this->db->delete('settings', ['name' => 'google_analytics_code']);
+        $this->db->table('settings')->where(['name' => 'google_analytics_code'])->delete();
     }
 }

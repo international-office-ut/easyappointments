@@ -13,6 +13,8 @@
 
 namespace App\Database\Migrations;
 
+use CodeIgniter\Database\Migration;
+
 
 /**
  * (CI4 port of the CI3 application/migrations/003_add_customer_notifications_setting.php)
@@ -30,7 +32,7 @@ class Migration_Ea003AddCustomerNotificationsSetting extends Migration {
      */
     public function up()
     {
-        $this->db->insert('settings', [
+        $this->db->table('settings')->insert([
             'name' => 'customer_notifications',
             'value' => '1'
         ]);
@@ -43,6 +45,6 @@ class Migration_Ea003AddCustomerNotificationsSetting extends Migration {
      */
     public function down()
     {
-        $this->db->delete('settings', ['name' => 'customer_notifications']);
+        $this->db->table('settings')->where(['name' => 'customer_notifications'])->delete();
     }
 }

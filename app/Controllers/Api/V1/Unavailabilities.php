@@ -13,6 +13,7 @@
 
 namespace App\Controllers\Api\V1;
 
+use Exception;
 use App\Models\Appointments_Model;
 use EA\Engine\Api\V1\Parsers\Unavailabilities as UnavailabilitiesParser;
 use EA\Engine\Api\V1\Request;

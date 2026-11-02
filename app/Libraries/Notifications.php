@@ -13,6 +13,8 @@
 
 namespace App\Libraries;
 
+use Exception;
+
 use App\Models\Admins_Model;
 use App\Models\Appointments_Model;
 use App\Models\Providers_Model;

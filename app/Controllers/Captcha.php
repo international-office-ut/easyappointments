@@ -13,6 +13,7 @@
 
 namespace App\Controllers;
 
+use Exception;
 use AltchaOrg\Altcha\Altcha;
 use AltchaOrg\Altcha\CreateChallengeOptions;
 use AltchaOrg\Altcha\Algorithm\Pbkdf2;
@@ -51,6 +52,6 @@ class Captcha extends BaseController {
 
         return $this->response
             ->setContentType('application/json')
-            ->setOutput(json_encode($challenge));
+            ->setBody(json_encode($challenge));
     }
 }

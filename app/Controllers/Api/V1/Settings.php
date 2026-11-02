@@ -13,6 +13,7 @@
 
 namespace App\Controllers\Api\V1;
 
+use Exception;
 use App\Models\Settings_Model;
 use EA\Engine\Api\V1\Parsers\Settings as SettingsParser;
 use EA\Engine\Api\V1\Request;

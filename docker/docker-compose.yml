@@ -1,21 +1,32 @@
-version: "3.1"
 services:
-    mysql:
-        image: mysql:5.7
+    mariadb:
+        image: mariadb:11
         container_name: easyappointments-database
-        volumes:
-            - ./mysql:/var/lib/mysql
         environment:
-            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root}
-            - MYSQL_DATABASE=easyappointments
+            - MARIADB_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root}
+            - MARIADB_DATABASE=easyappointments
         ports:
             - "8001:3306"
+        volumes:
+            - mariadb_data:/var/lib/mysql
+        healthcheck:
+            test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+            interval: 5s
+            retries: 12
+            timeout: 3s
+
     server:
         build: ./server
-        image: easyappointments-server:v1
+        image: easyappointments-server:php83
         container_name: easyappointments-server
         ports:
             - "8000:80"
         volumes:
             - ../:/var/www/html
-            - ./server/php.ini:/usr/local/etc/php/conf.d/99-overrides.ini
+            - ./server/php.ini:/usr/local/etc/php/conf.d/99-overrides.ini:ro
+        depends_on:
+            mariadb:
+                condition: service_healthy
+
+volumes:
+    mariadb_data:

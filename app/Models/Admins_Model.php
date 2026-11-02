@@ -13,6 +13,8 @@
 
 namespace App\Models;
 
+use Exception;
+
 /**
  * Admins Model (CI4 port, from the CI3 application/models/Admins_model.php)
  *

@@ -13,6 +13,8 @@
 
 namespace App\Database\Migrations;
 
+use CodeIgniter\Database\Migration;
+
 
 /**
  * (CI4 port of the CI3 application/migrations/017_add_api_token_setting.php)
@@ -30,7 +32,7 @@ class Migration_Ea017AddApiTokenSetting extends Migration {
      */
     public function up()
     {
-        $this->db->insert('settings', [
+        $this->db->table('settings')->insert([
             'name' => 'api_token',
             'value' => ''
         ]);
@@ -43,6 +45,6 @@ class Migration_Ea017AddApiTokenSetting extends Migration {
      */
     public function down()
     {
-        $this->db->delete('settings', ['name' => 'api_token']);
+        $this->db->table('settings')->where(['name' => 'api_token'])->delete();
     }
 }

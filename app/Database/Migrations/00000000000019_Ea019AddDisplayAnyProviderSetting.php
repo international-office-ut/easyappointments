@@ -13,6 +13,8 @@
 
 namespace App\Database\Migrations;
 
+use CodeIgniter\Database\Migration;
+
 
 /**
  * (CI4 port of the CI3 application/migrations/019_add_display_any_provider_setting.php)
@@ -28,7 +30,7 @@ class Migration_Ea019AddDisplayAnyProviderSetting extends Migration {
      */
     public function up()
     {
-        $this->db->insert('settings', [
+        $this->db->table('settings')->insert([
             'name' => 'display_any_provider',
             'value' => '1'
         ]);
@@ -39,8 +41,8 @@ class Migration_Ea019AddDisplayAnyProviderSetting extends Migration {
      */
     public function down()
     {
-        $this->db->delete('settings', [
+        $this->db->table('settings')->where([
             'name' => 'display_any_provider'
-        ]);
+        ])->delete();
     }
 }

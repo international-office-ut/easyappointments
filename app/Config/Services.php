@@ -14,17 +14,18 @@
 namespace Config;
 
 use App\Libraries\Ea_Language;
-use CodeIgniter\Config\BaseService;
+use CodeIgniter\Language\Language as LanguageService;
 use CodeIgniter\Language\LanguageInterface;
+use CodeIgniter\Config\BaseService;
 
 /**
  * Services Overrides
  *
- * (CI4 port of the CI3 language bootstrapping into a custom Language service
- * so that the bare `lang('key')` style of the EA code works on both stacks.)
+ * (CI4 port: maps the CI3 bare-key language convention onto the CI4 Language
+ * service, so the EA sources keep working with their own `lang('key')` style.)
  */
 class Services extends BaseService {
-    public static function language(?string $locale = null, bool $getShared = true): LanguageInterface | Language
+    public static function language(?string $locale = null, bool $getShared = true): LanguageInterface | LanguageService
     {
         if ($getShared)
         {

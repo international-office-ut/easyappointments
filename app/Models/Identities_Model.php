@@ -13,6 +13,8 @@
 
 namespace App\Models;
 
+use Exception;
+
 /**
  * Identities Model (CI4 port, from the CI3 application/models/Identities_model.php)
  *

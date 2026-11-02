@@ -13,6 +13,7 @@
 
 namespace App\Controllers\Api\V1;
 
+use Exception;
 use App\Controllers\BaseController;
 use App\Models\Settings_Model;
 use EA\Engine\Api\V1\Authorization;
@@ -172,7 +173,7 @@ abstract class API_V1_Controller extends BaseController {
 
         $this->response->setStatusCode((int) $parts[0], $parts[1] ?? '');
         $this->response->setContentType('application/json');
-        $this->response->setOutput(json_encode($error, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+        $this->response->setBody(json_encode($error, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
         $this->response->send();
         exit;
     }

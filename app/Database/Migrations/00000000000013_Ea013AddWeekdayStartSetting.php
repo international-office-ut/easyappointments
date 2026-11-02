@@ -13,6 +13,8 @@
 
 namespace App\Database\Migrations;
 
+use CodeIgniter\Database\Migration;
+
 
 /**
  * (CI4 port of the CI3 application/migrations/013_add_weekday_start_setting.php)
@@ -28,7 +30,7 @@ class Migration_Ea013AddWeekdayStartSetting extends Migration {
      */
     public function up()
     {
-        $this->db->insert('settings', [
+        $this->db->table('settings')->insert([
             'name' => 'first_weekday',
             'value' => 'sunday'
         ]);
@@ -39,6 +41,6 @@ class Migration_Ea013AddWeekdayStartSetting extends Migration {
      */
     public function down()
     {
-        $this->db->delete('settings', ['name' => 'first_weekday']);
+        $this->db->table('settings')->where(['name' => 'first_weekday'])->delete();
     }
 }

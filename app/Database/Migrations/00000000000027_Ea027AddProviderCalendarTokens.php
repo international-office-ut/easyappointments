@@ -13,6 +13,8 @@
 
 namespace App\Database\Migrations;
 
+use CodeIgniter\Database\Migration;
+
 
 /**
  * (CI4 port of the CI3 application/migrations/027_add_provider_calendar_tokens.php)
@@ -32,7 +34,7 @@ class Migration_Ea027AddProviderCalendarTokens extends Migration {
      */
     public function up()
     {
-        if ( ! $this->db->table_exists('provider_calendar_tokens'))
+        if ( ! $this->db->tableExists('provider_calendar_tokens'))
         {
             $this->forge->addField([
                 'id' => [
@@ -68,7 +70,7 @@ class Migration_Ea027AddProviderCalendarTokens extends Migration {
                AND TABLE_NAME = \'' . $this->db->prefixTable('provider_calendar_tokens') . '\'
                AND COLUMN_NAME = \'id_users\'
                AND REFERENCED_TABLE_NAME IS NOT NULL
-        ')->result_array();
+        ')->getResultArray();
 
         if ( ! empty($foreign_keys))
         {
@@ -89,7 +91,7 @@ class Migration_Ea027AddProviderCalendarTokens extends Migration {
      */
     public function down()
     {
-        if ($this->db->table_exists('provider_calendar_tokens'))
+        if ($this->db->tableExists('provider_calendar_tokens'))
         {
             $this->forge->dropTable('provider_calendar_tokens', TRUE);
         }

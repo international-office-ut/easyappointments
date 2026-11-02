@@ -13,6 +13,8 @@
 
 namespace App\Database\Migrations;
 
+use CodeIgniter\Database\Migration;
+
 
 /**
  * (CI4 port of the CI3 application/migrations/024_remove_google_sync.php)
@@ -30,8 +32,8 @@ class Migration_Ea024RemoveGoogleSync extends Migration {
      */
     public function up()
     {
-        $drop_settings_columns = $this->db->table_exists('user_settings')
-            && $this->db->field_exists('google_sync', 'user_settings');
+        $drop_settings_columns = $this->db->tableExists('user_settings')
+            && in_array('google_sync', array_column($this->db->getFieldData('user_settings'), 'name'), TRUE);
 
         if ($drop_settings_columns)
         {
@@ -42,7 +44,7 @@ class Migration_Ea024RemoveGoogleSync extends Migration {
             ');
         }
 
-        if ($this->db->table_exists('appointments') && $this->db->field_exists('id_google_calendar', 'appointments'))
+        if ($this->db->tableExists('appointments') && in_array('id_google_calendar', array_column($this->db->getFieldData('appointments'), 'name'), TRUE))
         {
             $this->db->query('
                 ALTER TABLE `' . $this->db->prefixTable('appointments') . '`
@@ -50,7 +52,7 @@ class Migration_Ea024RemoveGoogleSync extends Migration {
             ');
         }
 
-        if ($this->db->table_exists('unavailables') && $this->db->field_exists('id_google_calendar', 'unavailables'))
+        if ($this->db->tableExists('unavailables') && in_array('id_google_calendar', array_column($this->db->getFieldData('unavailables'), 'name'), TRUE))
         {
             $this->db->query('
                 ALTER TABLE `' . $this->db->prefixTable('unavailables') . '`
@@ -58,9 +60,9 @@ class Migration_Ea024RemoveGoogleSync extends Migration {
             ');
         }
 
-        if ($this->db->table_exists('settings'))
+        if ($this->db->tableExists('settings'))
         {
-            $this->db->delete('settings', ['name' => 'google_analytics_code']);
+            $this->db->table('settings')->where(['name' => 'google_analytics_code'])->delete();
         }
     }
 
@@ -69,7 +71,7 @@ class Migration_Ea024RemoveGoogleSync extends Migration {
      */
     public function down()
     {
-        if ($this->db->table_exists('user_settings') && ! $this->db->field_exists('google_sync', 'user_settings'))
+        if ($this->db->tableExists('user_settings') && ! in_array('google_sync', array_column($this->db->getFieldData('user_settings'), 'name'), TRUE))
         {
             $this->db->query('
                 ALTER TABLE `' . $this->db->prefixTable('user_settings') . '`
@@ -81,7 +83,7 @@ class Migration_Ea024RemoveGoogleSync extends Migration {
             ');
         }
 
-        if ($this->db->table_exists('appointments') && ! $this->db->field_exists('id_google_calendar', 'appointments'))
+        if ($this->db->tableExists('appointments') && ! in_array('id_google_calendar', array_column($this->db->getFieldData('appointments'), 'name'), TRUE))
         {
             $this->db->query('
                 ALTER TABLE `' . $this->db->prefixTable('appointments') . '`
@@ -89,7 +91,7 @@ class Migration_Ea024RemoveGoogleSync extends Migration {
             ');
         }
 
-        if ($this->db->table_exists('unavailables') && ! $this->db->field_exists('id_google_calendar', 'unavailables'))
+        if ($this->db->tableExists('unavailables') && ! in_array('id_google_calendar', array_column($this->db->getFieldData('unavailables'), 'name'), TRUE))
         {
             $this->db->query('
                 ALTER TABLE `' . $this->db->prefixTable('unavailables') . '`
@@ -97,9 +99,12 @@ class Migration_Ea024RemoveGoogleSync extends Migration {
             ');
         }
 
-        if ($this->db->table_exists('settings'))
+        if ($this->db->tableExists('settings'))
         {
-            $this->db->insert('settings', ['name' => 'google_analytics_code', 'value' => NULL]);
+            $this->db->table('settings')->insert([
+                'name' => 'google_analytics_code',
+                'value' => NULL
+            ]);
         }
     }
 }

@@ -13,6 +13,7 @@
 
 namespace App\Controllers\Api\V1;
 
+use Exception;
 use App\Models\Admins_Model;
 use EA\Engine\Api\V1\Parsers\Admins as AdminsParser;
 use EA\Engine\Api\V1\Request;

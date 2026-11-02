@@ -22,7 +22,7 @@
  */
 function validate_mysql_datetime($datetime)
 {
-    $dt = DateTime::createFromFormat('Y-m-d H:i:s', $datetime);
+    $dt = \DateTime::createFromFormat('Y-m-d H:i:s', $datetime);
 
     return $dt ? TRUE : FALSE;
 }

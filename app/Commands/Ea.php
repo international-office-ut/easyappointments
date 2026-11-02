@@ -15,7 +15,6 @@ namespace App\Commands;
 
 use App\Controllers\Console as Console_Controller;
 use CodeIgniter\CLI\BaseCommand;
-use CodeIgniter\CLI\CLI;
 
 /**
  * Easy!Appointments console passthrough for `spark`.
@@ -39,35 +38,28 @@ class Ea extends BaseCommand {
     public function run(array $params)
     {
         // Route the sub-command params into the same expectations the CI3
-        // controller derived from $GLOBALS['argv'].
+        // controller derived from $GLOBALS['argv'] (index.php, console, cmd...).
         $command = array_shift($params) ?? 'help';
 
         $argv_backup = $GLOBALS['argv'];
-        $GLOBALS['argv'] = array_merge([$_SERVER['argv'][0] ?? '', $command], $params);
+        $GLOBALS['argv'] = array_merge([$_SERVER['argv'][0] ?? 'spark', 'console', $command], $params);
 
+        // The console controller runs standalone in the spark context: the CI4
+        // controller init wiring happens here (request/response/logger trio).
         $console = new Console_Controller;
+        $console->initController(service('request'), service('response'), service('logger'));
 
-        ob_start();
-        try
+        switch ($command)
         {
-            switch ($command)
-            {
-                case 'install':    $console->install(); break;
-                case 'migrate':    $console->migrate($params[0] ?? ''); break;
-                case 'seed':       $console->seed(); break;
-                case 'backup':     $console->backup(); break;
-                case 'maintain':   $console->maintain(); break;
-                case 'help':
-                default:           $console->help(); break;
-            }
+            case 'install':  $console->install(); break;
+            case 'migrate':  $console->migrate($params[0] ?? ''); break;
+            case 'seed':     $console->seed(); break;
+            case 'backup':   $console->backup(); break;
+            case 'maintain': $console->maintain(); break;
+            case 'help':
+            default:         $console->help(); break;
+        }
 
-            $output = ob_get_clean();
-            CLI::write($output ?: '');
-        }
-        finally
-        {
-            ob_end_clean();
-            $GLOBALS['argv'] = $argv_backup;
-        }
+        $GLOBALS['argv'] = $argv_backup;
     }
 }

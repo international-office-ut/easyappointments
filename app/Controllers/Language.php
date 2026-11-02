@@ -13,6 +13,7 @@
 
 namespace App\Controllers;
 
+use Exception;
 /**
  * Language Controller
  *
@@ -64,6 +65,6 @@ class Language extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 }

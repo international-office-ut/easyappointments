@@ -69,81 +69,15 @@ class Routing extends BaseRouting
     public bool $translateURIDashes = false;
 
     /**
-     * Sets the class/method that should be called if routing doesn't
-     * find a match. It can be the controller/method name like: Users::index
-     *
-     * This setting is passed to the Router class and handled there.
-     *
-     * If you want to use a closure, you will have to set it in the
-     * routes file by calling:
-     *
-     * $routes->set404Override(function() {
-     *    // Do something here
-     * });
-     *
-     * Example:
-     *  public $override404 = 'App\Errors::show404';
+     * Keeps the CI3 URL parity: every controller method stays reachable the
+     * legacy way (appointments/index, user/login, backend/calendar ...).
      */
-    public ?string $override404 = null;
+    public bool $autoRoute = true;
 
     /**
-     * If TRUE, the system will attempt to match the URI against
-     * Controllers by matching each segment against folders/files
-     * in APPPATH/Controllers, when a match wasn't found against
-     * defined routes.
-     *
-     * If FALSE, will stop searching and do NO automatic routing.
+     * The improved auto-router refuses the CI3-style legacy paths (default
+     * controller by name + "defined-route controller names" protection), so
+     * the legacy AutoRouter walks the controller namespace the CI3 way.
      */
-    public bool $autoRoute = false;
-
-    /**
-     * If TRUE, the system will look for attributes on controller
-     * class and methods that can run before and after the
-     * controller/method.
-     *
-     * If FALSE, will ignore any attributes.
-     */
-    public bool $useControllerAttributes = true;
-
-    /**
-     * For Defined Routes.
-     * If TRUE, will enable the use of the 'prioritize' option
-     * when defining routes.
-     *
-     * Default: false
-     */
-    public bool $prioritize = false;
-
-    /**
-     * For Defined Routes.
-     * If TRUE, matched multiple URI segments will be passed as one parameter.
-     *
-     * Default: false
-     */
-    public bool $multipleSegmentsOneParam = false;
-
-    /**
-     * For Auto Routing (Improved).
-     * Map of URI segments and namespaces.
-     *
-     * The key is the first URI segment. The value is the controller namespace.
-     * E.g.,
-     *   [
-     *       'blog' => 'Acme\Blog\Controllers',
-     *   ]
-     *
-     * @var array<string, string>
-     */
-    public array $moduleRoutes = [];
-
-    /**
-     * For Auto Routing (Improved).
-     * Whether to translate dashes in URIs for controller/method to CamelCase.
-     * E.g., blog-controller -> BlogController
-     *
-     * If you enable this, $translateURIDashes is ignored.
-     *
-     * Default: false
-     */
-    public bool $translateUriToCamelCase = true;
+    public bool $translateUriToCamelCase = false;
 }

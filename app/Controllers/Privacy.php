@@ -13,6 +13,7 @@
 
 namespace App\Controllers;
 
+use Exception;
 use App\Models\Customers_Model;
 
 /**
@@ -41,14 +42,14 @@ class Privacy extends BaseController {
 
             if (empty($customer_token))
             {
-                throw new InvalidArgumentException('Invalid customer token value provided.');
+                throw new \InvalidArgumentException('Invalid customer token value provided.');
             }
 
             $customer_id = cache()->get('customer-token-' . $customer_token);
 
             if (empty($customer_id))
             {
-                throw new InvalidArgumentException('Customer ID could not be found, please reload the page '
+                throw new \InvalidArgumentException('Customer ID could not be found, please reload the page '
                     . 'and try again.');
             }
 
@@ -68,6 +69,6 @@ class Privacy extends BaseController {
             ];
         }
 
-        return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
 }

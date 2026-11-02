@@ -13,6 +13,8 @@
 
 namespace App\Database\Migrations;
 
+use CodeIgniter\Database\Migration;
+
 
 /**
  * (CI4 port of the CI3 application/migrations/006_add_calendar_view_setting.php)
@@ -28,7 +30,7 @@ class Migration_Ea006AddCalendarViewSetting extends Migration {
      */
     public function up()
     {
-        if ( ! $this->db->field_exists('calendar_view', 'user_settings'))
+        if ( ! in_array('calendar_view', array_column($this->db->getFieldData('user_settings'), 'name'), TRUE))
         {
             $fields = [
                 'calendar_view' => [
@@ -40,7 +42,7 @@ class Migration_Ea006AddCalendarViewSetting extends Migration {
 
             $this->forge->addColumn('user_settings', $fields);
 
-            $this->db->update('user_settings', ['calendar_view' => 'default']);
+            $this->db->table('user_settings')->update(['calendar_view' => 'default']);
         }
     }
 
@@ -49,7 +51,7 @@ class Migration_Ea006AddCalendarViewSetting extends Migration {
      */
     public function down()
     {
-        if ($this->db->field_exists('calendar_view', 'user_settings'))
+        if (in_array('calendar_view', array_column($this->db->getFieldData('user_settings'), 'name'), TRUE))
         {
             $this->forge->dropColumn('user_settings', 'calendar_view');
         }

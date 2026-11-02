@@ -13,6 +13,8 @@
 
 namespace App\Database\Migrations;
 
+use CodeIgniter\Database\Migration;
+
 
 /**
  * (CI4 port of the CI3 application/migrations/016_add_require_phone_number_setting.php)
@@ -28,7 +30,7 @@ class Migration_Ea016AddRequirePhoneNumberSetting extends Migration {
      */
     public function up()
     {
-        $this->db->insert('settings', [
+        $this->db->table('settings')->insert([
             'name' => 'require_phone_number',
             'value' => '1'
         ]);
@@ -39,6 +41,6 @@ class Migration_Ea016AddRequirePhoneNumberSetting extends Migration {
      */
     public function down()
     {
-        $this->db->delete('settings', ['name' => 'require_phone_number']);
+        $this->db->table('settings')->where(['name' => 'require_phone_number'])->delete();
     }
 }

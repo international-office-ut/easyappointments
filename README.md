@@ -1,108 +1,87 @@
-<h1 align="center">
-    <br>
-    <a href="https://easyappointments.org">
-        <img src="https://raw.githubusercontent.com/alextselegidis/easyappointments/develop/docs/images/logo.png" alt="Easy!Appointments" width="150">
-    </a>
-    <br>
-    Easy!Appointments
-    <br>
-</h1>
+# Easy!Appointments
 
-<br>
+Easy!Appointments is an open source web scheduler that helps you setup your
+business with a clear and stylish approach, using the power of PHP and
+AJAX. It provides you with appointment scheduling, customer management and
+calendar syncing via iCal feeds.
 
-<h4 align="center">
-    A powerful Open Source Appointment Scheduler that can be installed on your server. 
-</h4>
+This fork runs a dual-stack layout during the CodeIgniter 4 migration:
 
-<p align="center">
-  <img alt="GitHub" src="https://img.shields.io/github/license/alextselegidis/easyappointments?style=for-the-badge">
-  <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/alextselegidis/easyappointments?style=for-the-badge">
-  <img alt="GitHub All Releases" src="https://img.shields.io/github/downloads/alextselegidis/easyappointments/total?style=for-the-badge">
-</p>
+- **CI3 legacy stack** — `index.php` + `application/` (still boots unchanged
+  until the cutover completes).
+- **CI4 stack** — `public/index.php`, `app/`, `spark` (CLI) and the same
+  `engine/` business-logic seam both stacks share.
 
-<p align="center">
-  <a href="#about">About</a> •
-  <a href="#features">Features</a> •
-  <a href="#setup">Setup</a> •
-  <a href="#installation">Installation</a> •
-  <a href="#license">License</a>
-</p>
+The CI4 side is the migration target — see `docs/ci4-config-mapping.md` for
+the CI3→CI4 configuration mapping and `docs/security-ops.md` for the ops
+checklist.
 
-![screenshot](screenshot.png)
+## Requirements
 
-## About
+- PHP >= 8.3 (with `mbstring`, `intl`, `gd`, `mysqli` / `pdo_mysql`).
+- MySQL 5.7 / newer or MariaDB compatible.
+- Apache (mod_rewrite, mod_headers) or Nginx.
 
-**Easy!Appointments** is a highly customizable web application that allows customers to book appointments with you 
-via a sophisticated web interface. Moreover, it provides the ability to sync your data with Google Calendar so you can 
-use them with other services. It is an open source project that you can download and install **even for commercial use**. 
-Easy!Appointments will run smoothly with your existing website as it can be installed in a single folder of the 
-server and of course share an existing database.
+## Quick start (CI4)
 
-## Features
+1. Copy this repo to your web root, write-protect nothing that the
+   `writable/` and `storage/` directories need, and make both writable.
+2. Copy `.env.example` to `.env` and set:
+   - `database.default.hostname`, `database.default.database`,
+     `database.default.username`, `database.default.password`
+   - `database.default.DBPrefix` = `'ea_'` (the CI3 overhead prefix, parity
+     with the legacy deployment)
+   - `app.baseURL`
+   The CI3-style secrets (`ALTCHA_HMAC_KEY`, `SMTP_*`, `SHIB_*`) keep their
+   legacy names — see the `.env.example` EA block.
+3. Set your web root to `public/` (Apache `DocumentRoot` / Nginx `root`).
+4. Fresh install: open the browser at the base URL and follow the installer;
+   the CI4 migrations run automatically.
+5. Existing installation (transitioned from CI3): the installer also handles
+   this case — the migration runner baselines the CI3 schema chain instead of
+   replaying it.
 
-The application is designed to be flexible enough so that it can handle any enterprise work flow. 
+## CLI
 
-* Customers and appointments management.
-* Services and providers organization.
-* Working plan and booking rules.
-* Google Calendar synchronization.
-* Email notifications system.
-* Self hosted installation.
-* Translated user interface.
-* User community support. 
+Both CLI surfaces run the same console actions:
 
-## Setup
+```sh
+php index.php console migrate         # CI3 style (still working during transition)
+php index.php console migrate fresh
+php index.php console seed
+php index.php console install
+php index.php console backup [path]
 
-To clone and run this application, you'll need [Git](https://git-scm.com), [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) and [Composer](https://getcomposer.org) installed on your computer. From your command line:
-
-```bash
-# Clone this repository
-$ git clone https://github.com/alextselegidis/easyappointments.git
-
-# Go into the repository
-$ cd easyappointments
-
-# Install dependencies
-$ npm install && composer install
-
-# Start the file watcher
-$ npm start
+php spark ea:migrate fresh            # CI4 style
+php spark ea:seed
+php spark ea:backup [path]
+php spark ea:maintain [dry]
 ```
 
-Note: If you're using Linux Bash for Windows, [see this guide](https://www.howtogeek.com/261575/how-to-run-graphical-linux-desktop-applications-from-windows-10s-bash-shell/) or use `node` from the command prompt.
+## Local development
 
-You can build the files by running `npm run build`. This command will bundle everything to a `build` directory.
+```sh
+composer install
+npm install
+npm start          # JS/CSS watch cycle, builds into assets/ directly
+```
 
-## Installation
+For the SSO (Shibboleth) smoke without an IdP, use the mock-header router:
 
-You will need to perform the following steps to install the application on your server:
+```sh
+SHIB_MOCK=1 SHIB_MOCK_MAIL=you@example.de SHIB_MOCK_NAME='You' \
+    php -S localhost:8080 tools/shib_mock_router.php
+```
 
-* Make sure that your server has Apache/Nginx, PHP and MySQL installed.
-* Create a new database (or use an existing one).
-* Copy the "easyappointments" source folder on your server.
-* Make sure that the "storage" directory is writable.
-* Rename the "config-sample.php" file to "config.php" and update its contents based on your environment.
-* Open the browser on the Easy!Appointments URL and follow the installation guide.
+## Tests
 
-That's it! You can now use Easy!Appointments at your will.
+```sh
+composer test    # PHPUnit over the engine/ business layer
+```
 
-You will find the latest release at [easyappointments.org](https://easyappointments.org).
-If you have problems installing or configuring the application visit the
-[official support group](https://groups.google.com/forum/#!forum/easy-appointments).
-You can also report problems on the [issues page](https://github.com/alextselegidis/easyappointments/issues)
-and help the development progress.
+## Production notes
 
-## License 
-
-Code Licensed Under [GPL v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html) | Content Under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)
-
----
-
-Website [alextselegidis.com](https://alextselegidis.com) &nbsp;&middot;&nbsp;
-GitHub [alextselegidis](https://github.com/alextselegidis) &nbsp;&middot;&nbsp;
-Twitter [@alextselegidis](https://twitter.com/AlexTselegidis)
-
-###### More Projects On Github
-###### ⇾ [Plainpad &middot; Self Hosted Note Taking App](https://github.com/alextselegidis/plainpad)
-###### ⇾ [Questionful &middot; Web Questionnaires Made Easy](https://github.com/alextselegidis/questionful)
-###### ⇾ [Integravy &middot; Service Orchestration At Your Fingertips](https://github.com/alextselegidis/integravy)
+- PHP 8.3 is the floor; deploy with `CI_ENVIRONMENT=production`.
+- Security response headers deploy at the server layer (`.htaccess` ships the
+  rules) so that they apply to errors and CORS-free responses too.
+- `docs/security-ops.md` carries the Shibboleth + hardening checklist.

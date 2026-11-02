@@ -80,7 +80,18 @@ class Installation extends BaseController {
             $admin = $this->request->getPost('admin');
             $company = $this->request->getPost('company');
 
-            $migrations = new MigrationRunner('default');
+            $migrations = $migrations = new MigrationRunner('default');
+
+            // Baseline stamp: on an existing database (installed through CI3) the
+            // tables already exist, so CI4 marks the whole CI3 migration chain as
+            // applied without replaying any DDL. On a fresh database the tables do
+            // not exist yet and the full chain runs below.
+            $has_tables = db_connect()->tableExists('appointments');
+
+            if ($has_tables)
+            {
+                $this->baseline_stamp($migrations);
+            }
 
             $migrations->latest();
 
@@ -155,6 +166,52 @@ class Installation extends BaseController {
         }
 
         return $this->response->setContentType('application/json')->setOutput(json_encode($response));
+    }
+
+    /**
+     * Baseline migration stamp: marks the entire CI3 chain as done on the CI4
+     * migration history table, so that the transitioned databases do not replay
+     * the DDL of the already-migrated schema.
+     *
+     * @param MigrationRunner $migrations Runner bound to the default DB group.
+     *
+     * @return void
+     */
+    protected function baseline_stamp(MigrationRunner $migrations): void
+    {
+        $db = db_connect();
+
+        $migrations_found = $migrations->findMigrations();
+
+        if ($migrations_found === []) {
+            return;
+        }
+
+        $batch_next = ((int) $db->table($this->migration_table())
+            ->selectMax('batch')
+            ->get()
+            ->getRow()
+            ?->batch ?? 0) + 1;
+
+        foreach ($migrations_found as $row)
+        {
+            $db->table($this->migration_table())->insert([
+                'version'   => $row->version,
+                'class'     => $row->class,
+                'group'     => $row->group ?? 'default',
+                'namespace' => $row->namespace ?? 'App',
+                'time'      => time(),
+                'batch'     => $batch_next,
+            ]);
+        }
+    }
+
+    /**
+     * History table name with the DB prefix applied (the CI4 table naming).
+     */
+    protected function migration_table(): string
+    {
+        return db_connect()->prefixTable('migrations');
     }
 
     /**

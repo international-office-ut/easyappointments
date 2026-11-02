@@ -47,7 +47,7 @@ abstract class BaseController extends Controller
     {
         if (session()->has('language'))
         {
-            config(App::class)->defaultLocale = session()->get('language');
+            config(\Config\App::class)->defaultLocale = session()->get('language');
             service('language')->setLocale(session()->get('language'));
 
             return;
@@ -59,7 +59,7 @@ abstract class BaseController extends Controller
             && in_array($languageCookie, config(Deployment::class)->available_languages, TRUE))
         {
             session()->set('language', $languageCookie);
-            config(App::class)->defaultLocale = $languageCookie;
+            config(\Config\App::class)->defaultLocale = $languageCookie;
             service('language')->setLocale($languageCookie);
         }
     }

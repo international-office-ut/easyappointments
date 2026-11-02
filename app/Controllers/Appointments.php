@@ -602,7 +602,7 @@ class Appointments extends BaseController {
             }
 
             // Save customer language (the language which is used to render the booking page).
-            $customer['language'] = config(App::class)->defaultLocale;
+            $customer['language'] = config(\Config\App::class)->defaultLocale;
             $customer_id = $this->customers_model->add($customer);
 
             $appointment['id_users_customer'] = $customer_id;

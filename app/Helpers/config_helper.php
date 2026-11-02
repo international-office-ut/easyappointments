@@ -33,8 +33,8 @@ function ea_config($key)
         case 'version':                    return config(Deployment::class)->version;
         case 'release_label':              return config(Deployment::class)->release_label;
         case 'available_languages':        return config(Deployment::class)->available_languages;
-        case 'language':                   return config(App::class)->defaultLocale;
-        case 'base_url':                   return rtrim(config(App::class)->baseURL, '/ ');
+        case 'language':                   return config(\Config\App::class)->defaultLocale;
+        case 'base_url':                   return rtrim(config(\Config\App::class)->baseURL, '/ ');
 
         default:
             throw new \LogicException('Unknown configuration key: ' . $key);

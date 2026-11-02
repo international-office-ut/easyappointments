@@ -62,16 +62,16 @@ class Sort implements ProcessorsInterface {
 
         foreach ($response as $index => $entry)
         {
-            $sort_order1[$index] = $entry[substr($sort[0], 1)];
+            $sort_order1[$index] = $entry[self::field_name($sort[0])];
 
             if ($sort_direction2)
             {
-                $sort_order2[$index] = $entry[substr($sort[1], 1)];
+                $sort_order2[$index] = $entry[self::field_name($sort[1])];
             }
 
             if ($sort_direction3)
             {
-                $sort_order3[$index] = $entry[substr($sort[2], 1)];
+                $sort_order3[$index] = $entry[self::field_name($sort[2])];
             }
         }
 
@@ -95,5 +95,18 @@ class Sort implements ProcessorsInterface {
         $arguments[] = &$response;
 
         call_user_func_array('array_multisort', $arguments);
+    }
+
+    /**
+     * Strip the direction prefix ("-" or "+") from a sort column specification.
+     *
+     * @param string $spec Sort column, optionally prefixed with "-" (desc) or "+" (asc).
+     * @return string Returns the column name.
+     */
+    protected static function field_name($spec)
+    {
+        return substr($spec, 0, 1) === '-' || substr($spec, 0, 1) === '+'
+            ? substr($spec, 1)
+            : $spec;
     }
 }

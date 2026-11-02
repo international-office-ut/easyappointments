@@ -2,7 +2,12 @@
 Options -Indexes
 
 # --------------------------------------------------------------------
-# Security response headers (server-layer parity; also covers error responses).
+# Security response headers.
+#
+# The .htaccess layer is the single header source: it ships with the code
+# (package/file deploys included) and covers error responses via "always".
+# The vhost mirror got removed at the cutover so mod_headers does not emit
+# duplicated security headers (vhost + .htaccess both "set" the same names).
 # CSP stays out until the frontend baseline is evaluated report-only first.
 # --------------------------------------------------------------------
 <IfModule mod_headers.c>

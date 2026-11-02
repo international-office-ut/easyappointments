@@ -606,7 +606,9 @@ class Appointments extends BaseController {
             $customer_id = $this->customers_model->add($customer);
 
             $appointment['id_users_customer'] = $customer_id;
-            $appointment['is_unavailable'] = (int)$appointment['is_unavailable']; // needs to be type casted
+            // The guard strips the client flag by design: only the backend registers
+            // provider blocks, the public flow always saves a regular appointment.
+            $appointment['is_unavailable'] = FALSE;
             $appointment['id'] = $this->appointments_model->add($appointment);
             $appointment['hash'] = $this->appointments_model->get_value('hash', $appointment['id']);
 

@@ -38,7 +38,27 @@ class Autoload extends AutoloadConfig
      * @var array<string, list<string>|string>
      */
     public $psr4 = [
-        APP_NAMESPACE => APPPATH,
+        APP_NAMESPACE  => APPPATH,
+    ];
+
+    /**
+     * -------------------------------------------------------------------
+     * Helpers (loaded on every request, matching the CI3 autoload set)
+     * -------------------------------------------------------------------
+     */
+    public $helpers = [
+        // CI3 autoload set: custom_exceptions, url, file, language, asset,
+        // config, render, json_data, cookie — "url"/"file"/"language"/"cookie"
+        // are CI framework helpers, loaded on demand from CI4 in the ports.
+        'custom_exceptions',
+        'asset',
+        'config',
+        'render',
+        'json_data',
+        'data_validation',
+        'general',
+        'appointment_location',
+        'installation',
     ];
 
     /**
@@ -79,14 +99,9 @@ class Autoload extends AutoloadConfig
 
     /**
      * -------------------------------------------------------------------
-     * Helpers
+     * Helpers — see the $helpers property above, which carries the EA
+     * autoload set (the starter property stays empty here; PHP counts
+     * both as one with the duplicate above removed).
      * -------------------------------------------------------------------
-     * Prototype:
-     *   $helpers = [
-     *       'form',
-     *   ];
-     *
-     * @var list<string>
      */
-    public $helpers = [];
 }

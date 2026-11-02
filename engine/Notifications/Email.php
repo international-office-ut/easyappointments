@@ -19,7 +19,6 @@ use EA\Engine\Types\Email as EmailAddress;
 use EA\Engine\Types\NonEmptyText;
 use EA\Engine\Types\Text;
 use EA\Engine\Types\Url;
-use EA_Controller;
 use Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use RuntimeException;
@@ -51,10 +50,10 @@ class Email {
     /**
      * Class Constructor
      *
-     * @param \CI_Controller $CI
+     * @param object $CI Framework instance (CI3 controller or the CI4 bridge).
      * @param array $config Contains the email configuration to be used.
      */
-    public function __construct(\CI_Controller $CI, array $config)
+    public function __construct($CI, array $config)
     {
         $this->CI = $CI;
         $this->CI->load->helper('appointment_location');

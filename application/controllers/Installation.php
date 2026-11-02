@@ -116,7 +116,9 @@ class Installation extends EA_Controller {
                 ],
                 'settings' => [
                     'username' => 'janedoe',
-                    'password' => 'janedoe',
+                    // The demo provider must not log in with publicly known credentials, so the
+                    // password is randomized and never surfaced (it can be reset by an admin).
+                    'password' => bin2hex(random_bytes(16)),
                     'working_plan' => $this->settings_model->get_setting('company_working_plan'),
                     'notifications' => TRUE,
                     'calendar_view' => CALENDAR_VIEW_DEFAULT,

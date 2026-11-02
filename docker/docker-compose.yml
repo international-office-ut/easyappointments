@@ -6,7 +6,7 @@ services:
         volumes:
             - ./mysql:/var/lib/mysql
         environment:
-            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root}
             - MYSQL_DATABASE=easyappointments
         ports:
             - "8001:3306"

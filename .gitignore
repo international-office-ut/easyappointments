@@ -12,6 +12,11 @@
 /assets/js/**/*.min.js
 /assets/css/**/*.min.css
 /config.php
+/.env
+/writable/cache/*
+/writable/logs/*
+!/writable/cache/index.html
+!/writable/logs/index.html
 /storage/backups/*
 !/storage/backups/.htaccess
 !/storage/backups/index.html

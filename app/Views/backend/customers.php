@@ -1,7 +1,7 @@
 <script src="<?= asset_url('assets/ext/jquery-ui/jquery-ui-timepicker-addon.min.js') ?>"></script>
 <script src="<?= asset_url('assets/js/backend_customers_helper.js') ?>"></script>
 <script src="<?= asset_url('assets/js/backend_customers.js') ?>"></script>
-<script>
+<script nonce="<?= csp_nonce() ?>">
     var GlobalVariables = {
         csrfToken: <?= json_data(csrf_hash()) ?>,
         availableProviders: <?= json_data($available_providers) ?>,

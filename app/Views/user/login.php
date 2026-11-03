@@ -20,7 +20,7 @@
     <script src="<?= asset_url('assets/ext/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
     <script src="<?= asset_url('assets/ext/datejs/date.min.js') ?>"></script>
 
-    <script>
+    <script nonce="<?= csp_nonce() ?>">
         var GlobalVariables = {
             csrfToken: <?= json_data(csrf_hash()) ?>,
             baseUrl: <?= json_data($base_url) ?>,

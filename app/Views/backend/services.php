@@ -2,7 +2,7 @@
 <script src="<?= asset_url('assets/js/backend_categories_helper.js') ?>"></script>
 <script src="<?= asset_url('assets/js/backend_services.js') ?>"></script>
 <script src="<?= asset_url('assets/ext/jquery-ui/jquery-ui-timepicker-addon.min.js') ?>"></script>
-<script>
+<script nonce="<?= csp_nonce() ?>">
     var GlobalVariables = {
         csrfToken: <?= json_data(csrf_hash()) ?>,
         baseUrl: <?= json_data($base_url) ?>,

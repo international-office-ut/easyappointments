@@ -461,7 +461,7 @@
     <?php require 'privacy_policy_modal.php' ?>
 <?php endif ?>
 
-<script>
+<script nonce="<?= csp_nonce() ?>">
     var GlobalVariables = {
         availableServices: <?= json_data($available_services) ?>,
         availableProviders: <?= json_data($available_providers) ?>,
@@ -498,7 +498,7 @@
 <script src="<?= asset_url('assets/js/frontend_book_api.js') ?>"></script>
 <script src="<?= asset_url('assets/js/frontend_book.js') ?>"></script>
 
-<script>
+<script nonce="<?= csp_nonce() ?>">
     $(function () {
         FrontendBook.initialize(true, GlobalVariables.manageMode);
         GeneralFunctions.enableLanguageSelection($('#select-language'));

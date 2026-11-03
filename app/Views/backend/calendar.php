@@ -10,7 +10,7 @@
 <script src="<?= asset_url('assets/js/backend_calendar_appointments_modal.js') ?>"></script>
 <script src="<?= asset_url('assets/js/backend_calendar_unavailability_events_modal.js') ?>"></script>
 <script src="<?= asset_url('assets/js/backend_calendar_api.js') ?>"></script>
-<script>
+<script nonce="<?= csp_nonce() ?>">
     var GlobalVariables = {
         csrfToken: <?= json_data(csrf_hash()) ?>,
         availableProviders: <?= json_data($available_providers) ?>,

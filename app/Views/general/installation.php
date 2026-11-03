@@ -133,7 +133,7 @@
     Powered by <a href="https://easyappointments.org">Easy!Appointments</a>
 </footer>
 
-<script>
+<script nonce="<?= csp_nonce() ?>">
     var GlobalVariables = {
         csrfToken: <?= json_data(csrf_hash()) ?>,
         baseUrl: <?= json_data(ea_config('base_url')) ?>

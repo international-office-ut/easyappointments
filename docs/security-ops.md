@@ -7,12 +7,16 @@ this list for every fresh installation and after every major infrastructure chan
 
 - Terminate TLS on the web server and force `https` (`Config::BASE_URL` included).
 - HSTS header on the backend and booking pages (`Strict-Transport-Security`) once TLS is stable.
-- Content Security Policy ships through `public/.htaccess` (auto-enabled via `mod_headers`): the policy
-  locks every subresource origin to `self` so that injected content cannot phone out or load third-party
-  code. The `'unsafe-inline'`, `'unsafe-eval'` and `worker-src blob: data:` concessions are documented in
-  the `.htaccess` header block and stay tracked for removal with future dependency updates.
-- When CSP violations appear after a dependency update, check the browser console report for the
-  mismatched directive first, then extend the policy there (the header is the single source).
+- Content Security Policy is emitted for every response through the App\Filters\Content_security
+  filter: the policy locks every subresource origin to `self` (except the ALTCHA proof-of-work
+  worker, which runs from a blob/data URL) and each inline script element is nonced through the
+  `csp_nonce()` helper (the `render` helper), which is why the header cannot be static.
+- The spec-required `report-uri` targets `site_url('csp-report')` (App\Controllers\Csp_report):
+  violations are rate limited and logged into storage/logs. No CSP line may be added back to
+  public/.htaccess or vhosts — browsers intersect duplicate CSP headers and block nonced scripts.
+- When CSP violations appear after a dependency update, `storage/logs` carries the exact
+  directive+origin; patch or adapt the dependency, then drop the token from App\Filters\Content_security
+  instead of weakening the policy globally.
 
 ## Application configuration (`.env`)
 

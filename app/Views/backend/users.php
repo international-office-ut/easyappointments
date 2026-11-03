@@ -6,7 +6,7 @@
 <script src="<?= asset_url('assets/js/working_plan_exceptions_modal.js') ?>"></script>
 <script src="<?= asset_url('assets/ext/jquery-ui/jquery-ui-timepicker-addon.min.js') ?>"></script>
 <script src="<?= asset_url('assets/ext/jquery-jeditable/jquery.jeditable.min.js') ?>"></script>
-<script>
+<script nonce="<?= csp_nonce() ?>">
     var GlobalVariables = {
         csrfToken: <?= json_data(csrf_hash()) ?>,
         baseUrl: <?= json_data($base_url) ?>,

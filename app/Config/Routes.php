@@ -90,6 +90,9 @@ foreach ($backendApiMethods as $backendApiMethod)
 // Provider calendar feed: the token lives in the URL path (never in a query string).
 $routes->get('ical/(:any)', '\App\Controllers\Ical::fetch/$1');
 
+// CSP violation reports: browser-generated POST that never carries the CSRF token.
+$routes->post('csp-report', '\App\Controllers\Csp_report::index');
+
 
 /*
 | -------------------------------------------------------------------------

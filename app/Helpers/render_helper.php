@@ -14,6 +14,26 @@
 use App\Libraries\Timezones;
 
 /**
+ * Get the one-time CSP nonce of the current request.
+ *
+ * The nonce value is generated once per request and must be attached to every inline <script>
+ * element (the CSP policy allows only nonced scripts). Reports go to the collector via #csp-report.
+ *
+ * @return string
+ */
+function csp_nonce(): string
+{
+    static $nonce;
+
+    if ( ! $nonce)
+    {
+        $nonce = bin2hex(random_bytes(20));
+    }
+
+    return $nonce;
+}
+
+/**
  * Render the HTML output of a timezone dropdown element.
  *
  * @param string $attributes HTML element attributes of the dropdown.

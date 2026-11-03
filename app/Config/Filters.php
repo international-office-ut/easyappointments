@@ -38,6 +38,7 @@ class Filters extends BaseFilters
         'performance'   => PerformanceMetrics::class,
         'eaBackendPage' => BackendPage::class,
         'eaBackendApi'  => BackendApi::class,
+        'eaCsp'         => \App\Filters\Content_security::class,
     ];
 
     /**
@@ -62,6 +63,7 @@ class Filters extends BaseFilters
             'pagecache',   // Web Page Caching
             'performance', // Performance Metrics
             'toolbar',     // Debug Toolbar
+            'eaCsp',       // Content Security Policy (also covers non-routed responses)
         ],
     ];
 
@@ -77,7 +79,7 @@ class Filters extends BaseFilters
     public array $globals = [
         'before' => [
             // 'honeypot',
-            'csrf' => ['except' => ['api/v1/*']],
+            'csrf' => ['except' => ['api/v1/*', 'csp-report']],
             // 'invalidchars',
         ],
         'after' => [

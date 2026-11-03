@@ -15,7 +15,7 @@
     <link rel="icon" type="image/x-icon" href="<?= asset_url('assets/img/favicon.ico') ?>">
     <link rel="icon" sizes="192x192" href="<?= asset_url('assets/img/logo.png') ?>">
 
-    <script>
+    <script nonce="<?= csp_nonce() ?>">
         var EALang = <?= json_data(ea_langs()) ?>;
     </script>
 

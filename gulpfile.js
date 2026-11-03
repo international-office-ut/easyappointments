@@ -22,11 +22,11 @@ const source = gulp.src;
 gulp.src = function () {
     return source.apply(gulp, arguments)
         .pipe(plugins.plumber({
-            errorHandler: plugins.notify.onError('Error: <%= error.message %>')
+            errorHandler: function (error) { console.error('Error: ' + error.message); }
         }));
 };
 
-gulp.task('package', (done) => {
+gulp.task('package', async (done) => {
     // The archive name follows the runtime EA version (Config\Deployment::$version),
     // so releases are bumped in one place only.
     const deploymentPhp = fs.readFileSync('app/Config/Deployment.php', 'utf8');
@@ -80,53 +80,31 @@ gulp.task('package', (done) => {
         console.log(stderr);
     });
 
-    del.sync('**/.DS_Store');
+    // The del@8 API replaced .sync with deleteSync.
+    del.deleteSync('**/.DS_Store');
 
     fs.removeSync('build/composer.lock');
 
-    del.sync('**/.DS_Store');
+    del.deleteSync('**/.DS_Store');
 
-    del.sync('build/vendor/codeigniter4/framework/user_guide');
+    fs.removeSync('build/vendor/codeigniter4/framework/user_guide');
 
-    zip('build', {saveTo: archive}, function (err) {
-        if (err) {
-            console.log('Zip Error', err);
-        }
+    await new Promise((resolve, reject) => {
+        zip('build', {saveTo: archive}, function (err) {
+            if (err) {
+                return reject(err);
+            }
 
-        done();
+            resolve();
+        });
     });
+
+    done();
 });
 
 gulp.task('clean', (done) => {
     fs.removeSync('public/assets/js/**/*.min.js');
     fs.removeSync('public/assets/css/**/*.min.css');
-    done();
-});
-
-gulp.task('docs', (done) => {
-    fs.removeSync('docs/apigen/html');
-    fs.removeSync('docs/jsdoc/html');
-    fs.removeSync('docs/plato/html');
-
-    fs.mkdirSync('docs/apigen/html');
-    fs.mkdirSync('docs/jsdoc/html');
-    fs.mkdirSync('docs/plato/html');
-
-    const commands = [
-        'npx jsdoc "engine" -d "docs/apigen/html"',
-
-        'npx jsdoc "public/assets/js" -d "docs/jsdoc/html"',
-
-        'npx plato -r -d "docs/plato/html" "public/assets/js"'
-    ];
-
-    commands.forEach(function (command) {
-        execSync(command, function (err, stdout, stderr) {
-            console.log(stdout);
-            console.log(stderr);
-        });
-    });
-
     done();
 });
 

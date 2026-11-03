@@ -68,7 +68,6 @@
     Powered by <span>Easy!Appointments</span>
 </footer>
 
-<script src="<?= asset_url('assets/ext/fontawesome/js/fontawesome.min.js') ?>"></script>
-<script src="<?= asset_url('assets/ext/fontawesome/js/solid.min.js') ?>"></script>
+<link rel="stylesheet" type="text/css" href="<?= asset_url('assets/ext/fontawesome/css/all.min.css') ?>">
 </body>
 </html>

@@ -33,8 +33,7 @@
     <script src="<?= asset_url('assets/ext/datejs/date.min.js') ?>"></script>
     <script src="<?= asset_url('assets/ext/trumbowyg/trumbowyg.min.js') ?>"></script>
     <script src="<?= asset_url('assets/ext/select2/select2.min.js') ?>"></script>
-    <script src="<?= asset_url('assets/ext/fontawesome/js/fontawesome.min.js') ?>"></script>
-    <script src="<?= asset_url('assets/ext/fontawesome/js/solid.min.js') ?>"></script>
+    <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/ext/fontawesome/css/all.min.css') ?>">
     <script src="<?= asset_url('assets/ext/jstz/jstz.min.js') ?>"></script>
 </head>
 

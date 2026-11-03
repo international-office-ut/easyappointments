@@ -138,8 +138,7 @@
     </form>
 </div>
 
-<script src="<?= asset_url('assets/ext/fontawesome/js/fontawesome.min.js') ?>"></script>
-<script src="<?= asset_url('assets/ext/fontawesome/js/solid.min.js') ?>"></script>
+<link rel="stylesheet" type="text/css" href="<?= asset_url('assets/ext/fontawesome/css/all.min.css') ?>">
 <script src="<?= asset_url('assets/js/polyfill.js') ?>"></script>
 <script src="<?= asset_url('assets/js/general_functions.js') ?>"></script>
 <script src="<?= asset_url('assets/js/login.js') ?>"></script>

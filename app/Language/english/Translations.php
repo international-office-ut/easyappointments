@@ -340,7 +340,8 @@ $lang["minute"] = "Minute";
 $lang["oops_something_went_wrong"] = "Oops! Something Went Wrong.";
 $lang["require_captcha"] = "Require CAPTCHA";
 $lang["require_captcha_hint"] =
-    "When enabled, the customers will have to complete an invisible proof-of-work challenge before booking an appointment.";
+    "When enabled, the customers will have to complete an invisible proof-of-work challenge before booking an "
+    . "appointment. The challenge is only enforced when the \"ALTCHA_HMAC_KEY\" configuration value is set.";
 $lang["captcha_is_wrong"] =
     "The verification was not successful. Please try again.";
 $lang["captcha_not_verified"] =

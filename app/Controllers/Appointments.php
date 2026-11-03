@@ -545,22 +545,12 @@ class Appointments extends BaseController {
             $provider = $this->providers_model->get_row($appointment['id_users_provider']);
             $service = $this->services_model->get_row($appointment['id_services']);
 
-            $require_captcha = $this->settings_model->get_setting('require_captcha');
+            $require_captcha = $this->settings_model->get_setting('require_captcha') === '1'
+                && (string) config(Deployment::class)->altcha_hmac_key !== '';
 
-            // Verify the ALTCHA proof-of-work payload submitted by the widget. A required
-            // captcha without a configured HMAC key fails closed, so that bookings cannot
-            // bypass the challenge (the challenge endpoint rejects the same configuration).
-            if ($require_captcha === '1'
-                && config(Deployment::class)->altcha_hmac_key === '')
-            {
-                log_message('error', 'The "ALTCHA_HMAC_KEY" configuration value is not set.');
-
-                return $this->response
-                    ->setContentType('application/json')
-                    ->setBody(json_encode(['captcha_verification' => FALSE]));
-            }
-
-            if ($require_captcha === '1')
+            // The captcha is only enforced when the ALTCHA HMAC key is configured, so that a
+            // missing key degrades to "no captcha" instead of breaking every booking attempt.
+            if ($require_captcha)
             {
                 if ($altcha_solution === '')
                 {

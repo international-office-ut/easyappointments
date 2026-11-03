@@ -342,7 +342,8 @@ $lang["minute"] = "Minute";
 $lang["oops_something_went_wrong"] = "Oops! Etwas ist schiefgelaufen.";
 $lang["require_captcha"] = "CAPTCHA erfordern";
 $lang["require_captcha_hint"] =
-    "Wenn aktiv, haben die Kunden eine unsichtbare Proof-of-Work-Herausforderung zu lösen, bevor ein Termin gebucht werden kann.";
+    "Wenn aktiv, haben die Kunden eine unsichtbare Proof-of-Work-Herausforderung zu lösen, bevor ein Termin gebucht "
+    . "werden kann. Die Herausforderung wird nur gestellt, wenn der Konfigurationswert \"ALTCHA_HMAC_KEY\" gesetzt ist.";
 $lang["captcha_is_wrong"] =
     "Die Überprüfung ist fehlgeschlagen. Bitte versuchen Sie es erneut.";
 $lang["captcha_not_verified"] =

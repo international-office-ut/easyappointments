@@ -391,7 +391,8 @@
                             </div>
                         </div>
 
-                        <?php if (ea_setting('require_captcha') === '1'): ?>
+                        <?php if (ea_setting('require_captcha') === '1'
+                            && (string) config(\App\Config\Deployment::class)->altcha_hmac_key !== ''): ?>
                             <div class="col-12 col-md-6">
                                 <altcha-widget challenge="<?= site_url('captcha') ?>"
                                                name="altcha"

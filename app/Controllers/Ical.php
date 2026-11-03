@@ -14,6 +14,7 @@
 namespace App\Controllers;
 
 use Exception;
+use App\Libraries\Rate_limiter;
 use App\Models\Providers_Model;
 use App\Models\Services_Model;
 use CodeIgniter\Database\BaseConnection;
@@ -276,15 +277,14 @@ class Ical extends BaseController {
     }
 
     /**
-     * Rate limit path points into the storage cache directory (same scheme as the login
-     * limiter of the user controller).
+     * Rate limit path points into the storage cache directory (shared limiter
+     * of the App\Libraries\Rate_limiter class).
      *
      * @return string
      */
     protected function rate_limit_path(string $key): string
     {
-        return ROOTPATH . implode(DIRECTORY_SEPARATOR, ['storage', 'cache',
-            sha1($key) . '.ratelimit']);
+        return Rate_limiter::path($key);
     }
 
     /**
@@ -301,11 +301,9 @@ class Ical extends BaseController {
             'ical|token|' . sha1($token)
         ];
 
-        $expires = time() + self::RATE_LIMIT_WINDOW;
-
         foreach ($keys as $key)
         {
-            if ($this->rate_limit_hits($key) >= self::RATE_LIMIT_HITS)
+            if (Rate_limiter::hits($key) >= self::RATE_LIMIT_HITS)
             {
                 return TRUE;
             }
@@ -313,38 +311,9 @@ class Ical extends BaseController {
 
         foreach ($keys as $key)
         {
-            $path = $this->rate_limit_path($key);
-            $record = @json_decode((string)@file_get_contents($path), TRUE);
-
-            if ( ! is_array($record) || empty($record['expires']) || $record['expires'] < time())
-            {
-                $record = ['hits' => 0, 'expires' => $expires];
-            }
-
-            $record['hits']++;
-
-            @file_put_contents($path, json_encode($record), LOCK_EX);
+            Rate_limiter::register_attempt($key, self::RATE_LIMIT_WINDOW);
         }
 
         return FALSE;
-    }
-
-    /**
-     * Read the current hit counter of a rate limit key.
-     *
-     * @param string $key Rate limit key.
-     *
-     * @return int
-     */
-    protected function rate_limit_hits(string $key): int
-    {
-        $record = @json_decode((string)@file_get_contents($this->rate_limit_path($key)), TRUE);
-
-        if ( ! is_array($record) || empty($record['expires']) || $record['expires'] < time())
-        {
-            return 0;
-        }
-
-        return (int)($record['hits'] ?? 0);
     }
 }

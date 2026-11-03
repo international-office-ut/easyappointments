@@ -59,10 +59,7 @@ class Language extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));

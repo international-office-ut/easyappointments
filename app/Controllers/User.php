@@ -14,6 +14,7 @@
 namespace App\Controllers;
 
 use Exception;
+use App\Libraries\Rate_limiter;
 use App\Models\Settings_Model;
 use App\Models\User_Model;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -50,124 +51,6 @@ class User extends BaseController {
     public function index()
     {
         header('Location: ' . site_url('user/login'));
-    }
-
-    /**
-     * Rate limiting paths point into the storage cache directory.
-     *
-     * @param string $key Unique key of the rate limit record.
-     * @return string
-     */
-    protected function rate_limit_path(string $key): string
-    {
-        return implode(DIRECTORY_SEPARATOR, [ROOTPATH, 'storage', 'cache', sha1($key) . '.ratelimit']);
-    }
-
-    /**
-     * Returns the rate limit record of the provided key, removing it if it is expired or corrupted.
-     *
-     * @param string $key Unique key of the rate limit record.
-     * @return array|null
-     */
-    protected function rate_limit_read(string $key): ?array
-    {
-        $path = $this->rate_limit_path($key);
-        $contents = @file_get_contents($path);
-
-        if ($contents === FALSE)
-        {
-            return NULL;
-        }
-
-        $record = json_decode($contents, TRUE);
-
-        if ( ! is_array($record) || ! isset($record['hits'], $record['expires']))
-        {
-            @unlink($path);
-
-            return NULL;
-        }
-
-        if ($record['expires'] < time())
-        {
-            @unlink($path);
-
-            return NULL;
-        }
-
-        return $record;
-    }
-
-    /**
-     * Returns whether the provided key has reached its attempts limit.
-     *
-     * @param string $key Unique key of the rate limit record.
-     * @param int $max_attempts Maximum attempts allowed within the window.
-     * @return bool
-     */
-    protected function rate_limit_has_reached_limit(string $key, int $max_attempts): bool
-    {
-        $record = $this->rate_limit_read($key);
-
-        return $record !== NULL && $record['hits'] >= $max_attempts;
-    }
-
-    /**
-     * Registers a new attempt for the provided key, so that the limit gets closer.
-     *
-     * @param string $key Unique key of the rate limit record.
-     * @param int $window Attempts window in seconds.
-     */
-    protected function rate_limit_register_attempt(string $key, int $window): void
-    {
-        $record = $this->rate_limit_read($key);
-
-        if ($record === NULL)
-        {
-            $record = [
-                'hits' => 0,
-                'expires' => time() + $window
-            ];
-
-            // A new rate limit record is a good moment to clean up forgotten records of
-            // other keys, so that the cache directory cannot grow without bounds.
-            $this->rate_limit_prune();
-        }
-
-        $record['hits']++;
-
-        @file_put_contents($this->rate_limit_path($key), json_encode($record), LOCK_EX);
-    }
-
-    /**
-     * Removes all stale rate limit records from the storage cache directory.
-     */
-    protected function rate_limit_prune(): void
-    {
-        $files = @glob(dirname($this->rate_limit_path('prune')) . '/*.ratelimit');
-
-        if ($files === FALSE)
-        {
-            return;
-        }
-
-        foreach ($files as $file)
-        {
-            if (@filemtime($file) < time() - 30 * DAY)
-            {
-                @unlink($file);
-            }
-        }
-    }
-
-    /**
-     * Removes the rate limit record of the provided key.
-     *
-     * @param string $key Unique key of the rate limit record.
-     */
-    protected function rate_limit_clear(string $key): void
-    {
-        @unlink($this->rate_limit_path($key));
     }
 
     /**
@@ -417,8 +300,8 @@ class User extends BaseController {
             $client_key = 'login|client|' . $this->request->getIPAddress();
             $user_key = 'login|user|' . $this->request->getPost('username') . '|' . $this->request->getIPAddress();
 
-            $user_data = ($this->rate_limit_has_reached_limit($client_key, 5)
-                || $this->rate_limit_has_reached_limit($user_key, 5))
+            $user_data = (Rate_limiter::has_reached_limit($client_key, 5)
+                || Rate_limiter::has_reached_limit($user_key, 5))
                     ? NULL
                     : $this->user_model->check_login($this->request->getPost('username'), $this->request->getPost('password'));
 
@@ -428,8 +311,8 @@ class User extends BaseController {
                 // candidates and let the user pick the role to continue with.
                 session()->set('login_candidates', json_encode($user_data['candidates']));
 
-                $this->rate_limit_clear($client_key);
-                $this->rate_limit_clear($user_key);
+                Rate_limiter::clear($client_key);
+                Rate_limiter::clear($user_key);
 
                 $response = [
                     'multi' => TRUE,
@@ -445,15 +328,15 @@ class User extends BaseController {
             {
                 $this->establish_session($user_data); // Save data on user's session and harden it.
 
-                $this->rate_limit_clear($client_key);
-                $this->rate_limit_clear($user_key);
+                Rate_limiter::clear($client_key);
+                Rate_limiter::clear($user_key);
 
                 $response = AJAX_SUCCESS;
             }
             else
             {
-                $this->rate_limit_register_attempt($client_key, 600);
-                $this->rate_limit_register_attempt($user_key, 600);
+                Rate_limiter::register_attempt($client_key, 600);
+                Rate_limiter::register_attempt($user_key, 600);
 
                 $response = AJAX_FAILURE;
             }
@@ -462,10 +345,7 @@ class User extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -519,10 +399,7 @@ class User extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -557,13 +434,13 @@ class User extends BaseController {
 
             $recovery_key = 'recovery|client|' . $this->request->getIPAddress();
 
-            if ($this->rate_limit_has_reached_limit($recovery_key, 3))
+            if (Rate_limiter::has_reached_limit($recovery_key, 3))
             {
                 $token = FALSE;
             }
             else
             {
-                $this->rate_limit_register_attempt($recovery_key, 1800);
+                Rate_limiter::register_attempt($recovery_key, 1800);
 
                 // SSO-only deployments grant temporary administrator access instead of a
                 // password reset, because regular passwords would not be accepted there.
@@ -617,10 +494,7 @@ class User extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -638,13 +512,13 @@ class User extends BaseController {
     {
         $access_key = 'access|client|' . $this->request->getIPAddress();
 
-        if ($this->rate_limit_has_reached_limit($access_key, 20))
+        if (Rate_limiter::has_reached_limit($access_key, 20))
         {
             session()->setFlashdata('login_message', lang('password_reset_token_invalid'));
             return redirect()->to('user/login');
         }
 
-        $this->rate_limit_register_attempt($access_key, 1800);
+        Rate_limiter::register_attempt($access_key, 1800);
 
         $user_data = $this->user_model->get_access_token_rows($token, 'password_reset');
 
@@ -678,12 +552,12 @@ class User extends BaseController {
         {
             $access_key = 'access|client|' . $this->request->getIPAddress();
 
-            if ($this->rate_limit_has_reached_limit($access_key, 20))
+            if (Rate_limiter::has_reached_limit($access_key, 20))
             {
                 throw new Exception(lang('password_reset_token_invalid'));
             }
 
-            $this->rate_limit_register_attempt($access_key, 1800);
+            Rate_limiter::register_attempt($access_key, 1800);
 
             $token = (string) $this->request->getPost('token');
             $password = (string) $this->request->getPost('password');
@@ -734,7 +608,7 @@ class User extends BaseController {
     {
         $access_key = 'access|client|' . $this->request->getIPAddress();
 
-        if ($this->rate_limit_has_reached_limit($access_key, 20))
+        if (Rate_limiter::has_reached_limit($access_key, 20))
         {
             log_message('info', 'Admin access rate limit reached for "'
                 . $this->request->getIPAddress() . '".');
@@ -743,7 +617,7 @@ class User extends BaseController {
             return redirect()->to('user/login');
         }
 
-        $this->rate_limit_register_attempt($access_key, 1800);
+        Rate_limiter::register_attempt($access_key, 1800);
 
         $user_data = $this->user_model->get_access_token_rows($token, 'admin_access');
 

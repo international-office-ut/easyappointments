@@ -42,6 +42,11 @@ class Consents extends BaseController {
         {
             $consent = $this->request->getPost('consent');
 
+            // Only the consent fields are accepted, a posted "id" must never reach the
+            // update path of the model.
+            $consent = array_intersect_key($consent,
+                array_flip(['first_name', 'last_name', 'email', 'type']));
+
             $consent['ip'] = $this->request->getIPAddress();
 
             $consent['id'] = $this->consents_model->add($consent);
@@ -55,10 +60,7 @@ class Consents extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));

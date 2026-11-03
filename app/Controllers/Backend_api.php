@@ -29,8 +29,6 @@ use App\Models\Secretaries_Model;
 use App\Models\Services_Model;
 use App\Models\Settings_Model;
 use App\Models\User_Model;
-use EA\Engine\Types\Email;
-use EA\Engine\Types\Text;
 use EA\Engine\Search\Fuzzy;
 
 /**
@@ -226,10 +224,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -325,10 +320,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -400,13 +392,7 @@ class Backend_api extends BaseController {
             $customer = $this->customers_model->get_row($appointment['id_users_customer']);
             $service = $this->services_model->get_row($appointment['id_services']);
 
-            $settings = [
-                'company_name' => $this->settings_model->get_setting('company_name'),
-                'company_link' => $this->settings_model->get_setting('company_link'),
-                'company_email' => $this->settings_model->get_setting('company_email'),
-                'date_format' => $this->settings_model->get_setting('date_format'),
-                'time_format' => $this->settings_model->get_setting('time_format')
-            ];
+            $settings = $this->settings_model->notification_settings();
 
             $this->notifications->notify_appointment_saved($appointment, $service, $provider, $customer, $settings, $manage_mode);
 
@@ -416,10 +402,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -452,82 +435,19 @@ class Backend_api extends BaseController {
             $customer = $this->customers_model->get_row($appointment['id_users_customer']);
             $service = $this->services_model->get_row($appointment['id_services']);
 
-            $settings = [
-                'company_name' => $this->settings_model->get_setting('company_name'),
-                'company_email' => $this->settings_model->get_setting('company_email'),
-                'company_link' => $this->settings_model->get_setting('company_link'),
-                'date_format' => $this->settings_model->get_setting('date_format'),
-                'time_format' => $this->settings_model->get_setting('time_format')
-            ];
+            $settings = $this->settings_model->notification_settings();
 
             // Delete appointment record from the database.
             $this->appointments_model->delete($this->request->getPost('appointment_id'));
 
-            // Send notification emails to provider and customer.
+            // Send notification emails to provider, customer, admins and secretaries.
             try
             {
-                $email = $this->buildEmailClient();
-
-                $send_provider = $this->providers_model
-                    ->get_setting('notifications', $provider['id']);
-
-                if ((bool)$send_provider === TRUE)
-                {
-                    $email->send_delete_appointment($appointment, $provider,
-                        $service, $customer, $settings, new Email($provider['email']),
-                        new Text($this->request->getPost('delete_reason')));
-                }
-
-                $send_customer = $this->settings_model->get_setting('customer_notifications');
-
-                if ((bool)$send_customer === TRUE)
-                {
-                    $email->send_delete_appointment($appointment, $provider,
-                        $service, $customer, $settings, new Email($customer['email']),
-                        new Text($this->request->getPost('delete_reason')));
-                }
-
-                // Notify admins
-                $admins = $this->admins_model->get_batch();
-
-                foreach ($admins as $admin)
-                {
-                    if ( ! $admin['settings']['notifications'] === '0')
-                    {
-                        continue;
-                    }
-
-                    $email->send_delete_appointment($appointment, $provider,
-                        $service, $customer, $settings, new Email($admin['email']),
-                        new Text($this->request->getPost('cancel_reason')));
-                }
-
-                // Notify secretaries
-                $secretaries = $this->secretaries_model->get_batch();
-
-                foreach ($secretaries as $secretary)
-                {
-                    if ( ! $secretary['settings']['notifications'] === '0')
-                    {
-                        continue;
-                    }
-
-                    if (in_array($provider['id'], $secretary['providers']))
-                    {
-                        continue;
-                    }
-
-                    $email->send_delete_appointment($appointment, $provider,
-                        $service, $customer, $settings, new Email($secretary['email']),
-                        new Text($this->request->getPost('cancel_reason')));
-                }
+                $this->notifications->notify_appointment_deleted($appointment, $service, $provider, $customer, $settings);
             }
             catch (Exception $exception)
             {
-                $warnings[] = [
-                    'message' => $exception->getMessage(),
-                    'trace' => ea_config('debug') ? $exception->getTrace() : []
-                ];
+                $warnings[] = $this->ajax_exception($exception);
             }
 
             if (empty($warnings))
@@ -543,10 +463,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -607,10 +524,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -657,10 +571,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -691,10 +602,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -737,10 +645,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -782,10 +687,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -820,10 +722,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -849,10 +748,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -886,10 +782,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -915,10 +808,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -954,10 +844,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -992,10 +879,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -1021,10 +905,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -1052,10 +933,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -1092,10 +970,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -1130,10 +1005,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -1159,10 +1031,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -1199,10 +1068,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -1231,10 +1097,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -1267,10 +1130,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -1298,10 +1158,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -1355,10 +1212,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -1423,10 +1277,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -1452,10 +1303,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -1492,10 +1340,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -1530,10 +1375,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -1559,10 +1401,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -1620,10 +1459,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -1696,10 +1532,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -1723,10 +1556,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -1759,10 +1589,7 @@ class Backend_api extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));

@@ -87,19 +87,36 @@ class Appointments extends BaseController {
 
             $available_services = $this->services_model->get_available_services();
             $available_providers = $this->providers_model->get_available_providers();
-            $company_name = $this->settings_model->get_setting('company_name');
-            $book_advance_timeout = $this->settings_model->get_setting('book_advance_timeout');
-            $date_format = $this->settings_model->get_setting('date_format');
-            $time_format = $this->settings_model->get_setting('time_format');
-            $first_weekday = $this->settings_model->get_setting('first_weekday');
-            $require_phone_number = $this->settings_model->get_setting('require_phone_number');
-            $display_cookie_notice = $this->settings_model->get_setting('display_cookie_notice');
-            $cookie_notice_content = $this->settings_model->get_setting('cookie_notice_content');
-            $display_terms_and_conditions = $this->settings_model->get_setting('display_terms_and_conditions');
-            $terms_and_conditions_content = $this->settings_model->get_setting('terms_and_conditions_content');
-            $display_privacy_policy = $this->settings_model->get_setting('display_privacy_policy');
-            $privacy_policy_content = $this->settings_model->get_setting('privacy_policy_content');
-            $display_any_provider = $this->settings_model->get_setting('display_any_provider');
+
+            $app_settings = $this->settings_model->pluck_settings([
+                'company_name',
+                'book_advance_timeout',
+                'date_format',
+                'time_format',
+                'first_weekday',
+                'require_phone_number',
+                'display_cookie_notice',
+                'cookie_notice_content',
+                'display_terms_and_conditions',
+                'terms_and_conditions_content',
+                'display_privacy_policy',
+                'privacy_policy_content',
+                'display_any_provider'
+            ]);
+
+            $company_name = $app_settings['company_name'];
+            $book_advance_timeout = $app_settings['book_advance_timeout'];
+            $date_format = $app_settings['date_format'];
+            $time_format = $app_settings['time_format'];
+            $first_weekday = $app_settings['first_weekday'];
+            $require_phone_number = $app_settings['require_phone_number'];
+            $display_cookie_notice = $app_settings['display_cookie_notice'];
+            $cookie_notice_content = $app_settings['cookie_notice_content'];
+            $display_terms_and_conditions = $app_settings['display_terms_and_conditions'];
+            $terms_and_conditions_content = $app_settings['terms_and_conditions_content'];
+            $display_privacy_policy = $app_settings['display_privacy_policy'];
+            $privacy_policy_content = $app_settings['privacy_policy_content'];
+            $display_any_provider = $app_settings['display_any_provider'];
             $timezones = $this->timezones->to_array();
 
             // Remove the data that are not needed inside the $available_providers array.
@@ -256,13 +273,7 @@ class Appointments extends BaseController {
             $customer = $this->customers_model->get_row($appointment['id_users_customer']);
             $service = $this->services_model->get_row($appointment['id_services']);
 
-            $settings = [
-                'company_name' => $this->settings_model->get_setting('company_name'),
-                'company_email' => $this->settings_model->get_setting('company_email'),
-                'company_link' => $this->settings_model->get_setting('company_link'),
-                'date_format' => $this->settings_model->get_setting('date_format'),
-                'time_format' => $this->settings_model->get_setting('time_format')
-            ];
+            $settings = $this->settings_model->notification_settings();
 
             // Remove the appointment record from the data.
             if ( ! $this->appointments_model->delete($appointment['id']))
@@ -399,10 +410,7 @@ class Appointments extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -612,13 +620,7 @@ class Appointments extends BaseController {
             $appointment['id'] = $this->appointments_model->add($appointment);
             $appointment['hash'] = $this->appointments_model->get_value('hash', $appointment['id']);
 
-            $settings = [
-                'company_name' => $this->settings_model->get_setting('company_name'),
-                'company_link' => $this->settings_model->get_setting('company_link'),
-                'company_email' => $this->settings_model->get_setting('company_email'),
-                'date_format' => $this->settings_model->get_setting('date_format'),
-                'time_format' => $this->settings_model->get_setting('time_format')
-            ];
+            $settings = $this->settings_model->notification_settings();
 
             $this->notifications->notify_appointment_saved($appointment, $service, $provider, $customer, $settings, $manage_mode);
 
@@ -631,10 +633,7 @@ class Appointments extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
@@ -801,10 +800,7 @@ class Appointments extends BaseController {
         {
             $this->response->setStatusCode(500);
 
-            $response = [
-                'message' => $exception->getMessage(),
-                'trace' => ea_config('debug') ? $exception->getTrace() : []
-            ];
+            $response = $this->ajax_exception($exception);
         }
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));

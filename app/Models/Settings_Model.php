@@ -165,4 +165,46 @@ class Settings_Model extends Ea_Model {
     {
         return $this->db->table('settings')->get()->getResultArray();
     }
+
+    /**
+     * Returns the values of the provided setting names at once.
+     *
+     * @param array $names The setting names to be fetched.
+     *
+     * @return array Returns the setting values, indexed by their name.
+     */
+    public function pluck_settings(array $names): array
+    {
+        if (empty($names))
+        {
+            return [];
+        }
+
+        $rows = $this->db->table('settings')->whereIn('name', $names)->get()->getResultArray();
+
+        $settings = [];
+
+        foreach ($rows as $row)
+        {
+            $settings[$row['name']] = $row['value'];
+        }
+
+        return $settings;
+    }
+
+    /**
+     * Returns the settings that the notification emails require.
+     *
+     * @return array
+     */
+    public function notification_settings(): array
+    {
+        return [
+            'company_name' => $this->get_setting('company_name'),
+            'company_email' => $this->get_setting('company_email'),
+            'company_link' => $this->get_setting('company_link'),
+            'date_format' => $this->get_setting('date_format'),
+            'time_format' => $this->get_setting('time_format')
+        ];
+    }
 }

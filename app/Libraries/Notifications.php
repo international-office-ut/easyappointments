@@ -38,11 +38,11 @@ class Notifications {
     }
 
     /**
-     * Build the email contractor with the CI4-native view renderer.
+     * Build the email client with the CI4-native view renderer.
      *
      * @return EmailClient
      */
-    protected function email_client(): EmailClient
+    public static function email_client(): EmailClient
     {
         $deployment = config(Deployment::class);
 
@@ -189,6 +189,8 @@ class Notifications {
      */
     public function notify_appointment_deleted($appointment, $service, $provider, $customer, $settings)
     {
+        $cancel_reason = $this->post('cancel_reason') ?? $this->post('delete_reason');
+
         // Send email notification to customer and provider.
         try
         {
@@ -201,7 +203,7 @@ class Notifications {
             {
                 $email->send_delete_appointment($appointment, $provider,
                     $service, $customer, $settings, new Email($provider['email']),
-                    new Text($this->post('cancel_reason')));
+                    new Text($cancel_reason));
             }
 
             $send_customer = filter_var(
@@ -212,7 +214,7 @@ class Notifications {
             {
                 $email->send_delete_appointment($appointment, $provider,
                     $service, $customer, $settings, new Email($customer['email']),
-                    new Text($this->post('cancel_reason')));
+                    new Text($cancel_reason));
             }
 
             // Notify admins
@@ -227,7 +229,7 @@ class Notifications {
 
                 $email->send_delete_appointment($appointment, $provider,
                     $service, $customer, $settings, new Email($admin['email']),
-                    new Text($this->post('cancel_reason')));
+                    new Text($cancel_reason));
             }
 
             // Notify secretaries
@@ -247,7 +249,7 @@ class Notifications {
 
                 $email->send_delete_appointment($appointment, $provider,
                     $service, $customer, $settings, new Email($secretary['email']),
-                    new Text($this->post('cancel_reason')));
+                    new Text($cancel_reason));
             }
         }
         catch (Exception $exception)

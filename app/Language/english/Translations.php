@@ -2,7 +2,6 @@
 // English
 $lang["page_title"] = "Book Appointment With";
 $lang["service_and_provider"] = "Service & Provider";
-$lang["select_service"] = "Select Service";
 $lang["select_provider"] = "Select Provider";
 $lang["select_appointment_mode"] =
     "Please select whether the appointment takes place online or on site.";
@@ -26,7 +25,6 @@ $lang["city"] = "City";
 $lang["zip_code"] = "Zip Code";
 $lang["notes"] = "Notes";
 $lang["language"] = "Language";
-$lang["no_language"] = "No language";
 $lang["fields_are_required"] = "Fields with * are required.";
 $lang["appointment_confirmation"] = "Appointment Confirmation";
 $lang["confirm"] = "Confirm";
@@ -68,7 +66,6 @@ $lang["appointment_locked_message"] =
 $lang["appointment_not_found"] = "Appointment Not Found.";
 $lang["appointment_does_not_exist_in_db"] =
     "The appointment you requested does not exist in the system database anymore.";
-$lang["display_calendar"] = "Display Calendar";
 $lang["calendar"] = "Calendar";
 $lang["users"] = "Users";
 $lang["settings"] = "Settings";
@@ -97,10 +94,6 @@ $lang["manage_users_hint"] =
     "Manage the backend users (admins, providers, secretaries).";
 $lang["settings_hint"] = "Set system and user settings.";
 $lang["log_out_hint"] = "Log out of the system.";
-$lang["unavailable_periods_hint"] =
-    'During unavailable periods the provider won\'t accept new appointments.';
-$lang["new_appointment_hint"] =
-    "Create a new appointment and store it into the database.";
 $lang["reload_appointments_hint"] = "Reload calendar appointments.";
 $lang["appointment_updated"] = "Appointment updated successfully.";
 $lang["undo"] = "Undo";
@@ -126,7 +119,6 @@ $lang["write_appointment_removal_reason"] =
     "Please take a minute to write the reason you are canceling the appointment:";
 $lang["appointment_saved"] = "Appointment saved successfully.";
 $lang["new_unavailable_title"] = "New Unavailable Period";
-$lang["edit_unavailable_title"] = "Edit Unavailable Period";
 $lang["unavailable_saved"] = "Unavailable period saved successfully.";
 $lang["start_date_before_end_error"] =
     "Start date value is latter than end date.";
@@ -165,7 +157,6 @@ $lang["service_deleted"] = "Service deleted successfully.";
 $lang["service_category_deleted"] = "Service category deleted successfully.";
 $lang["customer_saved"] = "Customer saved successfully.";
 $lang["customer_deleted"] = "Customer deleted successfully.";
-$lang["current_view"] = "Current View";
 $lang["working_plan"] = "Working Plan";
 $lang["reset_plan"] = "Reset Plan";
 $lang["monday"] = "Monday";
@@ -180,8 +171,6 @@ $lang["add_breaks_during_each_day"] = "Add the working breaks during each day.";
 $lang["day"] = "Day";
 $lang["days"] = "Days";
 $lang["actions"] = "Actions";
-$lang["reset_working_plan_hint"] =
-    "Reset the working plan back to the default values.";
 $lang["company_name"] = "Company Name";
 $lang["company_name_hint"] =
     "Company name will be displayed everywhere on the system (required).";
@@ -212,7 +201,6 @@ $lang["support"] = "Support";
 $lang["about_app_support"] =
     "If you encounter any problems when using Easy!Appointments you can search the official Google Group for answers. You might also need to create a new issue on the Google Code page in order to help the development progress.";
 $lang["official_website"] = "Official Website";
-$lang["google_plus_community"] = "Google+ Community";
 $lang["support_group"] = "Support Group";
 $lang["project_issues"] = "Project Issues";
 $lang["license"] = "License";
@@ -311,16 +299,12 @@ $lang["backend_calendar"] = "Backend Calendar";
 $lang["start_date_time"] = "Start Date / Time";
 $lang["end_date_time"] = "End Date / Time";
 $lang["licensed_under"] = "Licensed Under";
-$lang["unexpected_issues_occurred"] = "Unexpected issues occurred.";
 $lang["service_communication_error"] =
     "A server communication error occurred, please try again.";
 $lang["no_privileges_edit_appointments"] =
     "You do not have the required privileges to edit appointments.";
 $lang["unavailable_updated"] = "Unavailable time period updated successfully.";
 $lang["appointments"] = "Appointments";
-$lang["unexpected_warnings"] = "Unexpected Warnings";
-$lang["unexpected_warnings_message"] =
-    "The operation completed but some warnings appeared.";
 $lang["filter"] = "Filter";
 $lang["clear"] = "Clear";
 $lang["uncategorized"] = "Uncategorized";
@@ -353,7 +337,6 @@ $lang["time"] = "Time";
 $lang["hour"] = "Hour";
 $lang["minute"] = "Minute";
 $lang["oops_something_went_wrong"] = "Oops! Something Went Wrong.";
-$lang["ea_update_success"] = "Easy!Appointments has been successfully updated.";
 $lang["require_captcha"] = "Require CAPTCHA";
 $lang["require_captcha_hint"] =
     "When enabled, the customers will have to complete an invisible proof-of-work challenge before booking an appointment.";
@@ -407,8 +390,6 @@ $lang["delete_personal_information_prompt"] =
 $lang["location"] = "Location";
 $lang["working_plan_exception"] = "Working Plan Exception";
 $lang["working_plan_exceptions"] = "Working Plan Exceptions";
-$lang["working_plan_exceptions_hint"] =
-    "Add a working plan exception day, outside the working plan.";
 $lang["new_working_plan_exception_title"] = "New Working Plan Exception";
 $lang["working_plan_exception_saved"] =
     "Working plan exception saved successfully.";
@@ -442,7 +423,6 @@ $lang["appointment_mode"] = "Location Type";
 $lang["mode_online"] = "Online";
 $lang["mode_on_premise"] = "On Site";
 $lang["mode_both"] = "Online or On Site";
-$lang["mode_provider_default"] = "Provider Default";
 $lang["weekday_mode_overrides"] = "Weekday Mode Overrides";
 $lang["zoom_link"] = "Zoom Link";
 $lang["other"] = "Other";

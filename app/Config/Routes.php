@@ -10,12 +10,10 @@ use CodeIgniter\Router\RouteCollection;
 // page URL byte-identical; only the explicit table below needs ports.
 //
 // CI4's improved auto-routing refuses the "default controller by name" path,
-// so the root route and the appointments entry get explicit definitions and
-// the default controller stays the skeleton stub (Home).
+// so the root route and the appointments entry get explicit definitions.
 
 $routes->get('/', '\App\Controllers\Appointments::index');
 $routes->get('appointments', '\App\Controllers\Appointments::index');
-$routes->setDefaultController('Home');
 $routes->set404Override('\App\Controllers\Errors::error404');
 
 

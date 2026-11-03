@@ -57,7 +57,7 @@
                 </div>
 
                 <div class="well text-left">
-                    Error Message: <?= $exception ?>
+                    Error Message: <?= esc($exception) ?>
                 </div>
             <?php endif; ?>
         </div>

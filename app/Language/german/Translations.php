@@ -2,7 +2,6 @@
 // German
 $lang["page_title"] = "Vereinbaren Sie einen Termin mit";
 $lang["service_and_provider"] = "Dienstleistung & Anbieter";
-$lang["select_service"] = "Auswahl der Dienstleistung";
 $lang["select_provider"] = "Auswahl des Anbieters";
 $lang["select_appointment_mode"] =
     "Bitte wählen Sie, ob der Termin online oder vor Ort stattfindet.";
@@ -66,7 +65,6 @@ $lang["appointment_locked_message"] =
 $lang["appointment_not_found"] = "Termin nicht gefunden.";
 $lang["appointment_does_not_exist_in_db"] =
     "Der von Ihnen angeforderte Termin existiert nicht in der Systemdatenbank.";
-$lang["display_calendar"] = "Kalender anzeigen";
 $lang["calendar"] = "Kalender";
 $lang["users"] = "Nutzer";
 $lang["settings"] = "Einstellungen";
@@ -95,10 +93,6 @@ $lang["manage_users_hint"] =
     "Verwalten Sie die Endnutzer (Admins, Anbieter, Büropersonal).";
 $lang["settings_hint"] = "Setzen Sie das System auf Nutzereinstellungen.";
 $lang["log_out_hint"] = "Melden Sie sich vom System ab.";
-$lang["unavailable_periods_hint"] =
-    "In diesem Zeitraum werden neue Termine vom Anbieter nicht akzeptiert.";
-$lang["new_appointment_hint"] =
-    "Bestimmen Sie einen neuen Termin und sichern Sie ihn in der Datenbank.";
 $lang["reload_appointments_hint"] = "Kalendertermine neu laden.";
 $lang["appointment_updated"] = "Die Termine sind erfolgreich erneuert worden.";
 $lang["undo"] = "Rückgängig";
@@ -125,8 +119,6 @@ $lang["write_appointment_removal_reason"] =
 $lang["appointment_saved"] = "Termin erfolgreich gespeichert.";
 $lang["new_unavailable_title"] =
     "Neuer, nicht zur Verfügung stehender Zeitraum";
-$lang["edit_unavailable_title"] =
-    "Nicht zur Verfügung stehenden Zeitraum bearbeiten";
 $lang["unavailable_saved"] =
     "Nicht zur Verfügung stehenden Zeitraum erfolgreich gespeichert.";
 $lang["start_date_before_end_error"] = "Das Startdatum liegt vor dem Enddatum.";
@@ -165,7 +157,6 @@ $lang["service_category_deleted"] =
     "Dienstleistungskategorie erfolgreich gelöscht.";
 $lang["customer_saved"] = "Kunden erfolgreich gesichert.";
 $lang["customer_deleted"] = "Kunden erfolgreich gelöscht.";
-$lang["current_view"] = "Laufende Ansicht";
 $lang["working_plan"] = "Arbeitsplan";
 $lang["reset_plan"] = "Plan neu starten";
 $lang["monday"] = "Montag";
@@ -180,8 +171,6 @@ $lang["add_breaks_during_each_day"] = "Fügen Sie die Arbeitspausen für jeden T
 $lang["day"] = "Tag";
 $lang["days"] = "Tage";
 $lang["actions"] = "Aktionen";
-$lang["reset_working_plan_hint"] =
-    "Setzen Sie den Arbeitsplan auf die Standardwerte zurück.";
 $lang["company_name"] = "Name der Firma";
 $lang["company_name_hint"] =
     "Der Firmenname wird überall im System verwendet (erforderlich).";
@@ -212,7 +201,6 @@ $lang["support"] = "Unterstützung";
 $lang["about_app_support"] =
     "Falls Sie irgendein Problem bei der Nutzung von Easy!Appointments haben sollten, können Sie die offizielle Google-Gruppe nach Lösungen durchsuchen. Sie können auch ein neues Thema in Google Code beginnen, damit Sie das Finden von Lösungen unterstützen. ";
 $lang["official_website"] = "Offizielle Webseite";
-$lang["google_plus_community"] = "Google+ Gemeinschaft";
 $lang["support_group"] = "Gruppenunterstützung";
 $lang["project_issues"] = "Projektthemen";
 $lang["license"] = "Nutzungslizenz";
@@ -312,7 +300,6 @@ $lang["backend_calendar"] = "Backend-Kalender";
 $lang["start_date_time"] = "Start Datum/Zeit";
 $lang["end_date_time"] = "Ende Datum/Zeit";
 $lang["licensed_under"] = "Lizenziert unter";
-$lang["unexpected_issues_occurred"] = "Unerwartete Probleme aufgetreten.";
 $lang["service_communication_error"] =
     "Während der Kommunikation mit dem Server ist ein Fehler aufgetreten, bitte versuchen Sie es erneut.";
 $lang["no_privileges_edit_appointments"] =
@@ -320,9 +307,6 @@ $lang["no_privileges_edit_appointments"] =
 $lang["unavailable_updated"] =
     "Nicht zur Verfügung stehender Zeitraum erfolgreich erneuert worden.";
 $lang["appointments"] = "Termine";
-$lang["unexpected_warnings"] = "Unerwartete Warnungen";
-$lang["unexpected_warnings_message"] =
-    "Der Vorgang wurde abgeschlossen aber einige Warnungen erscheinen.";
 $lang["filter"] = "Filtern";
 $lang["clear"] = "Deaktivieren";
 $lang["uncategorized"] = "Nicht zugeordnet";
@@ -355,8 +339,6 @@ $lang["time"] = "Zeit";
 $lang["hour"] = "Uhr";
 $lang["minute"] = "Minute";
 $lang["oops_something_went_wrong"] = "Oops! Etwas ist schiefgelaufen.";
-$lang["ea_update_success"] =
-    "Easy!Appointments wurde erfolgreich aktualisiert.";
 $lang["require_captcha"] = "CAPTCHA erfordern";
 $lang["require_captcha_hint"] =
     "Wenn aktiv, haben die Kunden eine unsichtbare Proof-of-Work-Herausforderung zu lösen, bevor ein Termin gebucht werden kann.";
@@ -411,8 +393,6 @@ $lang["delete_personal_information_prompt"] =
 $lang["location"] = "Ort";
 $lang["working_plan_exception"] = "Arbeitsplan Ausnahme";
 $lang["working_plan_exceptions"] = "Arbeitsplan Ausnahmen";
-$lang["working_plan_exceptions_hint"] =
-    "Fügt einen Ausnahmetag außerhalb des Arbeitsplans hinzu.";
 $lang["new_working_plan_exception_title"] = "Neue Ausnahme vom Arbeitsplan";
 $lang["working_plan_exception_saved"] =
     "Ausnahme vom Arbeitsplan erfolgreich gespeichert.";
@@ -446,7 +426,6 @@ $lang["appointment_mode"] = "Standort-Typ";
 $lang["mode_online"] = "Online";
 $lang["mode_on_premise"] = "Vor Ort";
 $lang["mode_both"] = "Online oder Vor Ort";
-$lang["mode_provider_default"] = "Anbieter-Standard";
 $lang["weekday_mode_overrides"] = "Wochentag-Modus-Überschreibungen";
 $lang["zoom_link"] = "Zoom-Link";
 $lang["other"] = "Andere";

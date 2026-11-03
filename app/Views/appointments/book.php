@@ -31,7 +31,7 @@
               <img src="<?= base_url('assets/img/ut-logo.png') ?>">
             </div>
             <div id="header">
-                <span id="company-name"><?= $company_name ?></span>
+                <span id="company-name"><?= esc($company_name) ?></span>
 
                 <div id="steps">
                     <div id="step-1" class="book-step active-step"

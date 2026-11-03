@@ -13,7 +13,6 @@
 
 namespace App\Models;
 
-use App\Helpers\General_helper;
 use EA\Engine\Security\Passwords;
 
 use Exception;

@@ -8,6 +8,7 @@ use CodeIgniter\HTTP\CLIRequest;
 use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
+use App\Libraries\Notifications;
 use App\Libraries\Timezones;
 use Config\Deployment;
 use EA\Engine\Notifications\Email as EmailClient;
@@ -65,29 +66,24 @@ abstract class BaseController extends Controller
     }
 
     /**
-     * Build the CI3-shaped email client for the CI4 stack.
+     * Normalize an exception for AJAX JSON responses.
+     *
+     * @param Exception $exception
+     * @return array
+     */
+    protected function ajax_exception(Exception $exception): array
+    {
+        return [
+            'message' => $exception->getMessage(),
+            'trace' => ea_config('debug') ? $exception->getTrace() : []
+        ];
+    }
+
+    /**
+     * Build the email client for the CI4 stack.
      */
     protected function buildEmailClient(): EmailClient
     {
-        $deployment = config(Deployment::class);
-
-        $email_config = [
-            'useragent' => 'Easy!Appointments',
-            'protocol' => $deployment->email_protocol,
-            'mailtype' => 'html',
-            'smtp_debug' => '0',
-            'smtp_auth' => $deployment->smtp_auth,
-            'smtp_host' => $deployment->smtp_host,
-            'smtp_crypto' => $deployment->smtp_crypto,
-            'smtp_port' => $deployment->smtp_port,
-            'smtp_user' => $deployment->smtp_user,
-            'smtp_pass' => $deployment->smtp_pass,
-            'charset' => 'UTF-8',
-        ];
-
-        $view_renderer = static fn (string $view, array $data = []): string
-            => view($view, $data);
-
-        return new EmailClient($email_config, $view_renderer, (new Timezones)->to_array());
+        return Notifications::email_client();
     }
 }

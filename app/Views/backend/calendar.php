@@ -1,4 +1,4 @@
-<link rel="stylesheet" type="text/css" href="<?= asset_url('/assets/ext/jquery-fullcalendar/fullcalendar.min.css') ?>">
+<link rel="stylesheet" type="text/css" href="<?= asset_url('assets/ext/jquery-fullcalendar/fullcalendar.min.css') ?>">
 
 <script src="<?= asset_url('assets/ext/jquery-fullcalendar/fullcalendar.min.js') ?>"></script>
 <script src="<?= asset_url('assets/ext/jquery-jeditable/jquery.jeditable.min.js') ?>"></script>

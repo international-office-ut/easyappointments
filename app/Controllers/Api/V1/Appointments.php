@@ -139,13 +139,7 @@ class Appointments extends API_V1_Controller {
             $service = $this->services_model->get_row($appointment['id_services']);
             $provider = $this->providers_model->get_row($appointment['id_users_provider']);
             $customer = $this->customers_model->get_row($appointment['id_users_customer']);
-            $settings = [
-                'company_name' => $this->settings_model->get_setting('company_name'),
-                'company_email' => $this->settings_model->get_setting('company_email'),
-                'company_link' => $this->settings_model->get_setting('company_link'),
-                'date_format' => $this->settings_model->get_setting('date_format'),
-                'time_format' => $this->settings_model->get_setting('time_format')
-            ];
+            $settings = $this->settings_model->notification_settings();
 
             $this->notifications->notify_appointment_saved($appointment, $service, $provider, $customer, $settings, FALSE);
 
@@ -188,13 +182,7 @@ class Appointments extends API_V1_Controller {
             $service = $this->services_model->get_row($updated_appointment['id_services']);
             $provider = $this->providers_model->get_row($updated_appointment['id_users_provider']);
             $customer = $this->customers_model->get_row($updated_appointment['id_users_customer']);
-            $settings = [
-                'company_name' => $this->settings_model->get_setting('company_name'),
-                'company_email' => $this->settings_model->get_setting('company_email'),
-                'company_link' => $this->settings_model->get_setting('company_link'),
-                'date_format' => $this->settings_model->get_setting('date_format'),
-                'time_format' => $this->settings_model->get_setting('time_format')
-            ];
+            $settings = $this->settings_model->notification_settings();
 
             $this->notifications->notify_appointment_saved($updated_appointment, $service, $provider, $customer, $settings, TRUE);
 
@@ -223,13 +211,7 @@ class Appointments extends API_V1_Controller {
             $service = $this->services_model->get_row($appointment['id_services']);
             $provider = $this->providers_model->get_row($appointment['id_users_provider']);
             $customer = $this->customers_model->get_row($appointment['id_users_customer']);
-            $settings = [
-                'company_name' => $this->settings_model->get_setting('company_name'),
-                'company_email' => $this->settings_model->get_setting('company_email'),
-                'company_link' => $this->settings_model->get_setting('company_link'),
-                'date_format' => $this->settings_model->get_setting('date_format'),
-                'time_format' => $this->settings_model->get_setting('time_format')
-            ];
+            $settings = $this->settings_model->notification_settings();
 
             $this->appointments_model->delete($id);
 

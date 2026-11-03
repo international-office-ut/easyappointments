@@ -8,13 +8,21 @@ Options -Indexes
 # (package/file deploys included) and covers error responses via "always".
 # The vhost mirror got removed at the cutover so mod_headers does not emit
 # duplicated security headers (vhost + .htaccess both "set" the same names).
-# CSP stays out until the frontend baseline is evaluated report-only first.
+#
+# CSP notes:
+# - 'unsafe-eval' is required by the coding plugins (jquery-jeditable and the
+#   jquery-ui timepicker addon use Function()/eval()); 'unsafe-inline' by the
+#   inline bootstrap scripts of every page. Both are containment trade-offs
+#   that will get removed with future CSP-fitted dependencies.
+# - worker-src blob: data: is required by the ALTCHA proof-of-work captcha,
+#   which spawns its worker from a data:/blob: URL.
 # --------------------------------------------------------------------
 <IfModule mod_headers.c>
     Header always set X-Content-Type-Options "nosniff"
     Header always set X-Frame-Options "DENY"
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
     Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; worker-src 'self' blob: data:; style-src 'self' 'unsafe-inline'; style-src-attr 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
 
     # Only meaningful on TLS connections; prod runs HTTPS (docs/security-ops.md).
     <If "%{HTTPS} == 'on'">

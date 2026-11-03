@@ -4,6 +4,8 @@
 <script src="<?= asset_url('assets/js/backend_users.js') ?>"></script>
 <script src="<?= asset_url('assets/js/working_plan.js') ?>"></script>
 <script src="<?= asset_url('assets/js/working_plan_exceptions_modal.js') ?>"></script>
+<script src="<?= asset_url('assets/js/backend_calendar_api.js') ?>" defer></script>
+<script src="<?= asset_url('assets/js/backend_calendar_unavailability_events_modal.js') ?>" defer></script>
 <script src="<?= asset_url('assets/ext/jquery-ui/jquery-ui-timepicker-addon.min.js') ?>"></script>
 <script src="<?= asset_url('assets/ext/jquery-jeditable/jquery.jeditable.min.js') ?>"></script>
 <script nonce="<?= csp_nonce() ?>">
@@ -17,6 +19,7 @@
         providers: <?= json_data($providers) ?>,
         secretaries: <?= json_data($secretaries) ?>,
         services: <?= json_data($services) ?>,
+        availableProviders: <?= json_data($providers) ?>,
         timezones: <?= json_data($timezones) ?>,
         workingPlan: <?= json_data(json_decode($working_plan)) ?>,
         workingPlanExceptions: <?= json_data(json_decode($working_plan_exceptions)) ?>,
@@ -31,6 +34,7 @@
 
     $(function () {
         BackendUsers.initialize(true);
+        BackendCalendarUnavailabilityEventsModal.initialize();
     });
 </script>
 
@@ -364,6 +368,13 @@
                                         <?= lang('unavailable_periods_description') ?>
                                     </p>
 
+                                    <div>
+                                        <button type="button" id="insert-unavailable" class="btn btn-primary mr-2" disabled>
+                                            <i class="fas fa-plus-square mr-2"></i>
+                                            <?= lang('add_unavailable') ?>
+                                        </button>
+                                    </div>
+
                                     <table class="unavailability-periods table table-striped mt-2">
                                         <thead>
                                         <tr>
@@ -376,6 +387,8 @@
                                         <tbody><!-- Dynamic Content --></tbody>
                                     </table>
                                 </div>
+
+                                <?php require __DIR__ . '/manage_unavailable_modal.php' ?>
 
                                 <div class="working-plan-exceptions-column col-12 col-lg-6">
                                     <h3><?= lang('working_plan_exceptions') ?></h3>

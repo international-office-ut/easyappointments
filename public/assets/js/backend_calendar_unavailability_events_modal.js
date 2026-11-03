@@ -78,7 +78,12 @@ window.BackendCalendarUnavailabilityEventsModal = window.BackendCalendarUnavaila
                 // Close the modal dialog and refresh the calendar appointments.
                 $dialog.find('.alert').addClass('d-none');
                 $dialog.modal('hide');
-                $('#select-filter-item').trigger('change');
+
+                if ($('#select-filter-item').length) {
+                    $('#select-filter-item').trigger('change');
+                } else if (window.renderUnavailabilityPeriods) {
+                    window.renderUnavailabilityPeriods($('#provider-id').val());
+                }
             };
 
             BackendCalendarApi.saveUnavailable(unavailable, successCallback, null);
@@ -110,7 +115,7 @@ window.BackendCalendarUnavailabilityEventsModal = window.BackendCalendarUnavaila
 
             if ($('.calendar-view').length === 0) {
                 $dialog.find('#unavailable-provider')
-                    .val($('#select-filter-item').val())
+                    .val($('#provider-id').val())
                     .closest('.form-group')
                     .hide();
             }

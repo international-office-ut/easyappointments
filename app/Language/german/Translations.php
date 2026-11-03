@@ -120,6 +120,7 @@ $lang["appointment_saved"] = "Termin erfolgreich gespeichert.";
 $lang["new_unavailable_title"] =
     "Neuer, nicht zur Verfügung stehender Zeitraum";
 $lang["unavailable_saved"] =
+$lang["add_unavailable"] = "Nicht verfügbaren Zeitraum hinzufügen";
     "Nicht zur Verfügung stehenden Zeitraum erfolgreich gespeichert.";
 
 $lang["unavailable_periods"] = "Nicht verfügbare Zeiträume";

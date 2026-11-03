@@ -102,7 +102,7 @@
             $('#providers .save-cancel-group').show();
             $('#providers .record-details').find('input, select, textarea').prop('disabled', false);
             $('#provider-password, #provider-password-confirm').addClass('required');
-            $('#providers').find('.add-break, .edit-break, .delete-break, .add-working-plan-exception, .edit-working-plan-exception, .delete-working-plan-exception, #reset-working-plan').prop('disabled', false);
+            $('#providers').find('.add-break, .edit-break, .delete-break, .add-working-plan-exception, .edit-working-plan-exception, .delete-working-plan-exception, #reset-working-plan, #insert-unavailable').prop('disabled', false);
             $('#provider-services input:checkbox').prop('disabled', false);
 
             // Apply default working plan
@@ -122,7 +122,7 @@
             $('#providers .record-details').find('input, select, textarea').prop('disabled', false);
             $('#provider-password, #provider-password-confirm').removeClass('required');
             $('#provider-services input:checkbox').prop('disabled', false);
-            $('#providers').find('.add-break, .edit-break, .delete-break, .add-working-plan-exception, .edit-working-plan-exception, .delete-working-plan-exception, #reset-working-plan').prop('disabled', false);
+            $('#providers').find('.add-break, .edit-break, .delete-break, .add-working-plan-exception, .edit-working-plan-exception, .delete-working-plan-exception, #reset-working-plan, #insert-unavailable').prop('disabled', false);
             $('#providers input:checkbox').prop('disabled', false);
             BackendUsers.wp.timepickers(false);
             this.syncWeekdayModeStates();
@@ -481,7 +481,7 @@
         $('#providers .record-details #provider-appointment-mode').val('BOTH');
         $('#providers .record-details #provider-zoom-link').val('');
         $('#providers .record-details #provider-timezone').val(tz.name());
-        $('#providers .add-break, .add-working-plan-exception, #reset-working-plan').prop('disabled', true);
+        $('#providers .add-break, .add-working-plan-exception, #reset-working-plan, #insert-unavailable').prop('disabled', true);
         BackendUsers.wp.timepickers(true);
         $('#providers .working-plan input:text').timepicker('destroy');
         $('#providers .working-plan input:checkbox').prop('disabled', true);
@@ -838,6 +838,8 @@
     $('#providers').on('shown.bs.tab', 'a[href="#working-plan"]', function () {
         renderUnavailabilityPeriods($('#provider-id').val());
     });
+
+    window.renderUnavailabilityPeriods = renderUnavailabilityPeriods;
 
     window.ProvidersHelper = ProvidersHelper;
 

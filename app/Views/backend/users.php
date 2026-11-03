@@ -357,6 +357,26 @@
                                     </table>
                                 </div>
 
+                                <div class="unavailability-periods-column col-12">
+                                    <h3><?= lang('unavailable_periods') ?></h3>
+
+                                    <p>
+                                        <?= lang('unavailable_periods_description') ?>
+                                    </p>
+
+                                    <table class="unavailability-periods table table-striped mt-2">
+                                        <thead>
+                                        <tr>
+                                            <th><?= lang('start') ?></th>
+                                            <th><?= lang('end') ?></th>
+                                            <th><?= lang('notes') ?></th>
+                                            <th><?= lang('actions') ?></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody><!-- Dynamic Content --></tbody>
+                                    </table>
+                                </div>
+
                                 <div class="working-plan-exceptions-column col-12">
                                     <h3><?= lang('working_plan_exceptions') ?></h3>
 

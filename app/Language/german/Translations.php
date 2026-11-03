@@ -121,6 +121,9 @@ $lang["new_unavailable_title"] =
     "Neuer, nicht zur Verfügung stehender Zeitraum";
 $lang["unavailable_saved"] =
     "Nicht zur Verfügung stehenden Zeitraum erfolgreich gespeichert.";
+
+$lang["unavailable_periods"] = "Nicht verfügbare Zeiträume";
+$lang["unavailable_periods_description"] = "Im Kalender angelegte Nichtverfügbarkeitszeiträume werden hier aufgelistet. Löschen Sie einen Zeitraum, um die Zeit wieder buchbar zu machen.";
 $lang["start_date_before_end_error"] = "Das Startdatum liegt vor dem Enddatum.";
 $lang["invalid_email"] = "Ungültige E-Mail-Adresse.";
 $lang["customers"] = "Kunden";

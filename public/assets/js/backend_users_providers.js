@@ -508,6 +508,7 @@
      */
     ProvidersHelper.prototype.display = function (provider) {
         $('#provider-id').val(provider.id);
+        renderUnavailabilityPeriods(provider.id);
         $('#provider-first-name').val(provider.first_name);
         $('#provider-last-name').val(provider.last_name);
         $('#provider-email').val(provider.email);
@@ -777,6 +778,66 @@
             $('#edit-provider, #delete-provider').prop('disabled', false);
         }
     };
+
+    /**
+     * Load and render the unavailability periods of the selected provider.
+     *
+     * @param {Number} providerId
+     */
+    function renderUnavailabilityPeriods(providerId) {
+        var $table = $('.unavailability-periods tbody');
+
+        if (!providerId) {
+            $table.empty();
+
+            return;
+        }
+
+        BackendCalendarApi.getProviderUnavailabilityPeriods(providerId)
+            .done(function (periods) {
+                $table.empty();
+
+                (periods || []).forEach(function (period) {
+                    var $row = $('<tr/>');
+
+                    $row.append(
+                        $('<td/>', {text: GeneralFunctions.formatDate(
+                            period.start_datetime, GlobalVariables.dateFormat, true)}),
+                        $('<td/>', {text: GeneralFunctions.formatDate(
+                            period.end_datetime, GlobalVariables.dateFormat, true)}),
+                        $('<td/>', {text: period.notes || '-'}),
+                        $('<td/>', {'data-id': period.id})
+                    );
+
+                    var $deleteButton = $('<button/>', {
+                        'class': 'btn btn-outline-secondary btn-sm delete-period mr-2',
+                        'html': [$('<i/>', {'class': 'fas fa-trash-alt mr-2'})]
+                    });
+
+                    $row.find('td:last').append($deleteButton);
+
+                    $table.append($row);
+                });
+            });
+    }
+
+    /**
+     * Delete the unavailability period record of the work plan listing.
+     */
+    $('#providers').on('click', '.delete-period', function () {
+        var providerId = $('#provider-id').val();
+        var periodId = $(this).closest('td').data('id');
+
+        BackendCalendarApi.deleteUnavailable(periodId, function () {
+            Backend.displayNotification(EALang.delete_unavailable);
+            renderUnavailabilityPeriods(providerId);
+        });
+    });
+
+    // Refresh the listing on tab activation.
+    $('#providers').on('shown.bs.tab', 'a[href="#working-plan"]', function () {
+        renderUnavailabilityPeriods($('#provider-id').val());
+    });
 
     window.ProvidersHelper = ProvidersHelper;
 

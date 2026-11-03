@@ -1,6 +1,7 @@
-<link rel="stylesheet" type="text/css" href="<?= asset_url('assets/ext/jquery-fullcalendar/fullcalendar.min.css') ?>">
+<link rel="stylesheet" type="text/css" href="<?= asset_url('assets/ext/fullcalendar/v6.css') ?>">
+<meta name="csp-nonce" content="<?= csp_nonce() ?>">
 
-<script src="<?= asset_url('assets/ext/jquery-fullcalendar/fullcalendar.min.js') ?>"></script>
+<script src="<?= asset_url('assets/ext/fullcalendar/index.global.min.js') ?>"></script>
 <script src="<?= asset_url('assets/ext/jquery-jeditable/jquery.jeditable.min.js') ?>"></script>
 <script src="<?= asset_url('assets/ext/jquery-ui/jquery-ui-timepicker-addon.min.js') ?>"></script>
 <script src="<?= asset_url('assets/js/working_plan_exceptions_modal.js') ?>"></script>
@@ -18,6 +19,7 @@
         baseUrl: <?= json_data($base_url) ?>,
         dateFormat: <?= json_data($date_format) ?>,
         timeFormat: <?= json_data($time_format) ?>,
+        language: <?= json_data($language) ?>,
         firstWeekday: <?= json_data($first_weekday) ?>,
         editAppointment: <?= json_data($edit_appointment) ?>,
         customers: <?= json_data($customers) ?>,

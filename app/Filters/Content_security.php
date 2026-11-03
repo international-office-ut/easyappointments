@@ -40,15 +40,15 @@ class Content_security implements FilterInterface {
             "default-src 'self'; "
             . "script-src 'self' 'nonce-" . csp_nonce() . "'; "
             . "worker-src 'self' blob: data:; "
-            // The vendored widgets inject their runtime styles through inline
-            // <style> elements and style attributes (FontAwesome SVG runtime,
-            // tippy, ALTCHA, cookieconsent, jQuery UI, fullcalendar) — see the
-            // CSP violation reports in the csp-report log. The style directives
-            // allow inline CSS while the security-critical script-src stays
-            // nonce-guarded; the vendor-layer hardening is a tracked task.
-            . "style-src 'self' 'unsafe-inline'; "
+            // FullCalendar v6 injects its compiled styles through runtime style
+            // elements (via a csp-nonce-aware injector, see the backend calendar
+            // view). Engines disagree between page parsing and injection timing,
+            // so the version-stable content hashes of the bundled style blocks
+            // are allowed as a fallback. On a library update check the
+            // csp-report log and renew the hashes (or move to v7 css files).
+            . "style-src 'self' 'nonce-" . csp_nonce() . "' 'sha256-GsQC5AaXpdCaKTyWbxBzn7nitfp0Otwn7I/zu0rUKOs=' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU='; "
             . "img-src 'self' data:; "
-            . "font-src 'self'; "
+            . "font-src 'self' data:; "
             . "connect-src 'self'; "
             . "frame-ancestors 'none'; "
             . "base-uri 'self'; "

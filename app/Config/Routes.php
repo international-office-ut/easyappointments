@@ -51,6 +51,7 @@ $backendApiMethods = [
     'ajax_filter_customers',
     'ajax_save_unavailable',
     'ajax_delete_unavailable',
+    'ajax_get_provider_unavailability_periods',
     'ajax_save_working_plan_exception',
     'ajax_delete_working_plan_exception',
     'ajax_save_customer',

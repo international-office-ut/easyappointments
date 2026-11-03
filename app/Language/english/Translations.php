@@ -120,6 +120,9 @@ $lang["write_appointment_removal_reason"] =
 $lang["appointment_saved"] = "Appointment saved successfully.";
 $lang["new_unavailable_title"] = "New Unavailable Period";
 $lang["unavailable_saved"] = "Unavailable period saved successfully.";
+
+$lang["unavailable_periods"] = "Unavailable Periods";
+$lang["unavailable_periods_description"] = "Unavailability periods created from the calendar are listed here. Delete a period to make the time bookable again.";
 $lang["start_date_before_end_error"] =
     "Start date value is latter than end date.";
 $lang["invalid_duration"] = "Invalid duration.";

@@ -65,6 +65,45 @@ window.BackendCalendarApi = window.BackendCalendarApi || {};
      * @param {Function} successCallback The ajax success callback function.
      * @param {Function} errorCallback The ajax failure callback function.
      */
+    /**
+     * Delete an existing unavailability period record.
+     *
+     * @param {Number} unavailableId The ID of the unavailable period.
+     * @param {Function} successCallback Optional success callback.
+     */
+    exports.deleteUnavailable = function (unavailableId, successCallback) {
+        var url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_delete_unavailable';
+
+        var data = {
+            csrfToken: GlobalVariables.csrfToken,
+            unavailable_id: unavailableId
+        };
+
+        return $.post(url, data).done(function () {
+            if (successCallback) {
+                successCallback();
+            }
+        });
+    };
+
+    /**
+     * Returns the unavailability periods of the selected provider (work plan tab listing).
+     *
+     * @param {Number} providerId The selected provider ID.
+     *
+     * @return {jqXHR}
+     */
+    exports.getProviderUnavailabilityPeriods = function (providerId) {
+        var url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_get_provider_unavailability_periods';
+
+        var data = {
+            csrfToken: GlobalVariables.csrfToken,
+            provider_id: providerId
+        };
+
+        return $.post(url, data);
+    };
+
     exports.saveUnavailable = function (unavailable, successCallback, errorCallback) {
         var url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_save_unavailable';
 

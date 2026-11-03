@@ -327,6 +327,41 @@ class Backend_api extends BaseController {
     }
 
     /**
+     * List the unavailability periods of the selected provider (work plan tab).
+     */
+    public function ajax_get_provider_unavailability_periods()
+    {
+        try
+        {
+            if ($this->privileges[PRIV_APPOINTMENTS]['view'] == FALSE)
+            {
+                throw new Exception('You do not have the required privileges for this task.');
+            }
+
+            $provider_id = (int) $this->request->getPost('provider_id');
+
+            $this->assert_provider_in_scope($provider_id);
+
+            $periods = $this->appointments_model->get_batch([
+                'id_users_provider' => $provider_id,
+                'is_unavailable' => TRUE
+            ]);
+
+            $periods = $this->scope_appointment_rows($periods);
+
+            $response = $periods;
+        }
+        catch (Exception $exception)
+        {
+            $this->response->setStatusCode(500);
+
+            $response = $this->ajax_exception($exception);
+        }
+
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
+    }
+
+    /**
      * Save appointment changes that are made from the backend calendar page.
      */
     public function ajax_save_appointment()

@@ -101,6 +101,7 @@ class Backend extends BaseController {
         $view['customers'] = $this->customers_model->get_batch();
         $view['calendar_view'] = ! empty($calendar_view_query_param) ? $calendar_view_query_param : $user['settings']['calendar_view'];
         $view['timezones'] = $this->timezones->to_array();
+        $view['language'] = service('language')->getLocale();
         $this->set_user_data($view);
 
         if (session()->get('role_slug') === DB_SLUG_SECRETARY)

@@ -13,13 +13,10 @@
 
 namespace EA\Engine\Notifications;
 
-use DateTime;
-use DateTimeZone;
 use EA\Engine\Types\Email as EmailAddress;
 use EA\Engine\Types\NonEmptyText;
 use EA\Engine\Types\Text;
 use EA\Engine\Types\Url;
-use Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use RuntimeException;
 
@@ -106,54 +103,15 @@ class Email {
     {
         $timezones = $this->timezones;
 
-        switch ($settings['date_format'])
-        {
-            case 'DMY':
-                $date_format = 'd/m/Y';
-                break;
-            case 'DDMY':
-                $date_format = 'd.m.Y';
-                break;
-            case 'MDY':
-                $date_format = 'm/d/Y';
-                break;
-            case 'YMD':
-                $date_format = 'Y/m/d';
-                break;
-            default:
-                throw new Exception('Invalid date_format value: ' . $settings['date_format']);
-        }
-
-        switch ($settings['time_format'])
-        {
-            case 'military':
-                $time_format = 'H:i';
-                break;
-            case 'regular':
-                $time_format = 'g:i a';
-                break;
-            default:
-                throw new Exception('Invalid time_format value: ' . $settings['time_format']);
-        }
-
-        $appointment_timezone = new DateTimeZone($provider['timezone']);
-        $appointment_start = new DateTime($appointment['start_datetime'], $appointment_timezone);
-        $appointment_end = new DateTime($appointment['end_datetime'], $appointment_timezone);
-
-        if ($timezone && $timezone !== $provider['timezone'])
-        {
-            $appointment_timezone = new DateTimeZone($timezone);
-            $appointment_start->setTimezone($appointment_timezone);
-            $appointment_end->setTimezone($appointment_timezone);
-        }
-
         $html = ($this->view_renderer)('emails/appointment_details', [
             'email_title' => $title->get(),
             'email_message' => $message->get(),
             'appointment_service' => $service['name'],
             'appointment_provider' => $provider['first_name'] . ' ' . $provider['last_name'],
-            'appointment_start_date' => $appointment_start->format($date_format . ' ' . $time_format),
-            'appointment_end_date' => $appointment_end->format($date_format . ' ' . $time_format),
+            'appointment_start_date' => format_system_datetime($appointment['start_datetime'],
+                $settings, $provider['timezone'], $timezone),
+            'appointment_end_date' => format_system_datetime($appointment['end_datetime'],
+                $settings, $provider['timezone'], $timezone),
             'appointment_timezone' => $timezones[empty($timezone) ? $provider['timezone'] : $timezone],
             'appointment_zoom_link' => get_appointment_location_value(
                 $appointment['location'] ?? NULL,
@@ -222,49 +180,11 @@ class Email {
     {
         $timezones = $this->timezones;
 
-        switch ($settings['date_format'])
-        {
-            case 'DMY':
-                $date_format = 'd/m/Y';
-                break;
-            case 'DDMY':
-                $date_format = 'd.m.Y';
-                break;
-            case 'MDY':
-                $date_format = 'm/d/Y';
-                break;
-            case 'YMD':
-                $date_format = 'Y/m/d';
-                break;
-            default:
-                throw new Exception('Invalid date_format value: ' . $settings['date_format']);
-        }
-
-        switch ($settings['time_format'])
-        {
-            case 'military':
-                $time_format = 'H:i';
-                break;
-            case 'regular':
-                $time_format = 'g:i a';
-                break;
-            default:
-                throw new Exception('Invalid time_format value: ' . $settings['time_format']);
-        }
-
-        $appointment_timezone = new DateTimeZone($provider['timezone']);
-        $appointment_start = new DateTime($appointment['start_datetime'], $appointment_timezone);
-
-        if ($timezone && $timezone !== $provider['timezone'])
-        {
-            $appointment_timezone = new DateTimeZone($timezone);
-            $appointment_start->setTimezone($appointment_timezone);
-        }
-
         $html = ($this->view_renderer)('emails/delete_appointment', [
             'appointment_service' => $service['name'],
             'appointment_provider' => $provider['first_name'] . ' ' . $provider['last_name'],
-            'appointment_date' => $appointment_start->format($date_format . ' ' . $time_format),
+            'appointment_date' => format_system_datetime($appointment['start_datetime'],
+                $settings, $provider['timezone'], $timezone),
             'appointment_duration' => $service['duration'] . ' ' . lang('minutes'),
             'appointment_timezone' => $timezones[empty($timezone) ? $provider['timezone'] : $timezone],
             'company_link' => $settings['company_link'],

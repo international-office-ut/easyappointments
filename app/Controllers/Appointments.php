@@ -249,8 +249,8 @@ class Appointments extends BaseController {
      * Cancel an existing appointment.
      *
      * This method removes an appointment from the company's schedule. In order for the appointment to be deleted, the
-     * hash string must be provided. The customer can only cancel the appointment if the edit time period is not over
-     * yet.
+     * hash string must be provided. A GET request renders a CSRF-protected confirmation form, so that the deletion
+     * always happens through a POST request (the booking wizard submits through the same endpoint).
      *
      * @param string $appointment_hash This appointment hash identifier.
      */
@@ -260,6 +260,41 @@ class Appointments extends BaseController {
 
         try
         {
+            // A plain GET link must never delete the record, so it renders the
+            // confirmation form that will submit the deletion request instead.
+            if ( ! $this->request->is('post'))
+            {
+                $appointments = $this->appointments_model->get_batch(['hash' => $appointment_hash]);
+
+                if (empty($appointments))
+                {
+                    return view('appointments/message', [
+                        'message_title' => lang('appointment_not_found'),
+                        'message_text' => lang('appointment_does_not_exist_in_db'),
+                        'message_icon' => base_url('assets/img/error.png')
+                    ]);
+                }
+
+                $appointment = $appointments[0];
+                $provider = $this->providers_model->get_row($appointment['id_users_provider']);
+                $service = $this->services_model->get_row($appointment['id_services']);
+                $settings = $this->settings_model->notification_settings();
+
+                $timezone = $provider['timezone'] ?: date_default_timezone_get();
+                $timezones = $this->timezones->to_array();
+
+                return view('appointments/cancel_confirmation', [
+                    'appointment_hash' => $appointment_hash,
+                    'service_name' => $service['name'],
+                    'provider_name' => trim($provider['first_name'] . ' ' . $provider['last_name']),
+                    'appointment_start' => format_system_datetime($appointment['start_datetime'],
+                        $settings, $timezone),
+                    'appointment_end' => format_system_datetime($appointment['end_datetime'],
+                        $settings, $timezone),
+                    'timezone_label' => $timezones[$timezone] ?? $timezone,
+                ]);
+            }
+
             // Check whether the appointment hash exists in the database.
             $appointments = $this->appointments_model->get_batch(['hash' => $appointment_hash]);
 

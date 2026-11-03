@@ -59,6 +59,6 @@ The backend (`/index.php/backend`, `/index.php/backend_api`) and the login pages
 
 Happy Bookin'!
 
-_This document applies to Easy!Appointments v2.0.0._
+_The application version is defined inside `app/Config/Deployment.php` (the `$version` property), while the deployment environment may override it with the `EA_VERSION` value._
 
 [Back](readme.md)

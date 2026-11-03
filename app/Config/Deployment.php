@@ -50,7 +50,7 @@ class Deployment extends BaseConfig
     public array $install_allowed_ranges = [];
 
     /** EA version string (kept for parity with the CI3 release flow). */
-    public string $version = '2.0.0';
+    public string $version = '2.1.0';
 
     public string $release_label = '';
 
@@ -89,7 +89,7 @@ class Deployment extends BaseConfig
         $ranges = (string) env('INSTALL_ALLOWED_RANGES', '');
         $this->install_allowed_ranges = $ranges === '' ? [] : array_filter(array_map('trim', explode(',', $ranges)));
 
-        $this->version = (string) env('EA_VERSION', '2.0.0');
+        $this->version = (string) env('EA_VERSION', $this->version);
         $this->release_label = (string) env('EA_RELEASE_LABEL', '');
         $this->cache_busting_token = (string) env('EA_CACHE_BUSTING_TOKEN', 'ZW007');
     }

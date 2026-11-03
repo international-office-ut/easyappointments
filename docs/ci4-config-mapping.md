@@ -14,7 +14,7 @@ Not yet ported: CI3 `require_once config.php` root file (the untracked
 
 | CI3 key | Value/type now | CI4 target | Notes |
 |---|---|---|---|
-| `version` / `release_label` | "2.0.0" | `app/Config/Deployment.php` (custom) | EA-specific, keep semantics |
+| `version` / `release_label` | see `app/Config/Deployment.php` (`$version`, bumped per release) | EA-specific, keep semantics |
 | `debug` = `Config::DEBUG_MODE` | bool | `.env` + `app.forceGlobalSecureRequests` n/a | CI4 debug = `CI_ENVIRONMENT=development`; reads through the logger/exception display |
 | `base_url` = `Config::BASE_URL` | string | `.env` `app.baseURL` | trailing slash required |
 | `index_page` = "index.php" | string | `app.indexPage` | keeps `/index.php/...` URLs working (no JS changes) |

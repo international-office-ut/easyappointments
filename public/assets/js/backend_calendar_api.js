@@ -71,7 +71,7 @@ window.BackendCalendarApi = window.BackendCalendarApi || {};
      * @param {Number} unavailableId The ID of the unavailable period.
      * @param {Function} successCallback Optional success callback.
      */
-    exports.deleteUnavailable = function (unavailableId, successCallback) {
+    exports.deleteUnavailable = function (unavailableId, successCallback, errorCallback) {
         var url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_delete_unavailable';
 
         var data = {
@@ -79,11 +79,17 @@ window.BackendCalendarApi = window.BackendCalendarApi || {};
             unavailable_id: unavailableId
         };
 
-        return $.post(url, data).done(function () {
-            if (successCallback) {
-                successCallback();
-            }
-        });
+        return $.post(url, data)
+            .done(function () {
+                if (successCallback) {
+                    successCallback();
+                }
+            })
+            .fail(function () {
+                if (errorCallback) {
+                    errorCallback();
+                }
+            });
     };
 
     /**

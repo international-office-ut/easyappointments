@@ -22,12 +22,45 @@ window.BackendCalendarUnavailabilityEventsModal = window.BackendCalendarUnavaila
 
     'use strict';
 
+    /**
+     * Fill the provider timezone line of the unavailable dialog.
+     *
+     * The current-user line only renders when the two timezones differ.
+     */
+    function fillProviderTimezone(providerId) {
+        var $provider = $('#manage-unavailable .provider-timezone');
+        var providerId = providerId !== undefined
+            ? providerId
+            : ($('#unavailable-provider').val() || $('#provider-id').val());
+        var providers = GlobalVariables.availableProviders
+            || GlobalVariables.providers
+            || [];
+        var provider = providers.find(function (candidate) {
+            return Number(candidate.id) === Number(providerId);
+        });
+
+        if (provider && provider.timezone) {
+            $provider.text(GlobalVariables.timezones[provider.timezone] || provider.timezone);
+        } else {
+            $provider.text('-');
+        }
+
+        var sameTimezone = provider && provider.timezone === GlobalVariables.timezone;
+
+        $('#manage-unavailable .current-user-timezone').closest('li')
+            .toggleClass('d-none', Boolean(sameTimezone));
+    }
+
     function bindEventHandlers() {
         /**
          * Event: Manage Unavailable Dialog Save Button "Click"
          *
          * Stores the unavailable period changes or inserts a new record.
          */
+        $('#manage-unavailable').on('change', '#unavailable-provider', function () {
+            fillProviderTimezone($(this).val());
+        });
+
         $('#manage-unavailable #save-unavailable').on('click', function () {
             var $dialog = $('#manage-unavailable');
             $dialog.find('.modal-message').addClass('d-none');
@@ -136,6 +169,8 @@ window.BackendCalendarUnavailabilityEventsModal = window.BackendCalendarUnavaila
     exports.resetUnavailableDialog = function () {
         $('.popover').popover('dispose'); // hide popover
         var $dialog = $('#manage-unavailable');
+
+        fillProviderTimezone();
 
         $dialog.find('#unavailable-id').val('');
 

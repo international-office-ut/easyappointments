@@ -499,6 +499,7 @@
         $('#providers .working-plan tbody').empty();
         $('#providers .breaks tbody').empty();
         $('#providers .working-plan-exceptions tbody').empty();
+        $('#providers .unavailability-periods tbody').empty();
     };
 
     /**
@@ -827,10 +828,16 @@
     $('#providers').on('click', '.delete-period', function () {
         var providerId = $('#provider-id').val();
         var periodId = $(this).closest('td').data('id');
+        var $row = $(this).closest('tr');
+
+        $row.css('opacity', '0.5');
 
         BackendCalendarApi.deleteUnavailable(periodId, function () {
             Backend.displayNotification(EALang.delete_unavailable);
             renderUnavailabilityPeriods(providerId);
+        }, function () {
+            $row.css('opacity', '');
+            Backend.displayNotification(EALang.unexpected_issues_message);
         });
     });
 

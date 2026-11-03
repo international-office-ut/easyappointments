@@ -47,7 +47,7 @@
                                 </li>
                                 <li>
                                     <?= lang('current_user') ?>:
-                                    <span>
+                                    <span class="current-user-timezone">
                                         <?= $timezones[$timezone] ?? '-' ?>
                                     </span>
                                 </li>

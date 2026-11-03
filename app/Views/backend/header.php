@@ -25,6 +25,7 @@
     <script src="<?= asset_url('assets/ext/jquery/jquery.min.js') ?>"></script>
     <script src="<?= asset_url('assets/ext/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
     <script src="<?= asset_url('assets/ext/popper/popper.min.js') ?>"></script>
+    <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/ext/tippy/tippy.css') ?>">
     <script src="<?= asset_url('assets/ext/tippy/tippy-bundle.umd.min.js') ?>"></script>
     <script src="<?= asset_url('assets/ext/jquery-ui/jquery-ui.min.js') ?>"></script>
     <script src="<?= asset_url('assets/ext/jquery-ui/jquery-ui.touch-punch.min.js') ?>"></script>

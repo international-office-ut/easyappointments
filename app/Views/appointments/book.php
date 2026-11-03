@@ -488,10 +488,12 @@
 <script src="<?= asset_url('assets/ext/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
 <script src="<?= asset_url('assets/ext/popper/popper.min.js') ?>"></script>
 <script src="<?= asset_url('assets/ext/tippy/tippy-bundle.umd.min.js') ?>"></script>
+<link rel="stylesheet" type="text/css" href="<?= asset_url('assets/ext/tippy/tippy.css') ?>">
 <script src="<?= asset_url('assets/ext/datejs/date.min.js') ?>"></script>
 <script src="<?= asset_url('assets/ext/moment/moment.min.js') ?>"></script>
 <script src="<?= asset_url('assets/ext/moment/moment-timezone-with-data.min.js') ?>"></script>
 <script src="<?= asset_url('assets/ext/altcha/altcha.min.js') ?>"></script>
+<link rel="stylesheet" type="text/css" href="<?= asset_url('assets/ext/altcha/altcha.css') ?>">
 <script src="<?= asset_url('assets/ext/altcha/altcha-i18n-de.min.js') ?>"></script>
 <script src="<?= asset_url('assets/js/frontend_book_api.js') ?>"></script>
 <script src="<?= asset_url('assets/js/frontend_book.js') ?>"></script>

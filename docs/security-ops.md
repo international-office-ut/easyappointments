@@ -11,14 +11,13 @@ this list for every fresh installation and after every major infrastructure chan
   filter: the policy locks every subresource origin to `self` (except the ALTCHA proof-of-work
   worker, which runs from a blob/data URL) and each inline script element is nonced through the
   `csp_nonce()` helper (the `render` helper), which is why the header cannot be static.
-- The `style-src` directive still allows inline CSS: several vendored widgets inject their runtime
-  styles through inline `<style>` elements / style attributes (tippy,
-  ALTCHA, cookieconsent, jQuery UI, fullcalendar). The CSP violation reports (see below) name
-  these sources explicitly. Hardening follows when the vendors are ported to static styles:
-  theme extraction for the
-  tippy/ALTCHA/cookieconsent bundles, and the fullcalendar width templates. The security-critical
-  `script-src` stays nonce-guarded meanwhile. FontAwesome is ported to the CSS distribution
-  (fontawesome/css/all.min.css + webfonts) and its SVG+JS runtime is gone.
+- The `style-src` directive still allows inline CSS: the fullcalendar v3 bundle builds its render
+  templates from dynamic inline style attributes (event placements, axis/week widths, event dot
+  colors) — a bundle-level port or the FullCalendar v6 upgrade will clear them. The CSP violation
+  reports (see below) name these sources explicitly. The remaining vendors were already ported:
+  FontAwesome over its CSS distribution and the tippy/ALTCHA/cookieconsent themes load as static
+  stylesheets (tippy.css/altcha.css) or through an adopted stylesheet (CSSOM, CSP-exempt). The
+  security-critical `script-src` stays nonce-guarded meanwhile.
 - The spec-required `report-uri` targets `site_url('csp-report')` (App\Controllers\Csp_report):
   violations are rate limited and logged into storage/logs. No CSP line may be added back to
   public/.htaccess or vhosts — browsers intersect duplicate CSP headers and block nonced scripts.

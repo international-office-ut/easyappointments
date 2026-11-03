@@ -27,7 +27,17 @@ gulp.src = function () {
 };
 
 gulp.task('package', (done) => {
-    const archive = 'easyappointments-0.0.0.zip';
+    // The archive name follows the runtime EA version (Config\Deployment::$version),
+    // so releases are bumped in one place only.
+    const deploymentPhp = fs.readFileSync('app/Config/Deployment.php', 'utf8');
+    const version = deploymentPhp.match(/public string \$version = '([^']+)';/)[1];
+
+    if ( ! version)
+    {
+        throw new Error('Deployment version not found.');
+    }
+
+    const archive = `easyappointments-${version}.zip`;
 
     fs.removeSync('build');
     fs.removeSync(archive);

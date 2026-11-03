@@ -115,9 +115,9 @@
     </div>
 </nav>
 
-<div id="notification" style="display: none;"></div>
+<div id="notification" data-display="none"></div>
 
-<div id="loading" style="display: none;">
+<div id="loading" data-display="none">
     <div class="any-element animation is-loading">
         &nbsp;
     </div>

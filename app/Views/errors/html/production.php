@@ -6,9 +6,7 @@
 
     <title><?= lang('Errors.whoops') ?></title>
 
-    <style>
-        <?= preg_replace('#[\r\n\t ]+#', ' ', file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'debug.css')) ?>
-    </style>
+    <link rel="stylesheet" type="text/css" href="<?= base_url('assets/css/errors/production.css') ?>">
 </head>
 <body>
 

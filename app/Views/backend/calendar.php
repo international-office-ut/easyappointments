@@ -216,7 +216,7 @@
                                         <option value="custom"><?= lang('other') ?></option>
                                     </select>
                                     <input id="appointment-location-custom" class="form-control mt-1"
-                                           style="display:none" maxlength="1000">
+                                           data-display="none" maxlength="1000">
                                 </div>
                             </div>
 
@@ -273,8 +273,8 @@
                             </button>
                             <input id="filter-existing-customers"
                                    placeholder="<?= lang('type_to_filter_customers') ?>"
-                                   style="display: none;" class="input-sm form-control">
-                            <div id="existing-customers-list" style="display: none;"></div>
+                                   data-display="none" class="input-sm form-control">
+                            <div id="existing-customers-list" data-display="none"></div>
                         </legend>
 
                         <input id="customer-id" type="hidden">
@@ -333,21 +333,21 @@
                                     <?= render_timezone_dropdown('id="timezone" class="form-control required"') ?>
                                 </div>
 
-                                <div class="form-group" style="display: none">
+                                <div class="form-group" data-display="none">
                                     <label for="address" class="control-label">
                                         <?= lang('address') ?>
                                     </label>
                                     <input id="address" class="form-control">
                                 </div>
 
-                                <div class="form-group" style="display: none">
+                                <div class="form-group" data-display="none">
                                     <label for="city" class="control-label">
                                         <?= lang('city') ?>
                                     </label>
                                     <input id="city" class="form-control">
                                 </div>
 
-                                <div class="form-group" style="display: none">
+                                <div class="form-group" data-display="none">
                                     <label for="zip-code" class="control-label">
                                         <?= lang('zip_code') ?>
                                     </label>

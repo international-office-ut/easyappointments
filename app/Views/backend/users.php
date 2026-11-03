@@ -101,7 +101,7 @@
                             </button>
                         </div>
 
-                        <div class="save-cancel-group btn-group" style="display:none;">
+                        <div class="save-cancel-group btn-group" data-display="none">
                             <button id="save-provider" class="btn btn-primary">
                                 <i class="fas fa-check-square mr-2"></i>
                                 <?= lang('save') ?>
@@ -131,7 +131,7 @@
                     // visible when the user has working plan view active.
                     ?>
 
-                    <div class="form-message alert" style="display:none;"></div>
+                    <div class="form-message alert" data-display="none"></div>
 
                     <div class="tab-content">
                         <div class="details-view tab-pane fade show active clearfix" id="details">
@@ -286,7 +286,7 @@
                                     <br>
 
                                     <div class="custom-control custom-switch">
-                                        <input type="checkbox" class="custom-control-input" id="provider-notifications" style="display:none">
+                                        <input type="checkbox" class="custom-control-input" id="provider-notifications" data-display="none">
                                         <label class="custom-control-label" for="provider-notifications">
                                             <?= lang('receive_notifications') ?>
                                         </label>
@@ -437,7 +437,7 @@
                             </button>
                         </div>
 
-                        <div class="save-cancel-group btn-group" style="display:none;">
+                        <div class="save-cancel-group btn-group" data-display="none">
                             <button id="save-secretary" class="btn btn-primary">
                                 <i class="fas fa-check-square mr-2"></i>
                                 <?= lang('save') ?>
@@ -451,7 +451,7 @@
 
                     <h3><?= lang('details') ?></h3>
 
-                    <div class="form-message alert" style="display:none;"></div>
+                    <div class="form-message alert" data-display="none"></div>
 
                     <input type="hidden" id="secretary-id" class="record-id">
 
@@ -582,7 +582,7 @@
                             <br>
 
                             <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="secretary-notifications" style="display:none">
+                                <input type="checkbox" class="custom-control-input" id="secretary-notifications" data-display="none">
                                 <label class="custom-control-label" for="secretary-notifications">
                                     <?= lang('receive_notifications') ?>
                                 </label>
@@ -643,7 +643,7 @@
                             </button>
                         </div>
 
-                        <div class="save-cancel-group btn-group" style="display:none;">
+                        <div class="save-cancel-group btn-group" data-display="none">
                             <button id="save-admin" class="btn btn-primary">
                                 <i class="fas fa-check-square mr-2"></i>
                                 <?= lang('save') ?>
@@ -657,7 +657,7 @@
 
                     <h3><?= lang('details') ?></h3>
 
-                    <div class="form-message alert" style="display:none;"></div>
+                    <div class="form-message alert" data-display="none"></div>
 
                     <input type="hidden" id="admin-id" class="record-id">
 
@@ -788,7 +788,7 @@
                             <br>
 
                             <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="admin-notifications" style="display:none">
+                                <input type="checkbox" class="custom-control-input" id="admin-notifications" data-display="none">
                                 <label class="custom-control-label" for="admin-notifications">
                                     <?= lang('receive_notifications') ?>
                                 </label>

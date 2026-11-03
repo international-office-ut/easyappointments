@@ -70,7 +70,7 @@
     <div class="alert d-none"></div>
     <form id="login-form">
         <div class="form-group" id="login-credentials"
-             style="display: <?= (empty($shib_candidates) && ! empty($password_login)) ? 'block' : 'none' ?>;">
+             data-display="<?= (empty($shib_candidates) && ! empty($password_login)) ? 'block' : 'none' ?>">
             <div class="form-group">
                 <label for="username"><?= lang('username') ?></label>
                 <input type="text" id="username"
@@ -86,7 +86,7 @@
         </div>
 
         <div class="form-group" id="login-role-wrapper"
-             style="display: <?= empty($shib_candidates) ? 'none' : 'block' ?>;">
+             data-display="<?= empty($shib_candidates) ? 'none' : 'block' ?>">
             <label for="login-role"><?= lang('select_role') ?></label>
             <select id="login-role" class="form-control">
                 <?php $roles_labels = ['admin' => 'admins', 'provider' => 'providers', 'secretary' => 'secretaries']; ?>
@@ -103,7 +103,7 @@
         </div>
 
         <div class="form-group" id="login-submit-wrapper"
-             style="display: <?= (empty($shib_candidates) && ! empty($password_login)) ? 'block' : 'none' ?>;">
+             data-display="<?= (empty($shib_candidates) && ! empty($password_login)) ? 'block' : 'none' ?>">
             <button type="submit" id="login" class="btn btn-primary btn-block mt-2">
                 <i class="fas fa-sign-in-alt mr-2"></i>
                 <?= lang('login') ?>

@@ -425,3 +425,34 @@ body .popover-body a {
 body .clearfix {
     clear: both;
 }
+
+/* Server-side visibility switching (CSP-safe: no style attributes at render time).
+   No !important on purpose: jQuery show()/hide() inline overrides keep working.
+   Rule base selectors only, so the element keeps its own display type. */
+[data-display="none"] {
+    display: none;
+}
+
+[data-display="inline-block"] {
+    display: inline-block;
+}
+
+[data-display="block"] {
+    display: block;
+}
+
+.margin-10 {
+    margin: 10px;
+}
+
+.margin-left-10 {
+    margin-left: 10px;
+}
+
+.min-height-2-5rem {
+    min-height: 2.5rem;
+}
+
+.opacity-0 {
+    opacity: 0;
+}

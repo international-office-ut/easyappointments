@@ -76,7 +76,7 @@
                     <?php endif ?>
                 </div>
 
-                <div id="save-cancel-group" class="btn-group" style="display:none;">
+                <div id="save-cancel-group" class="btn-group" data-display="none">
                     <button id="save-customer" class="btn btn-primary">
                         <i class="fas fa-check-square mr-2"></i>
                         <?= lang('save') ?>
@@ -91,10 +91,10 @@
             <input id="customer-id" type="hidden">
 
             <div class="row">
-                <div class="col-12 col-md-6" style="margin-left: 0;">
+                <div class="col-12 col-md-6" >
                     <h3><?= lang('details') ?></h3>
 
-                    <div id="form-message" class="alert" style="display:none;"></div>
+                    <div id="form-message" class="alert" data-display="none"></div>
 
                     <div class="form-group">
                         <label class="control-label" for="first-name">
@@ -128,14 +128,14 @@
                             <?= $require_phone_number === '1' ? 'required' : '' ?>">
                     </div>
 
-                    <div class="form-group" style="display: none">
+                    <div class="form-group" data-display="none">
                         <label class="control-label" for="address">
                             <?= lang('address') ?>
                         </label>
                         <input id="address" class="form-control">
                     </div>
 
-                    <div class="form-group" style="display: none">
+                    <div class="form-group" data-display="none">
                         <label class="control-label" for="city">
                             <?= lang('city') ?>
 
@@ -143,7 +143,7 @@
                         <input id="city" class="form-control">
                     </div>
 
-                    <div class="form-group" style="display: none">
+                    <div class="form-group" data-display="none">
                         <label class="control-label" for="zip-code">
                             <?= lang('zip_code') ?>
                         </label>

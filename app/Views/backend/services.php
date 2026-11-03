@@ -85,7 +85,7 @@
                             </button>
                         </div>
 
-                        <div class="save-cancel-group btn-group" style="display:none;">
+                        <div class="save-cancel-group btn-group" data-display="none">
                             <button id="save-service" class="btn btn-primary">
                                 <i class="fas fa-check-square mr-2"></i>
                                 <?= lang('save') ?>
@@ -110,7 +110,7 @@
                         </li>
                     </ul>
 
-                    <div class="form-message alert" style="display:none;"></div>
+                    <div class="form-message alert" data-display="none"></div>
 
                     <input type="hidden" id="service-id">
 
@@ -136,7 +136,7 @@
                                         <input id="service-duration" class="form-control required" type="number" min="<?= EVENT_MINIMUM_DURATION ?>">
                                     </div>
 
-                                    <div class="form-group"  style="display: none">
+                                    <div class="form-group"  data-display="none">
                                         <label for="service-price">
                                             <?= lang('price') ?>
                                             <span class="text-danger">*</span>
@@ -144,7 +144,7 @@
                                         <input id="service-price" class="form-control required">
                                     </div>
 
-                                    <div class="form-group"  style="display: none">
+                                    <div class="form-group"  data-display="none">
                                         <label for="service-currency">
                                             <?= lang('currency') ?>
                                         </label>
@@ -301,7 +301,7 @@
                             </button>
                         </div>
 
-                        <div class="save-cancel-group btn-group" style="display:none;">
+                        <div class="save-cancel-group btn-group" data-display="none">
                             <button id="save-category" class="btn btn-primary">
                                 <i class="fas fa-check-square mr-2"></i>
                                 <?= lang('save') ?>
@@ -315,7 +315,7 @@
 
                     <h3><?= lang('details') ?></h3>
 
-                    <div class="form-message alert" style="display:none;"></div>
+                    <div class="form-message alert" data-display="none"></div>
 
                     <input type="hidden" id="category-id">
 

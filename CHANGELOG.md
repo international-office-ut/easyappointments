@@ -3,6 +3,28 @@
 This file contains the code changes that were introduced into each release (starting from v1.1.0) so that is easy for 
 developers to maintain and readjust their custom modifications on the main project codebase.
 
+## [2.1.0] - 2026-11-03
+
+### Changed 
+
+- Complete the CodeIgniter 4 cutover: the CI3 stack is gone and every workflow runs on the CI4-native parts.
+- Serve the Content Security Policy through a runtime filter with per-request nonces: every inline
+  script element is nonced, all subresource origins are pinned to `self` and the violation reports are
+  stored through the `csp-report` endpoint (see `App\Controllers\Csp_report`).
+- Remove the `unsafe-inline` and `unsafe-eval` concessions: the CSS uses data-attribute visibility
+  switches instead of render-time style attributes, and the vendored libraries lost their eval paths.
+- Cancel an appointment through a CSRF-protected confirmation page instead of a plain GET link.
+- Require the `ea:migrate-legacy` CLI command for CI3-era databases before any CI4 migration runs
+  (the automatic legacy detection inside the installer was removed).
+- Deactivate the `ea:smoke` QA command outside development environments.
+
+### Fixed 
+
+- Restore the admin/secretary deletion notifications (they were inverted inside the backend API).
+- Repair the loading of the privileges page stylesheet and the calendar asset references.
+- Whitelist the consent payload so that posted identifiers cannot reach the model update path.
+- Add the missing database indexes and other small schema fixes carried over from the CI3 chain.
+
 ## [1.4.2] - 2021-07-27
 
 ### Added 

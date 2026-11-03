@@ -62,6 +62,10 @@ npm install
 npm start          # JS/CSS watch cycle, builds into public/assets/ directly
 ```
 
+The `package.json` dependencies are only the framework for the frontend-toolchain and the version pins
+for the manually-vendored bundles in `public/assets/ext/` — the production runtime never uses npm,
+it runs exclusively on the composer stack and those committed assets.
+
 For the SSO (Shibboleth) smoke without an IdP, use the mock-header router:
 
 ```sh

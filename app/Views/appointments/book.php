@@ -65,7 +65,7 @@
 
                             <input type="hidden" name="csrfToken" value="<?= csrf_hash() ?>"/>
 
-                            <textarea name="cancel_reason" style="display:none"></textarea>
+                            <textarea name="cancel_reason" data-display="none"></textarea>
 
                             <button id="cancel-appointment" class="btn btn-warning btn-sm">
                                 <?= lang('cancel_2') ?>
@@ -85,7 +85,7 @@
             <?php endif; ?>
 
             <?php if (isset($exceptions)): ?>
-                <div style="margin: 10px">
+                <div class="margin-10">
                     <h4><?= lang('unexpected_issues') ?></h4>
 
                     <?php foreach ($exceptions as $exception): ?>
@@ -205,7 +205,7 @@
 
             <!-- SELECT APPOINTMENT DATE -->
 
-            <div id="wizard-frame-2" class="wizard-frame" style="display:none;">
+            <div id="wizard-frame-2" class="wizard-frame" data-display="none">
                 <div class="frame-container">
 
                     <h2 class="frame-title"><?= lang('appointment_date_and_time') ?></h2>
@@ -243,7 +243,7 @@
 
             <!-- ENTER CUSTOMER DATA -->
 
-            <div id="wizard-frame-3" class="wizard-frame" style="display:none;">
+            <div id="wizard-frame-3" class="wizard-frame" data-display="none">
                 <div class="frame-container">
 
                     <h2 class="frame-title"><?= lang('customer_information') ?></h2>
@@ -281,19 +281,19 @@
                             </div>
                         </div>
                         <div class="col-12 col-md-6">
-                            <div class="form-group" style="display: none">
+                            <div class="form-group" data-display="none">
                                 <label for="address" class="control-label">
                                     <?= lang('address') ?>
                                 </label>
                                 <input type="text" id="address" class="form-control" maxlength="120"/>
                             </div>
-                            <div class="form-group" style="display: none">
+                            <div class="form-group" data-display="none">
                                 <label for="city" class="control-label">
                                     <?= lang('city') ?>
                                 </label>
                                 <input type="text" id="city" class="form-control" maxlength="120"/>
                             </div>
-                            <div class="form-group" style="display: none">
+                            <div class="form-group" data-display="none">
                                 <label for="zip-code" class="control-label">
                                     <?= lang('zip_code') ?>
                                 </label>
@@ -354,7 +354,7 @@
 
             <!-- APPOINTMENT DATA CONFIRMATION -->
 
-            <div id="wizard-frame-4" class="wizard-frame" style="display:none;">
+            <div id="wizard-frame-4" class="wizard-frame" data-display="none">
                 <div class="frame-container">
                     <h2 class="frame-title"><?= lang('appointment_confirmation') ?></h2>
                     <div class="row frame-content">
@@ -364,7 +364,7 @@
 
                     <div class="row frame-content">
                         <div class="col-12 col-md-6">
-                            <div id="appointment-mode-wrapper" style="display:none;">
+                            <div id="appointment-mode-wrapper" data-display="none">
                                 <h4>
                                     <?= lang('appointment_mode') ?>
                                 </h4>
@@ -382,14 +382,13 @@
                                         <?= lang('mode_on_premise') ?>
                                     </label>
                                 </div>
-                                <div id="appointment-mode-hint" class="text-muted" style="display:none;">
+                                <div id="appointment-mode-hint" class="text-muted" data-display="none">
                                     <small><?= lang('zoom_link_email_hint') ?></small>
                                 </div>
 
                                 <div id="booking-message"
-                                     class="alert alert-danger invisible"
-                                     role="alert"
-                                     style="min-height: 2.5rem;"></div>
+                                     class="alert alert-danger invisible min-height-2-5rem"
+                                     role="alert"></div>
                             </div>
                         </div>
 
@@ -399,7 +398,7 @@
                                                name="altcha"
                                                language="<?= ea_config('language') === 'german' ? 'de' : 'en' ?>">
                                 </altcha-widget>
-                                <div id="captcha-hint" class="text-muted" style="opacity:0">&nbsp;</div>
+                                <div id="captcha-hint" class="text-muted opacity-0">&nbsp;</div>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -411,7 +410,7 @@
                         <i class="fas fa-chevron-left mr-2"></i>
                         <?= lang('back') ?>
                     </button>
-                    <form id="book-appointment-form" style="display:inline-block" method="post">
+                    <form id="book-appointment-form" data-display="inline-block" method="post">
                         <button id="book-appointment-submit" type="button" class="btn btn-success">
                             <i class="fas fa-check-square mr-2"></i>
                             <?= ! $manage_mode ? lang('confirm') : lang('update') ?>

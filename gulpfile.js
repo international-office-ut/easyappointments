@@ -168,6 +168,6 @@ gulp.task('watch', (done) => {
 
 gulp.task('dev', gulp.series('clean', 'scripts', 'styles', 'watch'));
 
-gulp.task('build', gulp.series('clean', 'scripts', 'styles', 'package'));
+gulp.task('build', gulp.series('clean', 'scripts', 'styles'));
 
 gulp.task('default', gulp.parallel('dev'));

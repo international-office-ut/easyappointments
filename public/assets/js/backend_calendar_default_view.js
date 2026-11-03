@@ -1547,8 +1547,8 @@ response.appointments.forEach(function (appointment) {
                 }
 
                 // Preselect time
-                $('#start-datetime').datepicker('setDate', moment(start).format('YYYY/MM/DD HH:mm:ss'));
-                $('#end-datetime').datepicker('setDate', moment(end).format('YYYY/MM/DD HH:mm:ss'));
+                $('#start-datetime').datepicker('setDate', moment(start).toDate());
+                $('#end-datetime').datepicker('setDate', moment(end).toDate());
 
                 info.jsEvent.preventDefault();
             },

@@ -437,8 +437,7 @@ $lang["zoom_link_required"] =
     "Der Zoom-Link fehlt. Online-Termine erfordern einen konfigurierten Zoom-Link.";
 $lang["zoom_link_email_hint"] =
     "Der Link wird Ihnen nach der Buchung per E-Mail zugesendet.";
-$lang["provider_weekday_mode_overrides_hint"] =
-    "Gilt für Services, die keinen eigenen Standort-Typ und keine Wochentag-Modus-Überschreibungen haben.";
+
 
 
 /* Language file consumed directly by the CI4 Language service (CI3-key parity). */

@@ -55,7 +55,7 @@ class Deployment extends BaseConfig
     public string $release_label = '';
 
     /** Asset cache-busting token, bumped per release. */
-    public string $cache_busting_token = 'ZW007';
+    public string $cache_busting_token = 'ZW017';
 
     /** Languages that the frontends and the backend user settings expose. */
     public array $available_languages = ['english', 'german'];
@@ -91,7 +91,7 @@ class Deployment extends BaseConfig
 
         $this->version = (string) env('EA_VERSION', $this->version);
         $this->release_label = (string) env('EA_RELEASE_LABEL', '');
-        $this->cache_busting_token = (string) env('EA_CACHE_BUSTING_TOKEN', 'ZW007');
+        $this->cache_busting_token = (string) env('EA_CACHE_BUSTING_TOKEN', 'ZW017');
     }
 
     /**

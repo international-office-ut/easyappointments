@@ -26,6 +26,12 @@ class Content_security implements FilterInterface {
             && $request->isSecure();
 
         $response->setHeader('Content-Security-Policy', static::policy($is_secure));
+
+        // Dynamic HTML must never be served from a heuristic browser cache: stale
+        // documents lose their inline elements against a hardened policy and
+        // render broken. Static assets keep their long caching (the cache busting
+        // token covers them), only the PHP-generated responses get no-store.
+        $response->setHeader('Cache-Control', 'no-store, must-revalidate');
     }
 
     protected function policy(bool $is_secure): string

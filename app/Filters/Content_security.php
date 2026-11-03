@@ -20,7 +20,12 @@ class Content_security implements FilterInterface {
 
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = NULL)
     {
-        $response->setHeader('Content-Security-Policy', static::policy($request->isSecure()));
+        // CLIRequest objects (php spark routes, php public/index.php) have no
+        // HTTP transport, so the secure scheme check applies to web requests only.
+        $is_secure = $request instanceof \CodeIgniter\HTTP\IncomingRequest
+            && $request->isSecure();
+
+        $response->setHeader('Content-Security-Policy', static::policy($is_secure));
     }
 
     protected function policy(bool $is_secure): string

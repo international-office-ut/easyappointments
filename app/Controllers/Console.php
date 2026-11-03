@@ -14,7 +14,6 @@
 namespace App\Controllers;
 
 use Exception;
-use App\Controllers\Concerns\Baseline_Migration;
 use App\Models\Admins_Model;
 use App\Models\Customers_Model;
 use App\Models\Maintenance_Model;
@@ -30,8 +29,6 @@ use CodeIgniter\Database\MigrationRunner;
  * CLI commands of Easy!Appointments, can only be executed from a terminal and not with a direct request.
  */
 class Console extends BaseController {
-    use Baseline_Migration;
-
     protected Admins_Model $admins_model;
     protected Customers_Model $customers_model;
     protected Providers_Model $providers_model;
@@ -106,47 +103,10 @@ class Console extends BaseController {
 
         try
         {
-            // Transitioned from CI3: the schema already exists and no CI4 history
-            // was written yet, so the migration chain gets baselined instead of
-            // replaying the DDL (a fresh empty database runs or finishes the chain
-            // below).
-            if ($db->tableExists('appointments'))
-            {
-                // CI3-shaped tracker first: the CI4 runner cannot query it and the
-                // archive step keeps it as a backup table.
-                if ($this->legacy_history_present($db))
-                {
-                    $this->archive_legacy_history($db);
-
-                    $migrations = new MigrationRunner(config(\Config\Migrations::class));
-
-                    $this->baseline_stamp($migrations);
-
-                    echo PHP_EOL
-                        . '⇾ CI3 migration tracker detected: archived as "'
-                        . $db->prefixTable('migrations_c3_backup') . '" and the CI3 chain '
-                        . 'marked as applied (no DDL replayed).' . PHP_EOL . PHP_EOL;
-
-                    return;
-                }
-
-                if (count($migrations->getHistory()) === 0)
-                {
-                    $this->baseline_stamp($migrations);
-
-                    echo PHP_EOL
-                        . '⇾ Existing schema detected: the CI3 migration chain was marked '
-                        . 'as applied (no DDL replayed).' . PHP_EOL . PHP_EOL;
-
-                    return;
-                }
-            }
-
+            // CI4-native behavior only: a CI3-era database has to go through the
+            // "ea:migrate-legacy" command before any of the CI4 tools run.
             if ($type === 'fresh')
             {
-                // CI4-native refresh semantics (CI3 mapped through "version(0)"
-                // + current()): roll the schema back through every down() and
-                // then reapply the whole chain.
                 $migrations->regress(0);
                 $migrations->latest();
             } else {

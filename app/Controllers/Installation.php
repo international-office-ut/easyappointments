@@ -14,7 +14,6 @@
 namespace App\Controllers;
 
 use Exception;
-use App\Controllers\Concerns\Baseline_Migration;
 use App\Models\Admins_Model;
 use App\Models\Customers_Model;
 use App\Models\Providers_Model;
@@ -31,8 +30,6 @@ use Config\Deployment;
  * (CI4 port of the CI3 application/controllers/Installation.php)
  */
 class Installation extends BaseController {
-    use Baseline_Migration;
-
     protected Admins_Model $admins_model;
     protected Settings_Model $settings_model;
     protected Services_Model $services_model;
@@ -86,26 +83,9 @@ class Installation extends BaseController {
 
             $migrations = new MigrationRunner(config(\Config\Migrations::class));
 
-            // Baseline stamp: on an existing database (installed through CI3) the
-            // tables already exist, so CI4 marks the whole CI3 migration chain as
-            // applied without replaying any DDL. On a fresh database the tables do
-            // not exist yet and the full chain runs below.
-            if (db_connect()->tableExists('appointments'))
-            {
-                if ($this->legacy_history_present(db_connect()))
-                {
-                    $this->archive_legacy_history(db_connect());
-
-                    $migrations = new MigrationRunner(config(\Config\Migrations::class));
-
-                    $this->baseline_stamp($migrations);
-                }
-                elseif (count($migrations->getHistory()) === 0)
-                {
-                    $this->baseline_stamp($migrations);
-                }
-            }
-
+            // CI4-native behavior only: a CI3-era database must first run the
+            // "ea:migrate-legacy" command (see app/Commands/Migrate_legacy.php)
+            // since the legacy tracker cannot be read by the CI4 runner.
             $migrations->latest();
 
             // Insert admin

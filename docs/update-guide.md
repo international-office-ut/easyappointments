@@ -6,6 +6,22 @@ If you get a `500 Internal Server Error` message then you must check the error l
 
 Before you start following the steps below, make sure you **backup** your database and files. 
 
+### Migrating from the CI3 stack (v1.4.x database)
+
+Required when the database still carries a CI3-era schema (`ea_` tables) and no CI4 migration history. The installer and the normal migration command refuse to touch such a database — the cutover runs once through an explicit command instead:
+
+```sh
+php spark ea:migrate-legacy
+```
+
+What the command does:
+
+* archives the legacy CI3 migration tracker as `ea_migrations_c3_backup`
+* baseline-stamps the CI4 migration history (the whole CI3 chain gets marked as applied, no DDL replayed)
+* leaves the running schema in place — CI4 continues on the identical `ea_`-prefixed tables
+
+Afterwards deploy the CI4 files, point `.env` at the same database, and continue with the regular `ea migrate` / installer tools. Never run `php index.php console migrate fresh` against a converted database: it destroys and rebuilds the schema.
+
 ### Updating from v1.3.x to v1.4.x
 
 ###### Step 1: Update your Easy!Appointments files 

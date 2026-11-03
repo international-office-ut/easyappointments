@@ -818,6 +818,15 @@ body .form-horizontal .controls {
     margin-bottom: 20px;
 }
 
+#users-page #provider-services .service-category {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+#users-page #provider-services.grouped .checkbox {
+    padding-left: 16px;
+}
+
 #users-page #providers .switch-view {
     overflow: auto;
     background: none;

@@ -147,10 +147,13 @@ window.BackendUsers = window.BackendUsers || {};
             uncategorizedServices.push(service);
         });
 
-        if (categoriesExist && !$.isEmptyObject(categorizedServices)) {
+        var groupedServices = categoriesExist && !$.isEmptyObject(categorizedServices);
+        $('#provider-services').toggleClass('grouped', groupedServices);
+
+        if (groupedServices) {
             Object.keys(categorizedServices).sort().forEach(function (categoryName) {
                 $('<h6/>', {
-                    'class': 'service-category text-muted font-weight-bold mt-2 mb-1',
+                    'class': 'service-category text-muted mt-2 mb-1',
                     'text': categoryName
                 })
                     .appendTo('#provider-services');
@@ -161,6 +164,14 @@ window.BackendUsers = window.BackendUsers || {};
             });
 
             uncategorizedServices.forEach(function (service) {
+                if (service === uncategorizedServices[0]) {
+                    $('<h6/>', {
+                        'class': 'service-category text-muted mt-4 mb-1',
+                        'text': EALang.no_category
+                    })
+                        .appendTo('#provider-services');
+                }
+
                 buildServiceCheckbox(service);
             });
         } else {

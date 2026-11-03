@@ -27,6 +27,9 @@ developers to maintain and readjust their custom modifications on the main proje
 - Repair the loading of the privileges page stylesheet and the calendar asset references.
 - Whitelist the consent payload so that posted identifiers cannot reach the model update path.
 - Add the missing database indexes and other small schema fixes carried over from the CI3 chain.
+- Re-apply the ALTCHA widget theme through a CSSOM adopted stylesheet instead of the external
+  link, so the unchecked checkbox paints correctly with the strict CSP (the external
+  `altcha.css` link stays as a fallback).
 
 ## [1.4.2] - 2021-07-27
 

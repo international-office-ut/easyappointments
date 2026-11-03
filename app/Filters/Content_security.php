@@ -20,10 +20,10 @@ class Content_security implements FilterInterface {
 
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = NULL)
     {
-        $response->setHeader('Content-Security-Policy', static::policy());
+        $response->setHeader('Content-Security-Policy', static::policy($request->isSecure()));
     }
 
-    protected function policy(): string
+    protected function policy(bool $is_secure): string
     {
         return
             "default-src 'self'; "
@@ -38,7 +38,10 @@ class Content_security implements FilterInterface {
             . "base-uri 'self'; "
             . "form-action 'self'; "
             . "object-src 'none'; "
-            . 'report-uri ' . rtrim(site_url('csp-report'), '/') . '; '
-            . 'upgrade-insecure-requests';
+            . 'report-uri ' . rtrim(site_url('csp-report'), '/')
+            // Only enforce upgrades on TLS connections: on the plain-HTTP development
+            // stacks (spark serve, docker compose) the directive would upgrade every
+            // same-origin subresource to a HTTPS address that nothing provides.
+            . ($is_secure ? '; upgrade-insecure-requests' : '');
     }
 }

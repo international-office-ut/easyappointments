@@ -14,6 +14,9 @@ this list for every fresh installation and after every major infrastructure chan
 - The spec-required `report-uri` targets `site_url('csp-report')` (App\Controllers\Csp_report):
   violations are rate limited and logged into storage/logs. No CSP line may be added back to
   public/.htaccess or vhosts — browsers intersect duplicate CSP headers and block nonced scripts.
+- `upgrade-insecure-requests` is only attached on HTTPS requests (the filter checks the scheme):
+  over plain HTTP (spark serve, docker compose) it would upgrade every same-origin subresource
+  to HTTPS and break the assets, while on TLS it still upgrades the leftovers.
 - When CSP violations appear after a dependency update, `storage/logs` carries the exact
   directive+origin; patch or adapt the dependency, then drop the token from App\Filters\Content_security
   instead of weakening the policy globally.

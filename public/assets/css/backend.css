@@ -297,9 +297,29 @@ body legend {
 @media (min-width: 768px) {
     /* The settings page has no independent columns: its tab content scrolls inside the
        fixed frame instead (otherwise e.g. the privacy-policy editor would be clipped
-       below the fold and impossible to edit). */
+       below the fold and impossible to edit). The nav pills own their natural height
+       and the tab content fills the remaining frame height, so short tabs (about)
+       do not render a permanent scrollbar. */
     #settings-page.content-scroll {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    #settings-page.content-scroll > .nav-pills {
+        flex: 0 0 auto;
+        height: auto;
+    }
+
+    #settings-page.content-scroll > .tab-content {
+        height: auto;
+        min-height: 0;
+        flex: 1 1 auto;
         overflow-y: auto;
+    }
+
+    #settings-page.content-scroll .tab-pane {
+        height: auto;
     }
 }
 

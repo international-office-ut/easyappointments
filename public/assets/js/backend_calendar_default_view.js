@@ -139,7 +139,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                 BackendCalendarUnavailabilityEventsModal.resetUnavailableDialog();
 
                 // Apply unavailable data to dialog.
-                $dialog.find('.modal-header h3').text('Edit Unavailable Period');
+                $dialog.find('.modal-header h3').text(EALang.edit_unavailable_title);
                 $dialog.find('#unavailable-start').datetimepicker('setDate', startDatetime);
                 $dialog.find('#unavailable-id').val(unavailable.id);
                 $dialog.find('#unavailable-provider').val(unavailable.id_users_provider);

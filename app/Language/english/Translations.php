@@ -119,6 +119,7 @@ $lang["write_appointment_removal_reason"] =
     "Please take a minute to write the reason you are canceling the appointment:";
 $lang["appointment_saved"] = "Appointment saved successfully.";
 $lang["new_unavailable_title"] = "New Unavailable Period";
+$lang["edit_unavailable_title"] = "Edit Unavailable Period";
 $lang["unavailable_saved"] = "Unavailable period saved successfully.";
 $lang["add_unavailable"] = "Add Unavailable Period";
 

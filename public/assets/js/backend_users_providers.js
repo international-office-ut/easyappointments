@@ -102,7 +102,7 @@
             $('#providers .save-cancel-group').show();
             $('#providers .record-details').find('input, select, textarea').prop('disabled', false);
             $('#provider-password, #provider-password-confirm').addClass('required');
-            $('#providers').find('.add-break, .edit-break, .delete-break, .add-working-plan-exception, .edit-working-plan-exception, .delete-working-plan-exception, #reset-working-plan, #insert-unavailable').prop('disabled', false);
+            $('#providers').find('.add-break, .edit-break, .delete-break, .add-working-plan-exception, .edit-working-plan-exception, .delete-working-plan-exception, #reset-working-plan, #insert-unavailable, .edit-period, .delete-period').prop('disabled', false);
             $('#provider-services input:checkbox').prop('disabled', false);
 
             // Apply default working plan
@@ -122,7 +122,7 @@
             $('#providers .record-details').find('input, select, textarea').prop('disabled', false);
             $('#provider-password, #provider-password-confirm').removeClass('required');
             $('#provider-services input:checkbox').prop('disabled', false);
-            $('#providers').find('.add-break, .edit-break, .delete-break, .add-working-plan-exception, .edit-working-plan-exception, .delete-working-plan-exception, #reset-working-plan, #insert-unavailable').prop('disabled', false);
+            $('#providers').find('.add-break, .edit-break, .delete-break, .add-working-plan-exception, .edit-working-plan-exception, .delete-working-plan-exception, #reset-working-plan, #insert-unavailable, .edit-period, .delete-period').prop('disabled', false);
             $('#providers input:checkbox').prop('disabled', false);
             BackendUsers.wp.timepickers(false);
             this.syncWeekdayModeStates();
@@ -487,6 +487,7 @@
         $('#providers .working-plan input:checkbox').prop('disabled', true);
         $('.breaks').find('.edit-break, .delete-break').prop('disabled', true);
         $('.working-plan-exceptions').find('.edit-working-plan-exception, .delete-working-plan-exception').prop('disabled', true);
+        $('.unavailability-periods').find('.edit-period, .delete-period').prop('disabled', true);
 
         $('#providers .record-details .has-error').removeClass('has-error');
         $('#providers .record-details .form-message').hide();
@@ -580,6 +581,8 @@
         $('.working-plan').find('input').prop('disabled', true);
         $('#providers .working-plan .weekday-mode').prop('disabled', true);
         $('.breaks').find('.edit-break, .delete-break').prop('disabled', true);
+        $('.working-plan-exceptions').find('.edit-working-plan-exception, .delete-working-plan-exception').prop('disabled', true);
+        $('.unavailability-periods').find('.edit-period, .delete-period').prop('disabled', true);
         $('#providers .working-plan-exceptions tbody').empty();
         var workingPlanExceptions = $.parseJSON(provider.settings.working_plan_exceptions);
         BackendUsers.wp.setupWorkingPlanExceptions(workingPlanExceptions);
@@ -780,6 +783,8 @@
         }
     };
 
+    var currentPeriods = [];
+
     /**
      * Load and render the unavailability periods of the selected provider.
      *
@@ -787,6 +792,8 @@
      */
     function renderUnavailabilityPeriods(providerId) {
         var $table = $('.unavailability-periods tbody');
+
+        currentPeriods = [];
 
         if (!providerId) {
             $table.empty();
@@ -798,7 +805,9 @@
             .done(function (periods) {
                 $table.empty();
 
-                (periods || []).forEach(function (period) {
+                currentPeriods = periods || [];
+
+                currentPeriods.forEach(function (period) {
                     var $row = $('<tr/>');
 
                     $row.append(
@@ -810,12 +819,23 @@
                         $('<td/>', {'data-id': period.id})
                     );
 
-                    var $deleteButton = $('<button/>', {
-                        'class': 'btn btn-outline-secondary btn-sm delete-period mr-2',
-                        'html': [$('<i/>', {'class': 'fas fa-trash-alt mr-2'})]
+                    var $editButton = $('<button/>', {
+                        'type': 'button',
+                        'class': 'btn btn-outline-secondary btn-sm edit-period',
+                        'title': EALang.edit,
+                        'disabled': !$('#providers .save-cancel-group').is(':visible'),
+                        'html': [$('<span/>', {'class': 'fas fa-edit'})]
                     });
 
-                    $row.find('td:last').append($deleteButton);
+                    var $deleteButton = $('<button/>', {
+                        'type': 'button',
+                        'class': 'btn btn-outline-secondary btn-sm delete-period',
+                        'title': EALang.delete,
+                        'disabled': !$('#providers .save-cancel-group').is(':visible'),
+                        'html': [$('<span/>', {'class': 'fas fa-trash-alt'})]
+                    });
+
+                    $row.find('td:last').append($editButton, $deleteButton);
 
                     $table.append($row);
                 });
@@ -825,6 +845,31 @@
     /**
      * Delete the unavailability period record of the work plan listing.
      */
+    $(document).on('click', '.edit-period', function () {
+        var periodId = $(this).closest('td').data('id');
+        var period = currentPeriods.find(function (candidate) {
+            return Number(candidate.id) === Number(periodId);
+        });
+
+        if (!period) {
+            return;
+        }
+
+        BackendCalendarUnavailabilityEventsModal.resetUnavailableDialog();
+
+        var $dialog = $('#manage-unavailable');
+
+        $dialog.find('#unavailable-id').val(period.id);
+        $dialog.find('#unavailable-provider').val(period.id_users_provider);
+        $dialog.find('#unavailable-start').datetimepicker(
+            'setDate', Date.parseExact(period.start_datetime, 'yyyy-MM-dd HH:mm:ss'));
+        $dialog.find('#unavailable-end').datetimepicker(
+            'setDate', Date.parseExact(period.end_datetime, 'yyyy-MM-dd HH:mm:ss'));
+        $dialog.find('#unavailable-notes').val(period.notes || '');
+        $dialog.find('.modal-header h3').text(EALang.edit_unavailable_title);
+        $dialog.modal('show');
+    });
+
     $(document).on('click', '.delete-period', function () {
         var providerId = $('#provider-id').val();
         var periodId = $(this).closest('td').data('id');

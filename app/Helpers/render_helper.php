@@ -17,7 +17,7 @@ use App\Libraries\Timezones;
  * Get the one-time CSP nonce of the current request.
  *
  * The nonce value is generated once per request and must be attached to every inline <script>
- * element (the CSP policy allows only nonced scripts). Reports go to the collector via #csp-report.
+ * element (the CSP policy allows only nonced scripts).
  *
  * @return string
  */

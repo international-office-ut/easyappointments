@@ -9,8 +9,8 @@
 !/docker/mysql/.gitkeep
 /node_modules/
 /npm-debug.log
-/assets/js/**/*.min.js
-/assets/css/**/*.min.css
+/public/assets/js/**/*.min.js
+/public/assets/css/**/*.min.css
 /config.php
 /.env
 /writable/cache/*

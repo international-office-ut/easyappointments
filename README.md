@@ -59,7 +59,7 @@ same subcommands, one handler).
 ```sh
 composer install
 npm install
-npm start          # JS/CSS watch cycle, builds into assets/ directly
+npm start          # JS/CSS watch cycle, builds into public/assets/ directly
 ```
 
 For the SSO (Shibboleth) smoke without an IdP, use the mock-header router:

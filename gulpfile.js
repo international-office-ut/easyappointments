@@ -34,7 +34,6 @@ gulp.task('package', (done) => {
 
     fs.mkdirsSync('build');
     fs.copySync('app', 'build/app');
-    fs.copySync('assets', 'build/assets');
     fs.copySync('public', 'build/public');
     fs.copySync('engine', 'build/engine');
     if (fs.existsSync('docs/security-ops.md')) {
@@ -89,8 +88,8 @@ gulp.task('package', (done) => {
 });
 
 gulp.task('clean', (done) => {
-    fs.removeSync('assets/js/**/*.min.js');
-    fs.removeSync('assets/css/**/*.min.css');
+    fs.removeSync('public/assets/js/**/*.min.js');
+    fs.removeSync('public/assets/css/**/*.min.css');
     done();
 });
 
@@ -106,9 +105,9 @@ gulp.task('docs', (done) => {
     const commands = [
         'npx jsdoc "engine" -d "docs/apigen/html"',
 
-        'npx jsdoc "assets/js" -d "docs/jsdoc/html"',
+        'npx jsdoc "public/assets/js" -d "docs/jsdoc/html"',
 
-        'npx plato -r -d "docs/plato/html" "assets/js"'
+        'npx plato -r -d "docs/plato/html" "public/assets/js"'
     ];
 
     commands.forEach(function (command) {
@@ -123,35 +122,35 @@ gulp.task('docs', (done) => {
 
 gulp.task('scripts', (done) => {
     return gulp.src([
-        'assets/js/**/*.js',
-        '!assets/js/**/*.min.js'
+        'public/assets/js/**/*.js',
+        '!public/assets/js/**/*.min.js'
     ])
-        .pipe(plugins.changed('assets/js/**/*'))
+        .pipe(plugins.changed('public/assets/js/**/*'))
         .pipe(plugins.uglify().on('error', console.log))
         .pipe(plugins.rename({suffix: '.min'}))
-        .pipe(gulp.dest('assets/js'));
+        .pipe(gulp.dest('public/assets/js'));
 });
 
 gulp.task('styles', () => {
     return gulp.src([
-        'assets/css/**/*.css',
-        '!assets/css/**/*.min.css'
+        'public/assets/css/**/*.css',
+        '!public/assets/css/**/*.min.css'
     ])
-        .pipe(plugins.changed('assets/css/**/*'))
+        .pipe(plugins.changed('public/assets/css/**/*'))
         .pipe(plugins.cleanCss())
         .pipe(plugins.rename({suffix: '.min'}))
-        .pipe(gulp.dest('assets/css'));
+        .pipe(gulp.dest('public/assets/css'));
 });
 
 gulp.task('watch', (done) => {
     gulp.watch([
-        'assets/js/**/*.js',
-        '!assets/js/**/*.min.js'
+        'public/assets/js/**/*.js',
+        '!public/assets/js/**/*.min.js'
     ], gulp.parallel('scripts'));
 
     gulp.watch([
-        'assets/css/**/*.css',
-        '!assets/css/**/*.min.css'
+        'public/assets/css/**/*.css',
+        '!public/assets/css/**/*.min.css'
     ], gulp.parallel('styles'));
 
     done();

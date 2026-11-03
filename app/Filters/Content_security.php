@@ -40,13 +40,13 @@ class Content_security implements FilterInterface {
             "default-src 'self'; "
             . "script-src 'self' 'nonce-" . csp_nonce() . "'; "
             . "worker-src 'self' blob: data:; "
-            // FullCalendar v6 injects its compiled styles through runtime style
-            // elements (via a csp-nonce-aware injector, see the backend calendar
-            // view). Engines disagree between page parsing and injection timing,
-            // so the version-stable content hashes of the bundled style blocks
-            // are allowed as a fallback. On a library update check the
-            // csp-report log and renew the hashes (or move to v7 css files).
-            . "style-src 'self' 'nonce-" . csp_nonce() . "' 'sha256-GsQC5AaXpdCaKTyWbxBzn7nitfp0Otwn7I/zu0rUKOs=' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU='; "
+            // Inline styles stay allowed: select2 and the jQuery UI widgets set
+            // dynamic inline style attributes on their rendered elements, and
+            // Safari additionally reports runtime style injections through the
+            // wide "stylesheet" wording of both style-src vectors. The values
+            // vary per client, so they cannot be hash-listed. The
+            // security-critical script-src stays nonce-based.
+            . "style-src 'self' 'unsafe-inline'; "
             . "img-src 'self' data:; "
             . "font-src 'self' data:; "
             . "connect-src 'self'; "

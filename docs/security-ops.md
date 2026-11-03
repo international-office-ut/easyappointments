@@ -11,11 +11,11 @@ this list for every fresh installation and after every major infrastructure chan
   filter: the policy locks every subresource origin to `self` (except the ALTCHA proof-of-work
   worker, which runs from a blob/data URL) and each inline script element is nonced through the
   `csp_nonce()` helper (the `render` helper), which is why the header cannot be static.
-- The `style-src` directive is nonce-guarded like the `script-src` directive: the only vendored
-  component that injects runtime styles is FullCalendar v6, and its injector reads the
-  `csp-nonce` meta tag (see the backend calendar view) to stamp its `<style>` element with the
-  per-request nonce. No `unsafe-*` token survives in the policy. The CSP violation reports
-  (see below) still log regressions from future dependency updates.
+- The `style-src` directive allows inline CSS on purpose: select2 and the jQuery UI widgets set
+  dynamic inline style attributes (per-client widths, palette rules), and Safari reports runtime
+  style injections through the stylesheet wording of both style vectors — the values vary per
+  client, so they cannot be hash-listed. The security-critical `script-src` stays nonce-guarded;
+  fullcalendar v6 stamps its injected styles through the `csp-nonce` meta tag of the calendar view.
 - The spec-required `report-uri` targets `site_url('csp-report')` (App\Controllers\Csp_report):
   violations are rate limited and logged into storage/logs. No CSP line may be added back to
   public/.htaccess or vhosts — browsers intersect duplicate CSP headers and block nonced scripts.

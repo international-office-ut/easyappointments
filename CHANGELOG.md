@@ -11,10 +11,11 @@ developers to maintain and readjust their custom modifications on the main proje
 - Serve the Content Security Policy through a runtime filter with per-request nonces: every inline
   script element is nonced, all subresource origins are pinned to `self` and the violation reports are
   stored through the `csp-report` endpoint (see `App\Controllers\Csp_report`).
-- Remove the `unsafe-eval` concession: the CSS uses data-attribute visibility
-  switches instead of render-time style attributes, and the vendored libraries lost their eval paths.
-  The inline style allowance stays for the vendored widgets that inject their styles at runtime
-  (FontAwesome SVG runtime, tippy, ALTCHA, cookieconer, jQuery UI, fullcalendar).
+- Remove the `unsafe-eval` concession: the vendored libraries lost their eval paths
+  (fontawesome over the css distribution, tippy/altcha theme extraction, patched
+  libraries), and the CSS uses data-attribute visibility switches instead of render-time
+  style attributes. The inline style allowance stays for select2/jQuery UI runtime
+  styling and the Safari engine behavior.
 - Cancel an appointment through a CSRF-protected confirmation page instead of a plain GET link.
 - Require the `ea:migrate-legacy` CLI command for CI3-era databases before any CI4 migration runs
   (the automatic legacy detection inside the installer was removed).

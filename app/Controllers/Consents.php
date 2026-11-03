@@ -21,7 +21,7 @@ use App\Models\Consents_Model;
  *
  * Handles user consent related operations.
  *
- * (CI4 port of the CI3 application/controllers/Consents.php)
+
  */
 class Consents extends BaseController {
     protected Consents_Model $consents_model;

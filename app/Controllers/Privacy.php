@@ -19,7 +19,7 @@ use App\Models\Customers_Model;
 /**
  * Privacy Controller
  *
- * (CI4 port of the CI3 application/controllers/Privacy.php)
+
  */
 class Privacy extends BaseController {
     protected Customers_Model $customers_model;

@@ -17,8 +17,6 @@ use CodeIgniter\Database\Migration;
 
 
 /**
- * (CI4 port of the CI3 application/migrations/021_modify_sync_period_columns.php)
- *
  * Class Migration_Modify_sync_period_columns
  *
  * @property CI_DB_query_builder $db

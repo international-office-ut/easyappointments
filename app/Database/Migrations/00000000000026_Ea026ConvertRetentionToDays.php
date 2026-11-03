@@ -17,8 +17,6 @@ use CodeIgniter\Database\Migration;
 
 
 /**
- * (CI4 port of the CI3 application/migrations/026_convert_retention_to_days.php)
- *
  * Class Migration_Convert_retention_to_days
  *
  * Converts the data retention setting from months to days for a finer retention control:

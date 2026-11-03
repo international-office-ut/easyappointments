@@ -36,7 +36,7 @@ use Throwable;
 /**
  * Appointments Controller
  *
- * (CI4 port of the CI3 application/controllers/Appointments.php booking flow)
+
  */
 class Appointments extends BaseController {
     protected Appointments_Model $appointments_model;
@@ -842,7 +842,7 @@ class Appointments extends BaseController {
     }
 
     /**
-     * CI3 "get_post" parity: prefer POST, fall back to GET.
+     * Read a request value: prefer POST, fall back to GET.
      */
     protected function get_post($key)
     {

@@ -30,7 +30,7 @@ use Exception;
 /**
  * Backend Controller
  *
- * (CI4 port of the CI3 application/controllers/Backend.php)
+
  */
 class Backend extends BaseController {
     protected Appointments_Model $appointments_model;

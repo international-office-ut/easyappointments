@@ -17,8 +17,6 @@ use CodeIgniter\Database\Migration;
 
 
 /**
- * (CI4 port of the CI3 application/migrations/031_remove_service_appointment_modes.php)
- *
  * Class Migration_remove_service_appointment_modes
  *
  * The appointment mode is a provider decision (providers own the online / on-premise

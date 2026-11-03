@@ -17,8 +17,6 @@ use CodeIgniter\Database\Migration;
 
 
 /**
- * (CI4 port of the CI3 application/migrations/008_add_service_attendants_number.php)
- *
  * Class Migration_Add_service_attendants_number
  *
  * @property CI_DB_query_builder $db

@@ -16,7 +16,7 @@ namespace App\Libraries;
 use Exception;
 
 /**
- * Timezones (CI4 port of the CI3 application/libraries/Timezones.php)
+ * Timezones
  */
 class Timezones {
     /**

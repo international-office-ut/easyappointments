@@ -24,7 +24,7 @@ use CodeIgniter\Database\BaseUtils;
 use CodeIgniter\Database\MigrationRunner;
 
 /**
- * Console Controller (CI4 port of the CI3 application/controllers/Console.php)
+ * Console Controller
  *
  * CLI commands of Easy!Appointments, can only be executed from a terminal and not with a direct request.
  */

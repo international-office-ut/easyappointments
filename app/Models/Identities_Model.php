@@ -18,7 +18,7 @@ use EA\Engine\Security\Passwords;
 use Exception;
 
 /**
- * Identities Model (CI4 port, from the CI3 application/models/Identities_model.php)
+ * Identities Model
  *
  * Handles the shared-credential identity of a person across role records (admin / provider /
  * secretary): one email, one login name and one password are shared between rows that belong

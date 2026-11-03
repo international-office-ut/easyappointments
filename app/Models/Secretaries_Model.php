@@ -18,7 +18,7 @@ use EA\Engine\Security\Passwords;
 use Exception;
 
 /**
- * Secretaries Model (CI4 port, from the CI3 application/models/Secretaries_model.php)
+ * Secretaries Model
  *
  * Handles the db actions that have to do with secretaries.
  */

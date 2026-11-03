@@ -78,8 +78,7 @@ defined('EXIT_DATABASE')       || define('EXIT_DATABASE', 8);       // database 
 defined('EXIT__AUTO_MIN')      || define('EXIT__AUTO_MIN', 9);      // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      || define('EXIT__AUTO_MAX', 125);    // highest automatically-assigned error code
 
-// Easy!Appointments constants (single CI4 bootstrap home, ported verbatim from
-// the CI3 application/config/constants.php as part of the CI4 cutover).
+// Easy!Appointments constants (single CI4 bootstrap home).
 defined('DB_SLUG_CUSTOMER')       || define('DB_SLUG_CUSTOMER', 'customer');
 defined('DB_SLUG_PROVIDER')       || define('DB_SLUG_PROVIDER', 'provider');
 defined('DB_SLUG_ADMIN')          || define('DB_SLUG_ADMIN', 'admin');

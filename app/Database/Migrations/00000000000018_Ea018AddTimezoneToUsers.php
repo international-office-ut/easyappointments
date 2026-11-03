@@ -17,8 +17,6 @@ use CodeIgniter\Database\Migration;
 
 
 /**
- * (CI4 port of the CI3 application/migrations/018_add_timezone_to_users.php)
- *
  * Class Migration_Add_timezone_to_users
  *
  * @property CI_DB_query_builder $db

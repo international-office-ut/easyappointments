@@ -17,8 +17,6 @@ use CodeIgniter\Database\Migration;
 
 
 /**
- * (CI4 port of the CI3 application/migrations/024_remove_google_sync.php)
- *
  * Class Migration_Remove_google_sync
  *
  * Removes the Google Calendar sync feature from the database schema: the provider sync settings,

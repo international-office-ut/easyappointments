@@ -17,8 +17,6 @@ use CodeIgniter\Database\Migration;
 
 
 /**
- * (CI4 port of the CI3 application/migrations/025_add_record_retention_setting.php)
- *
  * Class Migration_Add_record_retention_setting
  *
  * Adds the data retention setting used by the maintenance cleanup (privilege: records like

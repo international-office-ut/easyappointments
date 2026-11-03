@@ -27,7 +27,7 @@ use Config\Deployment;
  *
  * This controller will handle the installation procedure of Easy!Appointments.
  *
- * (CI4 port of the CI3 application/controllers/Installation.php)
+
  */
 class Installation extends BaseController {
     protected Admins_Model $admins_model;

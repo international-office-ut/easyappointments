@@ -26,8 +26,7 @@ use EA\Engine\Types\Text;
 /**
  * User Controller
  *
- * (CI4 port of the CI3 application/controllers/User.php — login, SSO,
- * password reset and temporary admin access flows)
+ * Handles the login, SSO, password reset and temporary admin access flows.
  */
 class User extends BaseController {
     protected Settings_Model $settings_model;

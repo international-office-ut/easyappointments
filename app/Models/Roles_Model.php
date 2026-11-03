@@ -15,7 +15,7 @@ namespace App\Models;
 use Exception;
 
 /**
- * Roles Model (CI4 port, from the CI3 application/models/Roles_model.php)
+ * Roles Model
  */
 class Roles_Model extends Ea_Model {
     /**

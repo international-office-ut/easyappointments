@@ -20,7 +20,7 @@ use Exception;
  * Public language endpoint: the page language selector lives on every page (including the
  * public booking page), so it must not depend on backend-restricted routes.
  *
- * (CI4 port of the CI3 application/controllers/Language.php)
+
  */
 class Language extends BaseController {
     /**

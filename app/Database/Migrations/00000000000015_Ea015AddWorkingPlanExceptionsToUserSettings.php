@@ -17,8 +17,6 @@ use CodeIgniter\Database\Migration;
 
 
 /**
- * (CI4 port of the CI3 application/migrations/015_add_working_plan_exceptions_to_user_settings.php)
- *
  * Class Migration_Add_working_plan_exceptions_to_user_settings
  *
  * @property CI_DB_query_builder $db

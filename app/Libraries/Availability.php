@@ -13,7 +13,7 @@
 
 
 /**
- * Availability (CI4 port of the CI3 application/libraries/Availability.php)
+ * Availability
  *
  * Handles the availability generation of providers, based on their working plan and their schedule.
  */

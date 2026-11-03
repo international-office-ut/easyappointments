@@ -17,8 +17,6 @@ use CodeIgniter\Database\Migration;
 
 
 /**
- * (CI4 port of the CI3 application/migrations/023_add_provider_weekday_modes_support.php)
- *
  * Class Migration_Add_provider_weekday_modes_support
  *
  * Adds the per-provider weekday appointment mode overrides (stored as a JSON map of weekday

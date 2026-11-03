@@ -18,7 +18,7 @@ use Exception;
 use CodeIgniter\Database\BaseConnection;
 
 /**
- * Maintenance Model (CI4 port, from the CI3 application/models/Maintenance_model.php)
+ * Maintenance Model
  *
  * Data retention purges: appointments, provider blocks (rows with `is_unavailable` flag),
  * and customers without appointments that are older than the configured retention period

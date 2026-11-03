@@ -28,7 +28,7 @@ use EA\Engine\Types\NonEmptyText;
 /**
  * Appointments Controller (API v1)
  *
- * (CI4 port of the CI3 application/controllers/api/v1/Appointments.php)
+
  */
 class Appointments extends API_V1_Controller {
     /**

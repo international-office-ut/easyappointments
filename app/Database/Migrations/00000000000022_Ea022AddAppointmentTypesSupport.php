@@ -17,8 +17,6 @@ use CodeIgniter\Database\Migration;
 
 
 /**
- * (CI4 port of the CI3 application/migrations/022_add_appointment_types_support.php)
- *
  * Class Migration_Add_appointment_types_support
  *
  * Adds the appointment mode configuration: a per-service default mode, per-service weekday

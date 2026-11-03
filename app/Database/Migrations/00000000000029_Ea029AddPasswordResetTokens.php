@@ -17,8 +17,6 @@ use CodeIgniter\Database\Migration;
 
 
 /**
- * (CI4 port of the CI3 application/migrations/029_add_password_reset_tokens.php)
- *
  * Class V1_5_0_Add_password_reset_tokens
  *
  * Adds the single-use access token columns that power the email link based password reset

@@ -17,8 +17,6 @@ use CodeIgniter\Database\Migration;
 
 
 /**
- * (CI4 port of the CI3 application/migrations/002_add_google_analytics_setting.php)
- *
  * Class Migration_Add_google_analytics_setting
  *
  * @property CI_DB_query_builder $db

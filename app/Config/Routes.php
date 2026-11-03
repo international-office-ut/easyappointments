@@ -4,10 +4,9 @@ use CodeIgniter\Router\RouteCollection;
 
 /** @var RouteCollection $routes */
 
-// Ported from the CI3 application/config/routes.php as part of the CI4
-// cutover. Session-based controllers resolve through the legacy "auto
-// routing" convention (controller/method/parameter) to keep every booking
-// page URL byte-identical; only the explicit table below needs ports.
+// Session-based controllers resolve through the legacy "auto routing"
+// convention (controller/method/parameter) to keep every booking page URL
+// byte-identical; only the explicit table below needs ports.
 //
 // CI4's improved auto-routing refuses the "default controller by name" path,
 // so the root route and the appointments entry get explicit definitions.

@@ -15,7 +15,7 @@ use Config\App;
 use Config\Deployment;
 
 /**
- * Fetch Easy!Appointments configuration values by the CI3 names.
+ * Fetch Easy!Appointments configuration values.
  *
  * The CodeIgniter 4 "config()" helper is reserved for config classes, so the
  * application keeps its own name here; the call sites stay segment-identical.
@@ -42,9 +42,9 @@ function ea_config($key)
 }
 
 /**
- * Fetch a system setting quickly from the CI3-style magic in the old view data.
+ * Fetch a system setting quickly for the view layer.
  *
- * The CI3 views called "$this->settings_model->get_setting(...)" from within the
+ * The view layer used to call "\$this->settings_model->get_setting(...)" within its
  * template scope; the ported views use this tiny helper instead so that no template
  * magic reaches the model layer.
  *
@@ -58,7 +58,7 @@ function ea_setting($name)
 }
 
 /**
- * All translated lines of the active locale (the CI3 "$this->lang->language" parity).
+ * All translated lines of the active locale (bridge key convention).
  *
  * @return array
  */

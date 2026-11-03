@@ -18,9 +18,9 @@ use Exception;
 use CodeIgniter\Database\BaseConnection;
 
 /**
- * Easy!Appointments model base: ports the CI3 EA_Model to CI4.
+ * Easy!Appointments model base.
  *
- * Deliberately standalone (not extending the CI4 BaseModel/Model): the CI3
+ * Deliberately standalone (not extending the CI4 BaseModel/Model): the CI4-native
  * model methods carry names like insert()/update() and protected visibility
  * that would collide with the CRUD API of the CI4 classes, so each EA model
  * keeps its own methods and drives $this->db->table(...) chains directly.

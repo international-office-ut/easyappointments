@@ -17,8 +17,6 @@ use CodeIgniter\Database\Migration;
 
 
 /**
- * (CI4 port of the CI3 application/migrations/030_add_password_reset_token_index.php)
- *
  * Class Migration_add_password_reset_token_index
  *
  * The access token lookups filter by the hash column, so the index keeps the link pages

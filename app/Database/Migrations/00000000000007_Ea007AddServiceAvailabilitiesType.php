@@ -17,8 +17,6 @@ use CodeIgniter\Database\Migration;
 
 
 /**
- * (CI4 port of the CI3 application/migrations/007_add_service_availabilities_type.php)
- *
  * Class Migration_Add_service_availabilities_type
  *
  * @property CI_DB_query_builder $db

@@ -15,11 +15,9 @@ use EA\Engine\Notifications\Email as EmailClient;
 use Psr\Log\LoggerInterface;
 
 /**
- * Easy!Appointments base controller: ports the CI3 EA_Controller
- * (application/core/EA_Controller.php) language bootstrap to CI4. The
- * logic is verbatim: the session choice wins, then the "language" cookie,
- * and the framework locale is set accordingly (the browser detection part of
- * the CI3 config.php bootstrap belongs to the CI4 App::$defaultLocale).
+ * Easy!Appointments base controller: language bootstrap. The session
+ * choice wins, then the "language" cookie, and the framework locale is
+ * set accordingly (browser detection belongs to \Config\App::$defaultLocale).
  */
 abstract class BaseController extends Controller
 {

@@ -17,8 +17,6 @@ use CodeIgniter\Database\Migration;
 
 
 /**
- * (CI4 port of the CI3 application/migrations/011_remove_prefix_from_fkey_constraints.php)
- *
  * Class Migration_Remove_prefix_from_foreign_keys
  *
  * @property CI_DB_query_builder $db

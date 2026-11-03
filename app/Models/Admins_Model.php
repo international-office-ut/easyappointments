@@ -18,7 +18,7 @@ use EA\Engine\Security\Passwords;
 use Exception;
 
 /**
- * Admins Model (CI4 port, from the CI3 application/models/Admins_model.php)
+ * Admins Model
  *
  * Handles the database actions for admin users management.
  */

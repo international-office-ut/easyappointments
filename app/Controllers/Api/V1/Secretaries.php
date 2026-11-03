@@ -23,7 +23,7 @@ use EA\Engine\Types\NonEmptyText;
 /**
  * Secretaries Controller (API v1)
  *
- * (CI4 port of the CI3 application/controllers/api/v1/Secretaries.php)
+
  */
 class Secretaries extends API_V1_Controller {
     /**

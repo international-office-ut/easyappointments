@@ -18,11 +18,11 @@ use CodeIgniter\Database\Migration;
 /**
  * Class Migration_Ea032ConvertSchemaToUtf8Mb4
  *
- * Upgrades the whole schema from the legacy 3-byte utf8 (utf8mb3) encoding of
- * the CI3 era to utf8mb4, so that 4-byte unicode code points (e.g. emojis) can
- * be stored in all text columns. The 3-byte requirement was carried over from
- * the old Easy!Appointments stack and is now treated as a property of the
- * database server.
+ * Upgrades the whole schema from the legacy 3-byte utf8 (utf8mb3) encoding to
+ * utf8mb4, so that 4-byte unicode code points (e.g. emojis) can be stored in
+ * all text columns. The 3-byte requirement was carried over from the old
+ * Easy!Appointments stack and is now treated as a property of the database
+ * server.
  */
 class Migration_Ea032ConvertSchemaToUtf8Mb4 extends Migration {
     /**

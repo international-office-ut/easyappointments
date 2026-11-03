@@ -17,8 +17,6 @@ use CodeIgniter\Database\Migration;
 
 
 /**
- * (CI4 port of the CI3 application/migrations/009_change_column_types.php)
- *
  * Class Migration_Change_column_types
  *
  * @property CI_DB_query_builder $db

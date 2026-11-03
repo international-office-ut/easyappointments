@@ -22,7 +22,7 @@ use EA\Engine\Api\V1\Response;
 /**
  * Settings Controller (API v1)
  *
- * (CI4 port of the CI3 application/controllers/api/v1/Settings.php)
+
  */
 class Settings extends API_V1_Controller {
     /**

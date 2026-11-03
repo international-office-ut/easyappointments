@@ -22,7 +22,7 @@ use App\Models\Services_Model;
 /**
  * Availabilities Controller (API v1)
  *
- * (CI4 port of the CI3 application/controllers/api/v1/Availabilities.php)
+
  */
 class Availabilities extends API_V1_Controller {
     protected Appointments_Model $appointments_model;

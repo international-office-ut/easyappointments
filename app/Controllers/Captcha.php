@@ -25,7 +25,7 @@ use Config\Deployment;
  *
  * Returns ALTCHA proof-of-work challenges for the booking page (see https://altcha.org).
  *
- * (CI4 port of the CI3 application/controllers/Captcha.php)
+
  */
 class Captcha extends BaseController {
     /**

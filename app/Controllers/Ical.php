@@ -37,7 +37,7 @@ use Jsvrcek\ICS\Utility\Formatter;
  * limited, so guessing tokens is not viable and a leaked URL can be revoked by the
  * provider from the backend.
  *
- * (CI4 port of the CI3 application/controllers/Ical.php)
+
  */
 class Ical extends BaseController {
     /**
@@ -116,7 +116,7 @@ class Ical extends BaseController {
     }
 
     /**
-     * Render the CI3 "show_error" output for the feed endpoint (plain error page).
+     * Render a plain error page for the feed endpoint (no styled 404 HTML).
      */
     protected function plain_error(string $message, int $status_code): ResponseInterface
     {

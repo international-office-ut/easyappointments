@@ -19,8 +19,8 @@ use CodeIgniter\Config\BaseConfig;
  * Deployment values that the legacy root "config.php" used to own.
  *
  * Everything is read from the environment at boot, so tracked sources never
- * carry deployment secrets. Keep the same env variable names as the CI3
- * config.php, so that the deployment story does not change.
+ * carry deployment secrets. Keep the same env variable names as previous
+ * releases, so that existing deployment files keep working.
  */
 class Deployment extends BaseConfig
 {
@@ -49,7 +49,7 @@ class Deployment extends BaseConfig
 
     public array $install_allowed_ranges = [];
 
-    /** EA version string (kept for parity with the CI3 release flow). */
+    /** EA version string (release identity, see the packaging task). */
     public string $version = '2.1.0';
 
     public string $release_label = '';

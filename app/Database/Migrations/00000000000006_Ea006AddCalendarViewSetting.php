@@ -17,8 +17,6 @@ use CodeIgniter\Database\Migration;
 
 
 /**
- * (CI4 port of the CI3 application/migrations/006_add_calendar_view_setting.php)
- *
  * Class Migration_Add_calendar_view_setting
  *
  * @property CI_DB_query_builder $db

@@ -23,7 +23,7 @@ use EA\Engine\Types\NonEmptyText;
 /**
  * Admins Controller (API v1)
  *
- * (CI4 port of the CI3 application/controllers/api/v1/Admins.php)
+
  */
 class Admins extends API_V1_Controller {
     /**

@@ -32,7 +32,7 @@ use Jsvrcek\ICS\Utility\Formatter;
  *
  * Depends on the Jsvrcek\ICS composer package.
  *
- * (CI4 port of the CI3 application/libraries/Ics_file.php)
+
  */
 class Ics_file {
     /**

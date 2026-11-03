@@ -16,7 +16,7 @@ namespace App\Models;
 use Exception;
 
 /**
- * Appointments Model (CI4 port, from the CI3 application/models/Appointments_model.php)
+ * Appointments Model
  */
 class Appointments_Model extends Ea_Model {
     /**

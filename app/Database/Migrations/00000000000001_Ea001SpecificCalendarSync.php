@@ -17,8 +17,6 @@ use CodeIgniter\Database\Migration;
 
 
 /**
- * (CI4 port of the CI3 application/migrations/001_specific_calendar_sync.php)
- *
  * Class Migration_Specific_calendar_sync
  *
  * Notice: This first migration got altered to include the creation of the initial database structure so that external

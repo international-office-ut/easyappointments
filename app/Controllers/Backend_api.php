@@ -36,7 +36,7 @@ use EA\Engine\Search\Fuzzy;
  *
  * Contains all the backend AJAX callbacks.
  *
- * (CI4 port of the CI3 application/controllers/Backend_api.php)
+
  */
 class Backend_api extends BaseController {
     /**

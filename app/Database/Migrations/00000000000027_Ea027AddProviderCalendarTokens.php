@@ -17,8 +17,6 @@ use CodeIgniter\Database\Migration;
 
 
 /**
- * (CI4 port of the CI3 application/migrations/027_add_provider_calendar_tokens.php)
- *
  * Class Migration_Add_provider_calendar_tokens
  *
  * Adds the provider calendar feed tokens: each provider may own a single subscription token

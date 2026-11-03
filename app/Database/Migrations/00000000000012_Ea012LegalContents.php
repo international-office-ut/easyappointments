@@ -17,8 +17,6 @@ use CodeIgniter\Database\Migration;
 
 
 /**
- * (CI4 port of the CI3 application/migrations/012_legal_contents.php)
- *
  * Class Migration_Create_consents_table
  *
  * @property CI_DB_query_builder $db

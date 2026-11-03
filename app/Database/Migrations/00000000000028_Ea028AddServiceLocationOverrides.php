@@ -17,8 +17,6 @@ use CodeIgniter\Database\Migration;
 
 
 /**
- * (CI4 port of the CI3 application/migrations/028_add_service_location_overrides.php)
- *
  * Class Migration_Add_service_location_overrides
  *
  * Adds the service location overrides (JSON, service-scoped):

@@ -26,10 +26,10 @@ use EA\Engine\Types\NonEmptyText;
  * Parent controller class for the API v1 resources. Extend this class instead of the
  * CI4 BaseController and call the parent initController from the children.
  *
- * (CI4 port of the CI3 application/controllers/api/v1/API_V1_Controller.php)
+
  *
- * Authorization ctor note: the engine class receives a CI3-shaped bridge, so
- * both stacks use the same engine code.
+ * Authorization ctor note: the engine class receives a bridge with old-style
+ * request access, so the engine code stays identical for both stacks.
  */
 abstract class API_V1_Controller extends BaseController {
     /**

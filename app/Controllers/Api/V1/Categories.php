@@ -23,7 +23,7 @@ use EA\Engine\Types\NonEmptyText;
 /**
  * Categories Controller (API v1)
  *
- * (CI4 port of the CI3 application/controllers/api/v1/Categories.php)
+
  */
 class Categories extends API_V1_Controller {
     /**

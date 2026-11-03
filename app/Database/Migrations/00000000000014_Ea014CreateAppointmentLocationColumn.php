@@ -17,8 +17,6 @@ use CodeIgniter\Database\Migration;
 
 
 /**
- * (CI4 port of the CI3 application/migrations/014_create_appointment_location_column.php)
- *
  * Class Migration_Create_appointment_location_column
  *
  * @property CI_DB_query_builder $db

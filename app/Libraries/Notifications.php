@@ -28,7 +28,7 @@ use EA\Engine\Types\Text;
 use EA\Engine\Types\Url;
 
 /**
- * Notifications (CI4 port of the CI3 application/libraries/Notifications.php)
+ * Notifications
  *
  * Handles the system notifications (mostly related to scheduling changes).
  */
@@ -67,11 +67,11 @@ class Notifications {
     }
 
     /**
-     * Read a POST value from the current request (the CI3 $this->CI->input->post path).
+     * Read a POST value from the current request.
      *
      * @param string $key POST field name.
      *
-     * @return mixed Returns the posted value (matches the CI3 FALSE on absence).
+     * @return mixed Returns the posted value (NULL on absence).
      */
     protected function post($key)
     {

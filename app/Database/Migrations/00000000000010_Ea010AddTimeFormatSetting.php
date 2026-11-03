@@ -17,8 +17,6 @@ use CodeIgniter\Database\Migration;
 
 
 /**
- * (CI4 port of the CI3 application/migrations/010_add_time_format_setting.php)
- *
  * Class Migration_Add_time_format_setting
  *
  * @property CI_DB_query_builder $db

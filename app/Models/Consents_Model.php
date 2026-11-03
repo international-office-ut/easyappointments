@@ -18,7 +18,7 @@ use Exception;
 use App\Helpers\General_helper;
 
 /**
- * Consents Model (CI4 port, from the CI3 application/models/Consents_model.php)
+ * Consents Model
  */
 class Consents_Model extends Ea_Model {
     /**

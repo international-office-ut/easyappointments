@@ -24,7 +24,7 @@ use CodeIgniter\Language\Language;
  * (`lang('appointment_booked')`), while the CI4 loader expects "file.key"
  * dotted names — a bare line is echoed verbatim otherwise. This class maps
  * both conventions onto the translations file of the active locale, so the
- * views and the backend keep reading the CI3 translation sources single-source.
+ * views and the backend keep reading the translation sources single-source.
  */
 class Ea_Language extends Language {
     public function __construct(string $locale)
@@ -43,7 +43,7 @@ class Ea_Language extends Language {
     }
 
     /**
-     * All translated lines of the active locale (the CI3 "$this->lang->language" parity).
+     * All translated lines of the active locale (keys conform to the bridge convention).
      */
     public function all(): array
     {

@@ -23,7 +23,7 @@ use EA\Engine\Types\NonEmptyText;
 /**
  * Unavailabilities Controller (API v1)
  *
- * (CI4 port of the CI3 application/controllers/api/v1/Unavailabilities.php)
+
  */
 class Unavailabilities extends API_V1_Controller {
     /**

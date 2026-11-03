@@ -19,7 +19,7 @@ use App\Models\Settings_Model;
 /**
  * Errors Controller
  *
- * (CI4 port of the CI3 application/controllers/Errors.php)
+
  */
 class Errors extends BaseController {
     protected Settings_Model $settings_model;

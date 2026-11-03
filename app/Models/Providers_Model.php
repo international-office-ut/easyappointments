@@ -18,7 +18,7 @@ use EA\Engine\Security\Passwords;
 use Exception;
 
 /**
- * Providers Model (CI4 port, from the CI3 application/models/Providers_model.php)
+ * Providers Model
  *
  * Contains the database operations for the service provider users of Easy!Appointments.
  */

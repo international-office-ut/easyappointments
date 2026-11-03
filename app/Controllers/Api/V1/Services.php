@@ -23,7 +23,7 @@ use EA\Engine\Types\NonEmptyText;
 /**
  * Services Controller (API v1)
  *
- * (CI4 port of the CI3 application/controllers/api/v1/Services.php)
+
  */
 class Services extends API_V1_Controller {
     /**

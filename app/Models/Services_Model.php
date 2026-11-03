@@ -16,7 +16,7 @@ namespace App\Models;
 use Exception;
 
 /**
- * Services Model (CI4 port, from the CI3 application/models/Services_model.php)
+ * Services Model
  */
 class Services_Model extends Ea_Model {
     /**

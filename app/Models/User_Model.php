@@ -20,7 +20,7 @@ use Exception;
 use App\Libraries\Timezones;
 
 /**
- * User Model (CI4 port, from the CI3 application/models/User_model.php)
+ * User Model
  *
  * Contains current user's methods.
  */

@@ -825,7 +825,7 @@
     /**
      * Delete the unavailability period record of the work plan listing.
      */
-    $('#providers').on('click', '.delete-period', function () {
+    $(document).on('click', '.delete-period', function () {
         var providerId = $('#provider-id').val();
         var periodId = $(this).closest('td').data('id');
         var $row = $(this).closest('tr');

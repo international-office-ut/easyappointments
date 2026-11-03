@@ -32,11 +32,7 @@
             url to connect to the backend section of Easy!Appointments.
 
             If you face any problems during the usage of Easy!Appointments you can always check the
-            <a href="http://easyappointments.org/docs.html">Documentation</a>
-            and <a href="http://groups.google.com/group/easy-appointments">Support Group</a> for getting help. You
-            may also submit new issues on
-            <a href="https://github.com/alextselegidis/easyappointments/issues">GitHub Issues</a>
-            in order to help our development process.
+            installation directory logs or contact the company management for support.
         </p>
     </div>
 
@@ -130,7 +126,7 @@
 </div>
 
 <footer>
-    Powered by <a href="https://easyappointments.org">Easy!Appointments</a>
+    Powered by <span>Easy!Appointments</span>
 </footer>
 
 <script nonce="<?= csp_nonce() ?>">

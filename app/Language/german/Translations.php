@@ -199,10 +199,7 @@ $lang["about_app_info"] =
 $lang["current_version"] = "Laufende Version";
 $lang["support"] = "Unterstützung";
 $lang["about_app_support"] =
-    "Falls Sie irgendein Problem bei der Nutzung von Easy!Appointments haben sollten, können Sie die offizielle Google-Gruppe nach Lösungen durchsuchen. Sie können auch ein neues Thema in Google Code beginnen, damit Sie das Finden von Lösungen unterstützen. ";
-$lang["official_website"] = "Offizielle Webseite";
-$lang["support_group"] = "Gruppenunterstützung";
-$lang["project_issues"] = "Projektthemen";
+    "Falls Sie irgendein Problem bei der Nutzung von Easy!Appointments haben sollten, wenden Sie sich bitte an das Büropersonal der Firma.";
 $lang["license"] = "Nutzungslizenz";
 $lang["about_app_license"] =
     "Easy!Appointment ist unter der GPLv3-Lizenz lizensiert. Bei jeglicher Nutzung des Codes für Easy!Appointments stimmen Sie den Nutzungsbedingungen zu wie sie auf folgender Seite aufgeführt sind:";

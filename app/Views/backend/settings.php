@@ -559,28 +559,6 @@
             <h3><?= lang('support') ?></h3>
             <p>
                 <?= lang('about_app_support') ?>
-
-                <br><br>
-
-                <a href="https://easyappointments.org">
-                    <?= lang('official_website') ?>
-                </a>
-                |
-                <a href="https://groups.google.com/forum/#!forum/easy-appointments">
-                    <?= lang('support_group') ?>
-                </a>
-                |
-                <a href="https://github.com/alextselegidis/easyappointments/issues">
-                    <?= lang('project_issues') ?>
-                </a>
-                |
-                <a href="https://facebook.com/easyappts">
-                    Facebook
-                </a>
-                |
-                <a href="https://twitter.com/easyappts">
-                    Twitter
-                </a>
             </p>
 
             <h3><?= lang('license') ?></h3>

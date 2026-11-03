@@ -255,6 +255,12 @@ body legend {
     }
 }
 
+/* The four working-plan sections form a 2x2 grid; keep a vertical gap between the rows. */
+#users-page #providers .working-plan-view .working-plan-column,
+#users-page #providers .working-plan-view .breaks-column {
+    margin-bottom: 15px;
+}
+
 /* Desktop: the list panels occupy the available window height (inside the row column). */
 @media (min-width: 768px) {
     .backend-page.content-scroll .filter-records {
@@ -269,22 +275,13 @@ body legend {
         min-width: 0; /* allow the inner tables to shrink instead of overflowing */
     }
 
-    /* Align the three working-plan columns: the description zone keeps a fixed height so the
-       buttons and tables of all columns start at the same position. */
+    /* Align the description zone of all four working-plan columns so the buttons and
+       tables of every column start at the same position. */
     .working-plan-column p,
     .breaks-column p,
+    .unavailability-periods-column p,
     .working-plan-exceptions-column p {
         min-height: 3em; /* two lines at Bootstrap's 1.5 line-height */
-    }
-}
-
-/* Three working-plan columns only on very wide screens; two columns below that. */
-@media (min-width: 1600px) {
-    .working-plan-column,
-    .breaks-column,
-    .working-plan-exceptions-column {
-        flex: 0 0 33.333333%;
-        max-width: 33.333333%;
     }
 }
 

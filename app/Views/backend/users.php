@@ -357,7 +357,7 @@
                                     </table>
                                 </div>
 
-                                <div class="unavailability-periods-column col-12">
+                                <div class="unavailability-periods-column col-12 col-lg-6">
                                     <h3><?= lang('unavailable_periods') ?></h3>
 
                                     <p>
@@ -377,7 +377,7 @@
                                     </table>
                                 </div>
 
-                                <div class="working-plan-exceptions-column col-12">
+                                <div class="working-plan-exceptions-column col-12 col-lg-6">
                                     <h3><?= lang('working_plan_exceptions') ?></h3>
 
                                     <p>

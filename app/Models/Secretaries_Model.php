@@ -143,37 +143,15 @@ class Secretaries_Model extends Ea_Model {
         }
 
         // When inserting a record the email address must be unique.
-        $secretary_id = (isset($secretary['id'])) ? $secretary['id'] : '';
+        $secretary_id = (isset($secretary['id'])) ? (int)$secretary['id'] : NULL;
 
-        $num_rows = $this->db->table('users')
-            ->select('*')
-            ->join('roles', 'roles.id = users.id_roles', 'inner')
-            ->where('roles.slug', DB_SLUG_SECRETARY)
-            ->where('users.email', $secretary['email'])
-            ->where('users.id !=', $secretary_id)
-            ->get()
-            ->getNumRows();
-
-        if ($num_rows > 0)
+        if ((new Identities_Model)->exists_in_own_role($secretary['email'], DB_SLUG_SECRETARY, $secretary_id))
         {
             throw new Exception('Given email address belongs to another secretary record. '
                 . 'Please use a different email.');
         }
 
         return TRUE;
-    }
-
-    /**
-     * Validate Records Username
-     *
-     * @param string $username The secretary records username.
-     * @param int $user_id The user record id.
-     *
-     * @return bool Returns the validation result.
-     */
-    public function validate_username($username, $email, $user_id = NULL)
-    {
-        return (new Identities_Model)->validate_username($username, $email, $user_id);
     }
 
     /**

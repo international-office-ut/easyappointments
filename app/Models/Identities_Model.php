@@ -351,4 +351,25 @@ class Identities_Model extends Ea_Model {
             ->get()
             ->getNumRows();
     }
+
+    /**
+     * Determine whether an email is already used by another record of the provided role.
+     *
+     * @param string $email Email of the prospective row.
+     * @param string $role_slug Role of the checked rows (e.g. DB_SLUG_ADMIN).
+     * @param int|null $except_user_id Exclude the provided user record id.
+     *
+     * @return bool Returns whether the email is used by another record of the role.
+     */
+    public function exists_in_own_role(string $email, string $role_slug, ?int $except_user_id = NULL): bool
+    {
+        return (bool) $this->db->table('users')
+            ->select('*')
+            ->join('roles', 'roles.id = users.id_roles', 'inner')
+            ->where('roles.slug', $role_slug)
+            ->where('users.email', $email)
+            ->where('users.id !=', $except_user_id ?? 0)
+            ->get()
+            ->getNumRows();
+    }
 }

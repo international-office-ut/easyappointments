@@ -1542,12 +1542,12 @@ class Backend_api extends BaseController {
     {
         try
         {
-            // We will only use the function in the admins_model because it is sufficient for the rest user types for
-            // now (providers, secretaries).
-            $is_valid = $this->admins_model->validate_username(
+            // The identity check is role independent, so the identities model validates
+            // every user type (admins, providers, secretaries).
+            $is_valid = $this->identities_model->validate_username(
                 $this->request->getPost('username'),
                 (string) $this->request->getPost('email'),
-                $this->request->getPost('user_id')
+                (int) $this->request->getPost('user_id') ?: NULL
             );
 
             $response = $is_valid;

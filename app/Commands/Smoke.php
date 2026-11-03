@@ -28,6 +28,15 @@ class Smoke extends BaseCommand {
 
     public function run(array $params)
     {
+        // The smoke is a QA helper only: it attempts a default-credentials login,
+        // so it stays active in development environments.
+        if (\ENVIRONMENT !== 'development')
+        {
+            CLI::error('ea:smoke only runs with CI_ENVIRONMENT = development.');
+
+            return;
+        }
+
         $settings = new \App\Models\Settings_Model;
         CLI::write('company_name: ' . $settings->get_setting('company_name'));
 

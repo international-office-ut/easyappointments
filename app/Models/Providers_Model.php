@@ -188,41 +188,15 @@ class Providers_Model extends Ea_Model {
         }
 
         // When inserting a record the email address must be unique.
-        $provider_id = (isset($provider['id'])) ? $provider['id'] : '';
+        $provider_id = isset($provider['id']) ? (int)$provider['id'] : NULL;
 
-        $num_rows = $this->db->table('users')
-            ->select('*')
-            ->join('roles', 'roles.id = users.id_roles', 'inner')
-            ->where('roles.slug', DB_SLUG_PROVIDER)
-            ->where('users.email', $provider['email'])
-            ->where('users.id !=', $provider_id)
-            ->get()
-            ->getNumRows();
-
-        if ($num_rows > 0)
+        if ((new Identities_Model)->exists_in_own_role($provider['email'], DB_SLUG_PROVIDER, $provider_id))
         {
             throw new Exception('Given email address belongs to another provider record. '
                 . 'Please use a different email.');
         }
 
         return TRUE;
-    }
-
-    /**
-     * Validate Records Username
-     *
-     * @param string $username The provider records username.
-     * @param int $user_id The user record id.
-     *
-     * @return bool Returns the validation result.
-     */
-    public function validate_username($username, $email, $user_id = NULL)
-    {
-        return (new Identities_Model)->validate_username(
-            $username,
-            $email,
-            $user_id
-        );
     }
 
     /**

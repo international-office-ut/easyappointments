@@ -134,37 +134,15 @@ class Admins_Model extends Ea_Model {
         }
 
         // When inserting a record the email address must be unique.
-        $admin_id = isset($admin['id']) ? $admin['id'] : '';
+        $admin_id = isset($admin['id']) ? (int)$admin['id'] : NULL;
 
-        $num_rows = $this->db->table('users')
-            ->select('*')
-            ->join('roles', 'roles.id = users.id_roles', 'inner')
-            ->where('roles.slug', DB_SLUG_ADMIN)
-            ->where('users.email', $admin['email'])
-            ->where('users.id !=', $admin_id)
-            ->get()
-            ->getNumRows();
-
-        if ($num_rows > 0)
+        if ((new Identities_Model)->exists_in_own_role($admin['email'], DB_SLUG_ADMIN, $admin_id))
         {
             throw new Exception('Given email address belongs to another admin record. '
                 . 'Please use a different email.');
         }
 
         return TRUE; // Operation completed successfully.
-    }
-
-    /**
-     * Validate Records Username
-     *
-     * @param string $username The provider records username.
-     * @param int $user_id The user record id.
-     *
-     * @return bool Returns the validation result.
-     */
-    public function validate_username($username, $email, $user_id = NULL)
-    {
-        return (new Identities_Model)->validate_username($username, $email, $user_id);
     }
 
     /**

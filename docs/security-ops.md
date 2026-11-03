@@ -11,6 +11,13 @@ this list for every fresh installation and after every major infrastructure chan
   filter: the policy locks every subresource origin to `self` (except the ALTCHA proof-of-work
   worker, which runs from a blob/data URL) and each inline script element is nonced through the
   `csp_nonce()` helper (the `render` helper), which is why the header cannot be static.
+- The `style-src` directive still allows inline CSS: several vendored widgets inject their runtime
+  styles through inline `<style>` elements / style attributes (FontAwesome SVG runtime, tippy,
+  ALTCHA, cookieconsent, jQuery UI, fullcalendar). The CSP violation reports (see below) name
+  these sources explicitly. Hardening follows when the vendors are ported to static styles:
+  FontAwesome over the CSS distribution with auto-add-css disabled, theme extraction for the
+  tippy/ALTCHA/cookieconsent bundles, and the fullcalendar width templates. The security-critical
+  `script-src` stays nonce-guarded meanwhile.
 - The spec-required `report-uri` targets `site_url('csp-report')` (App\Controllers\Csp_report):
   violations are rate limited and logged into storage/logs. No CSP line may be added back to
   public/.htaccess or vhosts — browsers intersect duplicate CSP headers and block nonced scripts.

@@ -40,7 +40,13 @@ class Content_security implements FilterInterface {
             "default-src 'self'; "
             . "script-src 'self' 'nonce-" . csp_nonce() . "'; "
             . "worker-src 'self' blob: data:; "
-            . "style-src 'self'; "
+            // The vendored widgets inject their runtime styles through inline
+            // <style> elements and style attributes (FontAwesome SVG runtime,
+            // tippy, ALTCHA, cookieconsent, jQuery UI, fullcalendar) — see the
+            // CSP violation reports in the csp-report log. The style directives
+            // allow inline CSS while the security-critical script-src stays
+            // nonce-guarded; the vendor-layer hardening is a tracked task.
+            . "style-src 'self' 'unsafe-inline'; "
             . "img-src 'self' data:; "
             . "font-src 'self'; "
             . "connect-src 'self'; "

@@ -1467,7 +1467,11 @@ response.appointments.forEach(function (appointment) {
             firstDay: firstWeekdayNumber,
             fixedWeekCount: false,
             //hiddenDays: [ 0 ], // hide sundays
-            slotDuration: '00:15:00', 
+            // The working plan events depend on the current view, so the events
+            // hook has to run on every view switch (the cached range reuse would
+            // carry the wrong view's working plan over to other views).
+            lazyFetching: false,
+            slotDuration: '00:15:00',
             snapDuration: '00:15:00',
             slotLabelInterval: '01:00',
             scrollTime: currentTime,

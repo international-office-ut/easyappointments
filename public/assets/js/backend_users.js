@@ -85,14 +85,12 @@ window.BackendUsers = window.BackendUsers || {};
         exports.wp = new WorkingPlan({weekdayModes: true});
         exports.wp.bindEventHandlers();
 
-        // Instantiate default helper object (admin).
-        helper = new ProvidersHelper();
-        helper.resetForm();
-        helper.filter('');
-        helper.bindEventHandlers();
-
-        // Fill the services and providers list boxes.
-        GlobalVariables.services.forEach(function (service) {
+        /**
+         * Build a single service checkbox entry of the provider services tab.
+         *
+         * @param {Object} service Service record (with id and name).
+         */
+        function buildServiceCheckbox(service) {
             $('<div/>', {
                 'class': 'checkbox',
                 'html': [
@@ -117,7 +115,59 @@ window.BackendUsers = window.BackendUsers || {};
                 ]
             })
                 .appendTo('#provider-services');
+        }
+
+        /**
+         * Instantiate default helper object (admin).
+         */
+        helper = new ProvidersHelper();        helper.resetForm();
+        helper.filter('');
+        helper.bindEventHandlers();
+
+        // Fill the services and providers list boxes. The services get grouped by their
+        // category like on the booking page when categories are defined; uncategorized
+        // services come last.
+        var categoriesExist = GlobalVariables.services.some(function (service) {
+            return service.category_id !== null;
         });
+
+        var categorizedServices = {};
+        var uncategorizedServices = [];
+
+        GlobalVariables.services.forEach(function (service) {
+            if (categoriesExist && service.category_id !== null) {
+                if (!categorizedServices[service.category_name]) {
+                    categorizedServices[service.category_name] = [];
+                }
+
+                categorizedServices[service.category_name].push(service);
+                return;
+            }
+
+            uncategorizedServices.push(service);
+        });
+
+        if (categoriesExist && !$.isEmptyObject(categorizedServices)) {
+            Object.keys(categorizedServices).sort().forEach(function (categoryName) {
+                $('<h6/>', {
+                    'class': 'service-category text-muted font-weight-bold mt-2 mb-1',
+                    'text': categoryName
+                })
+                    .appendTo('#provider-services');
+
+                categorizedServices[categoryName].forEach(function (service) {
+                    buildServiceCheckbox(service);
+                });
+            });
+
+            uncategorizedServices.forEach(function (service) {
+                buildServiceCheckbox(service);
+            });
+        } else {
+            GlobalVariables.services.forEach(function (service) {
+                buildServiceCheckbox(service);
+            });
+        }
 
         GlobalVariables.providers.forEach(function (provider) {
             $('<div/>', {

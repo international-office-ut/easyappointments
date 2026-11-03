@@ -323,7 +323,18 @@ class Backend extends BaseController {
         $view['admins'] = $this->admins_model->get_batch();
         $view['providers'] = $this->providers_model->get_batch();
         $view['secretaries'] = $this->secretaries_model->get_batch();
-        $view['services'] = $this->services_model->get_batch();
+
+        // The service list carries the category fields, so the provider services
+        // tab can group the entries by category (the booking page does the same).
+        $view['services'] = db_connect()->table('services')
+            ->select('services.*, service_categories.name AS category_name, '
+                . 'service_categories.id AS category_id')
+            ->join('service_categories',
+                'service_categories.id = services.id_service_categories', 'left')
+            ->orderBy('services.name ASC')
+            ->get()
+            ->getResultArray();
+
         $view['working_plan'] = $this->settings_model->get_setting('company_working_plan');
         $view['timezones'] = $this->timezones->to_array();
         $view['working_plan_exceptions'] = '{}';

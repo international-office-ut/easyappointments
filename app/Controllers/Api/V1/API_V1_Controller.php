@@ -15,6 +15,7 @@ namespace App\Controllers\Api\V1;
 
 use Exception;
 use App\Controllers\BaseController;
+use App\Libraries\Rate_limiter;
 use App\Models\Settings_Model;
 use App\Models\User_Model;
 use EA\Engine\Api\V1\Authorization;
@@ -77,7 +78,35 @@ abstract class API_V1_Controller extends BaseController {
 
             $username = new NonEmptyText($_SERVER['PHP_AUTH_USER']);
             $password = new NonEmptyText($_SERVER['PHP_AUTH_PW']);
-            $authorization->basic($username, $password);
+
+            // The basic authentication attempts are rate limited exactly like the login
+            // form: the client and the username keys slow down brute force attempts over a
+            // ten minute window (the bearer token is a long random value and does not need
+            // a limiter against guessing).
+            $client_key = 'api|client|' . $this->request->getIPAddress();
+            $user_key = 'api|user|' . $_SERVER['PHP_AUTH_USER'] . '|' . $this->request->getIPAddress();
+
+            if (Rate_limiter::has_reached_limit($client_key, 5)
+                || Rate_limiter::has_reached_limit($user_key, 5))
+            {
+                throw new \EA\Engine\Api\V1\Exception('Too many API authentication attempts. '
+                    . 'Please try again later.', 429, 'Too Many Requests');
+            }
+
+            try
+            {
+                $authorization->basic($username, $password);
+            }
+            catch (Exception $exception)
+            {
+                Rate_limiter::register_attempt($client_key, 600);
+                Rate_limiter::register_attempt($user_key, 600);
+
+                throw $exception;
+            }
+
+            Rate_limiter::clear($client_key);
+            Rate_limiter::clear($user_key);
         }
         catch (Exception $exception)
         {

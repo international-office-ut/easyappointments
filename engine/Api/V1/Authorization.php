@@ -70,14 +70,16 @@ class Authorization {
     /**
      * Verify a provided API bearer token against the configured one.
      *
-     * The comparison uses a constant-time function, so that request timing does not leak any
-     * part of the configured token. Both values must be present for the request to pass:
-     * an empty configured token cannot disable the need for credentials here, the caller
-     * decides whether such a request falls back to Basic authentication.
+     * The settings page only stores the SHA-256 hash of the generated token, so the
+     * comparison hashes the provided value first. The comparison uses a constant-time
+     * function, so that request timing does not leak any part of the configured token.
+     * Both values must be present for the request to pass: an empty configured token
+     * cannot disable the need for credentials here, the caller decides whether such a
+     * request falls back to Basic authentication.
      *
-     * @param mixed $configured_token Token stored in the application settings (may be NULL).
+     * @param mixed $configured_token SHA-256 hash stored in the application settings (may be NULL).
      * @param mixed $provided_token Token sent in the "Authorization: Bearer ..." header.
-     * @return bool Returns TRUE only when both tokens exist and are equal.
+     * @return bool Returns TRUE only when both tokens exist and the hashes are equal.
      */
     public static function verify_bearer($configured_token, $provided_token): bool
     {
@@ -86,7 +88,7 @@ class Authorization {
             return FALSE;
         }
 
-        return hash_equals((string) $configured_token, (string) $provided_token);
+        return hash_equals((string) $configured_token, hash('sha256', (string) $provided_token));
     }
 
     /**

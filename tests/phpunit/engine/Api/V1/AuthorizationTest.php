@@ -18,18 +18,20 @@ use PHPUnit\Framework\TestCase;
 class AuthorizationTest extends TestCase {
     public function test_bearer_token_passes_on_equal_tokens()
     {
-        $this->assertTrue(Authorization::verify_bearer('secret-token', 'secret-token'));
+        $this->assertTrue(Authorization::verify_bearer(
+            hash('sha256', 'secret-token'), 'secret-token'));
     }
 
     public function test_bearer_token_fails_on_mismatch()
     {
-        $this->assertFalse(Authorization::verify_bearer('secret-token', 'wrong-token'));
+        $this->assertFalse(Authorization::verify_bearer(
+            hash('sha256', 'secret-token'), 'wrong-token'));
     }
 
     public function test_bearer_token_requires_both_values()
     {
         $this->assertFalse(Authorization::verify_bearer('', 'secret-token'));
-        $this->assertFalse(Authorization::verify_bearer('secret-token', NULL));
+        $this->assertFalse(Authorization::verify_bearer(hash('sha256', 'secret-token'), NULL));
         $this->assertFalse(Authorization::verify_bearer(NULL, NULL));
     }
 

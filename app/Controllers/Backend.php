@@ -378,9 +378,16 @@ class Backend extends BaseController {
 
         // Users without system-settings privileges may only edit their own user settings, so
         // the system settings (like the API token) must never appear in the page source.
-        $view['system_settings'] = $this->has_privileges(PRIV_SYSTEM_SETTINGS, FALSE)
+        $system_settings = $this->has_privileges(PRIV_SYSTEM_SETTINGS, FALSE)
             ? $this->settings_model->get_settings()
             : [];
+
+        // The API token hash must not reach the page source and the token widget works
+        // exclusively through its dedicated endpoints.
+        $system_settings = array_values(array_filter($system_settings,
+            static fn(array $setting): bool => $setting['name'] !== 'api_token'));
+
+        $view['system_settings'] = $system_settings;
 
         // book_advance_timeout preview
         $book_advance_timeout = $this->settings_model->get_setting('book_advance_timeout');

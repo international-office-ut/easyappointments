@@ -28,8 +28,7 @@
      *
      * @param {Array} settings Contains the system settings data.
      */
-    SystemSettings.prototype.save = function (settings) {
-        var url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_save_settings';
+    SystemSettings.prototype.save = function (settings) {        var url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_save_settings';
 
         var data = {
             csrfToken: GlobalVariables.csrfToken,
@@ -194,4 +193,82 @@
     };
 
     window.SystemSettings = SystemSettings;
+
+    (function apiTokenWidget() {
+        $(function () {
+
+            if (!GlobalVariables.user.privileges.system_settings
+                || !GlobalVariables.user.privileges.system_settings.view) {
+                return;
+            }
+
+            function tokenState() {
+                $.post(GlobalVariables.baseUrl + '/index.php/backend_api/ajax_api_token_state', {
+                    csrfToken: GlobalVariables.csrfToken
+                })
+                    .done(function (response) {
+                        $('#api-token-state').text(response.active
+                            ? EALang.api_token_active
+                            : EALang.api_token_inactive);
+                    })
+                    .fail(function () {
+                        $('#api-token-state').text('');
+                    });
+            }
+
+            tokenState();
+
+            $('#api-token-generate').on('click', function () {
+                $.post(GlobalVariables.baseUrl + '/index.php/backend_api/ajax_generate_api_token', {
+                    csrfToken: GlobalVariables.csrfToken
+                })
+                    .done(function (response) {
+                        $('#api-token-value').val(response.api_token);
+                        $('#api-token-value').get(0).select();
+                        $('#api-token-state').text(EALang.api_token_active);
+                        Backend.displayNotification(EALang.api_token_generated);
+                    })
+                    .fail(function (jqXHR) {
+                        Backend.displayNotification(jqXHR.responseJSON && jqXHR.responseJSON.message
+                            ? jqXHR.responseJSON.message
+                            : EALang.oops_something_went_wrong);
+                    });
+            });
+
+            $('#api-token-revoke').on('click', function () {
+                $.post(GlobalVariables.baseUrl + '/index.php/backend_api/ajax_revoke_api_token', {
+                    csrfToken: GlobalVariables.csrfToken
+                })
+                    .done(function () {
+                        $('#api-token-value').val('');
+                        $('#api-token-state').text(EALang.api_token_inactive);
+                        Backend.displayNotification(EALang.api_token_revoked);
+                    })
+                    .fail(function (jqXHR) {
+                        Backend.displayNotification(jqXHR.responseJSON && jqXHR.responseJSON.message
+                            ? jqXHR.responseJSON.message
+                            : EALang.oops_something_went_wrong);
+                    });
+            });
+
+            $('#api-token-copy').on('click', function () {
+                var apiToken = $('#api-token-value').val();
+
+                if (!apiToken) {
+                    return;
+                }
+
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(apiToken);
+                } else {
+                    $('#api-token-value').get(0).select();
+                    document.execCommand('copy');
+                }
+
+                Backend.displayNotification(EALang.feed_copied);
+            });
+    
+        });
+    })();
+
 })();

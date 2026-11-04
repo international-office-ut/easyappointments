@@ -412,6 +412,13 @@ $lang["check_spam_folder"] =
     "Bitte kontrollieren Sie Ihren Spam-Ordner, falls die E-Mail nicht innerhalb weniger Minuten eintrifft.";
 $lang["api_token_hint"] =
     "Setze einen geheimen Token um die tokenbasierte Authentifizierung für die Easy!Appointments API zu aktivieren.";
+$lang["generate_api_token"] = "Generieren";
+$lang["revoke_api_token"] = "Widerrufen";
+$lang["api_token_generated"] =
+    "Kopiere den Token jetzt — er wird nur einmal angezeigt und kann danach nicht wieder angezeigt werden.";
+$lang["api_token_revoked"] = "Der API-Token ist widerrufen.";
+$lang["api_token_active"] = "Ein API-Token ist konfiguriert.";
+$lang["api_token_inactive"] = "Kein API-Token konfiguriert.";
 $lang["timezone"] = "Zeitzone";
 $lang["overwrite_existing_working_plans"] =
     "Dies wird bestehende Arbeitspläne von Anbietern überschreiben. Sind sie sicher?";

@@ -167,6 +167,45 @@ class Settings_Model extends Ea_Model {
     }
 
     /**
+     * Generate a fresh API token.
+     *
+     * The plaintext token is returned once and never stored — the database only keeps its
+     * SHA-256 hash, so the secret cannot be recovered from the database or the settings page.
+     *
+     * @return string Returns the base64url token for the "Authorization: Bearer" header.
+     */
+    public function generate_api_token(): string
+    {
+        $token = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
+
+        $this->set_setting('api_token', hash('sha256', $token));
+
+        return $token;
+    }
+
+    /**
+     * Revoke the current API token (existing integrations stop working immediately).
+     */
+    public function revoke_api_token(): void
+    {
+        $this->set_setting('api_token', '');
+    }
+
+    /**
+     * Returns whether an API token is currently configured.
+     */
+    public function has_api_token(): bool
+    {
+        $value = $this->db->table('settings')
+            ->select('value')
+            ->where('name', 'api_token')
+            ->get()
+            ->getRowArray()['value'] ?? '';
+
+        return $value !== '';
+    }
+
+    /**
      * Returns the values of the provided setting names at once.
      *
      * @param array $names The setting names to be fetched.

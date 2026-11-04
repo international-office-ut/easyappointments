@@ -1629,4 +1629,82 @@ class Backend_api extends BaseController {
 
         return $this->response->setContentType('application/json')->setBody(json_encode($response));
     }
+
+    /**
+     * Generate a fresh API token (the plaintext value is returned once and never stored).
+     */
+    public function ajax_generate_api_token()
+    {
+        try
+        {
+            if ($this->privileges[PRIV_SYSTEM_SETTINGS]['edit'] == FALSE)
+            {
+                throw new Exception('You do not have the required privileges for this task.');
+            }
+
+            $response = [
+                'api_token' => $this->settings_model->generate_api_token()
+            ];
+        }
+        catch (Exception $exception)
+        {
+            $this->response->setStatusCode(500);
+
+            $response = $this->ajax_exception($exception);
+        }
+
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
+    }
+
+    /**
+     * Revoke the current API token (existing integrations stop working immediately).
+     */
+    public function ajax_revoke_api_token()
+    {
+        try
+        {
+            if ($this->privileges[PRIV_SYSTEM_SETTINGS]['edit'] == FALSE)
+            {
+                throw new Exception('You do not have the required privileges for this task.');
+            }
+
+            $this->settings_model->revoke_api_token();
+
+            $response = AJAX_SUCCESS;
+        }
+        catch (Exception $exception)
+        {
+            $this->response->setStatusCode(500);
+
+            $response = $this->ajax_exception($exception);
+        }
+
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
+    }
+
+    /**
+     * Returns whether an API token is configured (the hash value is not exposed).
+     */
+    public function ajax_api_token_state()
+    {
+        try
+        {
+            if ($this->privileges[PRIV_SYSTEM_SETTINGS]['view'] == FALSE && $this->privileges[PRIV_SYSTEM_SETTINGS]['edit'] == FALSE)
+            {
+                throw new Exception('You do not have the required privileges for this task.');
+            }
+
+            $response = [
+                'active' => $this->settings_model->has_api_token()
+            ];
+        }
+        catch (Exception $exception)
+        {
+            $this->response->setStatusCode(500);
+
+            $response = $this->ajax_exception($exception);
+        }
+
+        return $this->response->setContentType('application/json')->setBody(json_encode($response));
+    }
 }

@@ -147,13 +147,30 @@
                             </div>
                         </div>
                         <div class="col-12 col-sm-6">
-                            <div class="form-group">
-                                <label for="api-token">API Token</label>
-                                <input id="api-token" data-field="api_token" class="form-control">
-                                <span class="form-text text-muted">
-                                    <?= lang('api_token_hint') ?>
-                                </span>
-                            </div>
+                            <?php if ($privileges[PRIV_SYSTEM_SETTINGS]['view'] == TRUE): ?>
+                                <div class="form-group">
+                                    <label for="api-token-value">API Token</label>
+                                    <div class="input-group">
+                                        <input id="api-token-value" class="form-control" readonly>
+                                        <div class="input-group-append">
+                                            <button type="button" id="api-token-copy" class="btn btn-outline-secondary"
+                                                    title="Copy">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <small id="api-token-state" class="form-text text-muted"></small>
+                                    <button type="button" id="api-token-generate"
+                                            class="btn btn-outline-secondary btn-sm mr-2">
+                                        <i class="fas fa-key mr-2"></i>
+                                        <?= lang('generate_api_token') ?>
+                                    </button>
+                                    <button type="button" id="api-token-revoke" class="btn btn-outline-danger btn-sm">
+                                        <i class="fas fa-trash mr-2"></i>
+                                        <?= lang('revoke_api_token') ?>
+                                    </button>
+                                </div>
+                            <?php endif ?>
 
                             <div class="form-group">
                                 <div class="custom-control custom-switch">

@@ -674,6 +674,37 @@
             throw new Error(message);
         };
 
+        // Incomplete rows block the save: the entry stays on the screen with its missing
+        // fields marked, so that the staff can correct it instead of a silent data loss.
+        $('#services .service-location-weekdays .location-window-row, '
+            + '#services .service-location-date-overrides .location-window-row').each(function (index, row) {
+            var $row = $(row);
+            var missing = false;
+
+            if (typeof $row.find('.location-window-date').val() === 'undefined') {
+                if (!$row.find('.location-window-day').val()) {
+                    $row.find('.location-window-day').addClass('is-invalid');
+                    missing = true;
+                }
+            } else if (!$row.find('.location-window-date').val()) {
+                $row.find('.location-window-date').addClass('is-invalid');
+                missing = true;
+            }
+
+            $row.find('.location-window-from, .location-window-to, .location-window-location')
+                .each(function (fieldIndex, field) {
+                    if (!$(field).val()) {
+                        $(field).addClass('is-invalid');
+                        missing = true;
+                    }
+                });
+
+            if (missing) {
+                $row.addClass('has-error');
+                throw new Error(EALang.location_window_required);
+            }
+        });
+
         var checkRows = function ($rows, message) {
             var previous = null;
 

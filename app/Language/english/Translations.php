@@ -242,6 +242,8 @@ $lang["add_location_date"] = "Add date";
 $lang["remove_location_window"] = "Remove";
 $lang["location_window_invalid"] = "The window ranges are invalid (a start must be before its end).";
 $lang["location_window_overlap"] = "The location window ranges must not overlap.";
+$lang["location_window_required"] =
+    "Every location override window requires a weekday or date, a complete time range and a location.";
 $lang["identity_attach_hint"] =
     'Attach this role to the existing person "{$name}" ({$role}). Login credentials are shared.';
 $lang["data_retention"] = "Data Retention";

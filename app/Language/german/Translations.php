@@ -244,6 +244,8 @@ $lang["add_location_date"] = "Datum hinzufügen";
 $lang["remove_location_window"] = "Entfernen";
 $lang["location_window_invalid"] = "Die Zeitfenster sind ungültig (der Anfang muss vor dem Ende liegen).";
 $lang["location_window_overlap"] = "Die Standort-Zeitfenster dürfen sich nicht überschneiden.";
+$lang["location_window_required"] =
+    "Jedes Standort-Überschreibungsfenster benötigt einen Wochentag oder ein Datum, einen vollständigen Zeitraum und einen Standort.";
 $lang["identity_attach_hint"] =
     'Diese Rolle wird der bestehenden Person „{$name}" ({$role}) zugeordnet. Die Anmeldedaten werden geteilt.';
 $lang["data_retention"] = "Datenaufbewahrung";

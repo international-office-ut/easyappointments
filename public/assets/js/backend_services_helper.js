@@ -143,7 +143,7 @@
             }
 
             if (activeTabId && activeTabId !== '#service-details') {
-                $('#services .record-details .switch-view a[href="' + activeTabId + '"]').tab('show');
+                instance.openTab(activeTabId);
             }
         });
 
@@ -313,7 +313,7 @@
                 // The save returns to the read display of the record and keeps the record
                 // tab that was active on the entry (e.g. the location overrides).
                 if (activeTabId && activeTabId !== '#service-details') {
-                    $('#services .record-details .switch-view a[href="' + activeTabId + '"]').tab('show');
+                    this.openTab(activeTabId);
                 }
             }.bind(this));
     };
@@ -414,7 +414,28 @@
         $('#services .record-details .form-message').hide();
 
         // Reset the internal record tabs so that a new selection opens with Details active.
-        $('#services .record-details .switch-view a[href="#service-details"]').tab('show');
+        this.openTab('#service-details');
+    };
+
+    /**
+     * Activate one of the record tabs of the service editor.
+     *
+     * The plain `.tab('show')` functions queue CSS transitions and land both panes in a
+     * visible state when two calls run back to back (save → restore), so the class state
+     * is switched directly instead.
+     *
+     * @param {String} paneId The tab pane selector ("#service-details" or "#service-location-overrides").
+     */
+    ServicesHelper.prototype.openTab = function (paneId) {
+        $('#services .record-details .switch-view .nav-link')
+            .removeClass('active');
+        $('#services .record-details .switch-view a[href="' + paneId + '"]')
+            .addClass('active');
+
+        $('#services .record-details .tab-content .tab-pane')
+            .removeClass('active show');
+        $('#services .record-details ' + paneId + '.tab-pane')
+            .addClass('active show');
     };
 
     /**

@@ -108,7 +108,20 @@ window.BackendSettings = window.BackendSettings || {};
         });
 
         exports.wp = new WorkingPlan();
-        exports.wp.setup(workingPlan);
+
+        // The provider work plan editor shows the provider's own availability settings, the
+        // general users keep the company plan context of the business logic tab.
+        if (GlobalVariables.userSlug === 'provider') {
+            var userPlan = $.parseJSON(GlobalVariables.settings.user.settings.working_plan || '{}') || {};
+            var userPlanExceptions =
+                $.parseJSON(GlobalVariables.settings.user.settings.working_plan_exceptions || '{}') || {};
+
+            exports.wp.setup(userPlan);
+            exports.wp.setupWorkingPlanExceptions(userPlanExceptions);
+        } else {
+            exports.wp.setup(workingPlan);
+        }
+
         exports.wp.timepickers(false);
 
         // Load user settings into form
@@ -145,8 +158,8 @@ window.BackendSettings = window.BackendSettings || {};
         }
 
         if (GlobalVariables.user.privileges.user_settings.edit === false) {
-            $('#user').find('select, input, textarea').prop('readonly', true);
-            $('#user').find('button').prop('disabled', true);
+            $('#current-user').find('select, input, textarea').prop('readonly', true);
+            $('#current-user').find('button').prop('disabled', true);
         }
 
         Backend.placeFooterToBottom();

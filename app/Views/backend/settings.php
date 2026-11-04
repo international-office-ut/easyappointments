@@ -2,6 +2,7 @@
 <script src="<?= asset_url('assets/js/backend_settings_user.js') ?>"></script>
 <script src="<?= asset_url('assets/js/backend_settings.js') ?>"></script>
 <script src="<?= asset_url('assets/js/working_plan.js') ?>"></script>
+<script src="<?= asset_url('assets/js/working_plan_exceptions_modal.js') ?>"></script>
 <script src="<?= asset_url('assets/ext/jquery-ui/jquery-ui-timepicker-addon.min.js') ?>"></script>
 <script src="<?= asset_url('assets/ext/jquery-jeditable/jquery.jeditable.min.js') ?>"></script>
 <script nonce="<?= csp_nonce() ?>">
@@ -240,7 +241,8 @@
                     </legend>
 
                     <div class="row">
-                        <div class="col-12 col-sm-7 working-plan-wrapper">
+                        <?php if ($privileges[PRIV_SYSTEM_SETTINGS]['view'] == TRUE): ?>
+                            <div class="col-12 col-sm-7 working-plan-wrapper">
                             <h4><?= lang('working_plan') ?></h4>
                             <span class="form-text text-muted mb-4">
                                 <?= lang('edit_working_plan_hint') ?>
@@ -304,6 +306,8 @@
                                 </thead>
                                 <tbody><!-- Dynamic Content --></tbody>
                             </table>
+                        </div>
+                            <?php endif ?>
                         </div>
                     </div>
                 </fieldset>
@@ -552,6 +556,79 @@
                             </div>
                         <?php endif ?>
                     </fieldset>
+
+                    <?php if ($role_slug === DB_SLUG_PROVIDER): ?>
+                        <fieldset class="col-12 col-sm-6 working-plan-wrapper">
+                            <legend class="border-bottom mb-4"><?= lang('working_plan') ?></legend>
+
+                            <p class="form-text text-muted">
+                                <?= lang('working_plan_description') ?>
+                            </p>
+
+                            <table class="working-plan table table-striped">
+                                <thead>
+                                <tr>
+                                    <th><?= lang('day') ?></th>
+                                    <th><?= lang('start') ?></th>
+                                    <th><?= lang('end') ?></th>
+                                </tr>
+                                </thead>
+                                <tbody><!-- Dynamic Content --></tbody>
+                            </table>
+
+                            <h4 class="mt-4"><?= lang('breaks') ?></h4>
+
+                            <p class="form-text text-muted">
+                                <?= lang('add_breaks_during_each_day') ?>
+                            </p>
+
+                            <div class="mb-2">
+                                <button type="button" class="add-break btn btn-outline-secondary">
+                                    <i class="fas fa-plus-square mr-2"></i>
+                                    <?= lang('add_break') ?>
+                                </button>
+                            </div>
+
+                            <table class="breaks table table-striped">
+                                <thead>
+                                <tr>
+                                    <th><?= lang('day') ?></th>
+                                    <th><?= lang('start') ?></th>
+                                    <th><?= lang('end') ?></th>
+                                    <th><?= lang('actions') ?></th>
+                                </tr>
+                                </thead>
+                                <tbody><!-- Dynamic Content --></tbody>
+                            </table>
+
+                            <h4 class="mt-4"><?= lang('working_plan_exceptions') ?></h4>
+
+                            <p class="form-text text-muted">
+                                <?= lang('add_working_plan_exceptions_during_each_day') ?>
+                            </p>
+
+                            <div class="mb-2">
+                                <button type="button" class="add-working-plan-exception btn btn-outline-secondary">
+                                    <i class="fas fa-plus-square mr-2"></i>
+                                    <?= lang('add_working_plan_exception') ?>
+                                </button>
+                            </div>
+
+                            <table class="working-plan-exceptions table table-striped">
+                                <thead>
+                                <tr>
+                                    <th><?= lang('day') ?></th>
+                                    <th><?= lang('start') ?></th>
+                                    <th><?= lang('end') ?></th>
+                                    <th><?= lang('actions') ?></th>
+                                </tr>
+                                </thead>
+                                <tbody><!-- Dynamic Content --></tbody>
+                            </table>
+
+                            <?php require __DIR__ . '/working_plan_exceptions_modal.php' ?>
+                        </fieldset>
+                    <?php endif ?>
                 </div>
             </form>
         </div>

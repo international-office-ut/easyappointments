@@ -196,7 +196,10 @@ class Identities_Model extends Ea_Model {
 
         $primary = $siblings[0];
 
-        if ( ! empty($primary['salt']) && ! empty($primary['password']))
+        // Modern password hashes are self-contained (the row salt is empty for them), so only
+        // the password value decides whether the credentials can be inherited. Legacy hashes
+        // always carry their dedicated salt value next to the hash.
+        if ( ! empty($primary['password']))
         {
             $settings['salt'] = $primary['salt'];
             $settings['password'] = $primary['password'];

@@ -47,6 +47,15 @@
             }
         };
 
+        // Providers maintain their own availability settings on the settings page: the work
+        // plan editor state rides the ordinary user settings save (the self-only row check
+        // inside the endpoint applies the same as always).
+        if (GlobalVariables.userSlug === 'provider') {
+            user.settings.working_plan = JSON.stringify(BackendSettings.wp.get());
+            user.settings.working_plan_exceptions =
+                JSON.stringify(BackendSettings.wp.getWorkingPlanExceptions());
+        }
+
         if ($('#password').val()) {
             user.settings.password = $('#password').val();
         }

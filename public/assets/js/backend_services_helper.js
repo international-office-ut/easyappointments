@@ -182,9 +182,14 @@
         $('#services').on('click', '.add-location-window', function (event) {
             event.preventDefault();
 
-            var $row = ServicesHelper.buildLocationWindowRow('', '', '');
+            var weekdayIndex = new Date().getDay();
+            var defaults = ServicesHelper.defaultLocationWindowTimes(weekdayIndex);
+
+            var $row = ServicesHelper.buildLocationWindowRow(defaults.from, defaults.to, '');
 
             $('#services .service-location-weekdays tbody').append($row);
+
+            $row.find('.location-window-day').val(weekdayIndex);
 
             ServicesHelper.attachLocationWindowPickers($row);
         });
@@ -195,7 +200,10 @@
         $('#services').on('click', '.add-location-date', function (event) {
             event.preventDefault();
 
-            var $row = ServicesHelper.buildLocationWindowRow('', '', '', '');
+            var defaults = ServicesHelper.defaultLocationWindowTimes(new Date().getDay());
+            var today = GeneralFunctions.formatDate(moment().format('YYYY-MM-DD'), GlobalVariables.dateFormat);
+
+            var $row = ServicesHelper.buildLocationWindowRow(defaults.from, defaults.to, '', today);
 
             $('#services .service-location-date-overrides tbody').append($row);
 
@@ -429,8 +437,39 @@
      * @param {String} date Optional display-formatted date when the row belongs to a date override.
      * @return {jQuery} The row element.
      */
+    /**
+     * Default time window of the location override rows.
+     *
+     * The business working plan provides the hours of the relevant weekday, so a new
+     * override row starts with the company's regular opening hours. Unknown weekdays
+     * fall back to a sensible nine to five default.
+     *
+     * @param {Number} weekdayIndex Weekday index (0 = Sunday ... 6 = Saturday).
+     * @return {Object} The suggested "from" and "to" values ("HH:mm").
+     */
+    ServicesHelper.defaultLocationWindowTimes = function (weekdayIndex) {
+        var plan;
+
+        try {
+            plan = typeof GlobalVariables.companyWorkingPlan === 'string'
+                ? JSON.parse(GlobalVariables.companyWorkingPlan || '{}')
+                : (GlobalVariables.companyWorkingPlan || {});
+        } catch (exception) {
+            plan = {};
+        }
+
+        var dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+        var entry = plan[dayNames[weekdayIndex]] || {};
+
+        return {
+            from: entry.start || '09:00',
+            to: entry.end || '17:00'
+        };
+    };
+
     ServicesHelper.buildLocationWindowRow = function (from, to, location, date) {
         var hasDate = date !== undefined;
+        var editMode = $('#services .save-cancel-group').is(':visible');
 
         var $row = $('<tr/>', {
             'class': 'location-window-row',
@@ -441,10 +480,14 @@
             $row.append($('<td/>').append($('<input/>', {
                 'type': 'text',
                 'class': 'location-window-date form-control form-control-sm',
-                'value': date
+                'value': date,
+                'disabled': !editMode
             })));
         } else {
-            var $daySelect = $('<select/>', {'class': 'location-window-day form-control form-control-sm'});
+            var $daySelect = $('<select/>', {
+                'class': 'location-window-day form-control form-control-sm',
+                'disabled': !editMode
+            });
 
             // Monday first, the option values keep the real weekday index (0 = Sunday ... 6 = Saturday).
             [1, 2, 3, 4, 5, 6, 0].forEach(function (weekday) {
@@ -462,23 +505,27 @@
             .append($('<td/>').append($('<input/>', {
                 'type': 'text',
                 'class': 'location-window-from form-control form-control-sm',
-                'value': from
+                'value': from,
+                'disabled': !editMode
             })))
             .append($('<td/>').append($('<input/>', {
                 'type': 'text',
                 'class': 'location-window-to form-control form-control-sm',
-                'value': to
+                'value': to,
+                'disabled': !editMode
             })))
             .append($('<td/>').append($('<input/>', {
                 'type': 'text',
                 'class': 'location-window-location form-control form-control-sm',
                 'placeholder': EALang.location,
-                'value': location
+                'value': location,
+                'disabled': !editMode
             })))
             .append($('<td/>').append($('<button/>', {
                 'type': 'button',
                 'class': 'remove-location-window btn btn-outline-danger btn-sm',
                 'title': EALang.remove_location_window,
+                'disabled': !editMode,
                 'html': $('<i/>', {'class': 'fas fa-trash'})
             })));
 

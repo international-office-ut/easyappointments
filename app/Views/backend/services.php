@@ -10,6 +10,7 @@
         timeFormat: <?= json_data($time_format) ?>,
         services: <?= json_data($services) ?>,
         categories: <?= json_data($categories) ?>,
+        companyWorkingPlan: <?= json_data($working_plan) ?>,
         timezones: <?= json_data($timezones) ?>,
         user: {
             id: <?= $user_id ?>,

@@ -290,6 +290,7 @@ class Backend extends BaseController {
         $view['services'] = $this->services_model->get_batch();
         $view['categories'] = $this->services_model->get_all_categories();
         $view['timezones'] = $this->timezones->to_array();
+        $view['working_plan'] = $this->settings_model->get_setting('company_working_plan');
         $this->set_user_data($view);
 
         return view('backend/header', $view)

@@ -134,9 +134,16 @@
          */
         $('#services').on('click', '#cancel-service', function () {
             var id = $('#service-id').val();
+            var activeTabId = $('#services .record-details .switch-view .nav-link.active').attr('href');
+
             instance.resetForm();
+
             if (id !== '') {
                 instance.select(id, true);
+            }
+
+            if (activeTabId && activeTabId !== '#service-details') {
+                $('#services .record-details .switch-view a[href="' + activeTabId + '"]').tab('show');
             }
         });
 
@@ -298,9 +305,16 @@
                 Backend.displayNotification(EALang.service_saved);
 
                 var key = $('#filter-services .key').val();
+                var activeTabId = $('#services .record-details .switch-view .nav-link.active').attr('href');
 
                 this.resetForm();
                 this.filter(key, response.id, true);
+
+                // The save returns to the read display of the record and keeps the record
+                // tab that was active on the entry (e.g. the location overrides).
+                if (activeTabId && activeTabId !== '#service-details') {
+                    $('#services .record-details .switch-view a[href="' + activeTabId + '"]').tab('show');
+                }
             }.bind(this));
     };
 

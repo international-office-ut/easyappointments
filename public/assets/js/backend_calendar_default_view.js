@@ -804,16 +804,81 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
     /**
      * Calendar Day "Click" Callback
      *
-     * When the user clicks on a day square on the calendar, then he will automatically be transferred to that
-     * day view calendar.
+     * The time grid views open the add dialog on the clicked slot and keep their view. The
+     * month view has no time slots, so the client gets forwarded to the clicked day (which
+     * provides the precise time slots).
      *
-     * @param {Date} date
+     * @param {Object} info
      */
     function calendarDateClick(info) {
-        if ( ! info.allDay) {
+        if (info.view.type === 'dayGridMonth') {
             calendar.changeView('timeGridDay');
             calendar.gotoDate(info.date);
+
+            return;
         }
+
+        if (info.allDay) {
+            return;
+        }
+
+        openAppointmentDialog(info.date, new Date(info.date.getTime() + 15 * 60 * 1000));
+    }
+
+    /**
+     * Open the add appointment dialog on the provided time range.
+     *
+     * The dialog opens from the calendar selection and the slot clicks: the service and
+     * provider get prefilled from the current filter and the time range lands in the form.
+     *
+     * @param {Date} start
+     * @param {Date} end
+     */
+    function openAppointmentDialog(start, end) {
+        $('#insert-appointment').trigger('click');
+
+        // Preselect service & provider.
+        var service;
+
+        if ($('#select-filter-item option:selected').attr('type') === FILTER_TYPE_SERVICE) {
+            service = GlobalVariables.availableServices.find(function (service) {
+                return Number(service.id) === Number($('#select-filter-item').val());
+            });
+            $('#select-service').val(service.id).trigger('change');
+
+        } else {
+            var provider = GlobalVariables.availableProviders.find(function (provider) {
+                return Number(provider.id) === Number($('#select-filter-item').val());
+            });
+
+            service = GlobalVariables.availableServices.find(function (service) {
+                return provider.services.indexOf(service.id) !== -1
+            });
+
+            if (service) {
+                $('#select-service').val(service.id);
+            }
+
+            if (!$('#select-service').val()) {
+                $('#select-service option:first').prop('selected', true);
+            }
+
+            $('#select-service').trigger('change');
+
+            if (provider) {
+                $('#select-provider').val(provider.id);
+            }
+
+            if (!$('#select-provider').val()) {
+                $('#select-provider option:first').prop('selected', true);
+            }
+
+            $('#select-provider').trigger('change');
+        }
+
+        // Preselect time
+        $('#start-datetime').datepicker('setDate', moment(start).toDate());
+        $('#end-datetime').datepicker('setDate', moment(end).toDate());
     }
 
     /**
@@ -1506,53 +1571,7 @@ response.appointments.forEach(function (appointment) {
                     return;
                 }
 
-                var start = info.start;
-                var end = info.end;
-
-                $('#insert-appointment').trigger('click');
-
-                // Preselect service & provider.
-                var service;
-
-                if ($('#select-filter-item option:selected').attr('type') === FILTER_TYPE_SERVICE) {
-                    service = GlobalVariables.availableServices.find(function (service) {
-                        return Number(service.id) === Number($('#select-filter-item').val());
-                    });
-                    $('#select-service').val(service.id).trigger('change');
-
-                } else {
-                    var provider = GlobalVariables.availableProviders.find(function (provider) {
-                        return Number(provider.id) === Number($('#select-filter-item').val());
-                    });
-
-                    service = GlobalVariables.availableServices.find(function (service) {
-                        return provider.services.indexOf(service.id) !== -1
-                    });
-
-                    if (service) {
-                        $('#select-service').val(service.id);
-                    }
-
-                    if (!$('#select-service').val()) {
-                        $('#select-service option:first').prop('selected', true);
-                    }
-
-                    $('#select-service').trigger('change');
-
-                    if (provider) {
-                        $('#select-provider').val(provider.id);
-                    }
-
-                    if (!$('#select-provider').val()) {
-                        $('#select-provider option:first').prop('selected', true);
-                    }
-
-                    $('#select-provider').trigger('change');
-                }
-
-                // Preselect time
-                $('#start-datetime').datepicker('setDate', moment(start).toDate());
-                $('#end-datetime').datepicker('setDate', moment(end).toDate());
+                openAppointmentDialog(info.start, info.end);
 
                 info.jsEvent.preventDefault();
             },

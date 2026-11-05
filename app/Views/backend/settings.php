@@ -486,35 +486,6 @@
                             <input id="zip-code" class="form-control">
                         </div>
 
-                        <div class="form-group">
-                            <label for="notes"><?= lang('notes') ?></label>
-                            <textarea id="notes" class="form-control" rows="3"></textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="calendar-view"><?= lang('calendar') ?> *</label>
-                            <select id="calendar-view" class="form-control required">
-                                <option value="default"><?= lang('default') ?></option>
-                                <option value="table"><?= lang('table') ?></option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="timezone"><?= lang('timezone') ?></label>
-                            <?= render_timezone_dropdown('id="timezone" class="form-control"') ?>
-                        </div>
-
-                        <?php if ($role_slug !== DB_SLUG_ADMIN): ?>
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="user-notifications">
-                                <label class="custom-control-label" for="user-notifications">
-                                    <?= lang('receive_notifications') ?>
-                                </label>
-                            </div>
-                            <span class="form-text text-muted mb-2">
-                                <?= lang('receive_notifications_hint') ?>
-                            </span>
-                        <?php endif ?>
                     </fieldset>
 
                     <?php if ($role_slug === DB_SLUG_PROVIDER): ?>
@@ -537,6 +508,34 @@
                             <input id="provider-zoom-link" class="form-control" maxlength="512"
                                    placeholder="https://...">
                         </div>
+
+                        <div class="form-group">
+                            <label for="notes"><?= lang('notes') ?></label>
+                            <textarea id="notes" class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="calendar-view"><?= lang('calendar') ?> *</label>
+                            <select id="calendar-view" class="form-control required">
+                                <option value="default"><?= lang('default') ?></option>
+                                <option value="table"><?= lang('table') ?></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="timezone"><?= lang('timezone') ?></label>
+                            <?= render_timezone_dropdown('id="timezone" class="form-control"') ?>
+                        </div>
+
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="user-notifications">
+                            <label class="custom-control-label" for="user-notifications">
+                                <?= lang('receive_notifications') ?>
+                            </label>
+                        </div>
+                        <span class="form-text text-muted mb-2">
+                            <?= lang('receive_notifications_hint') ?>
+                        </span>
 
                         <div class="form-group mt-2">
                             <label for="feed-url"><?= lang('ical_feed') ?></label>

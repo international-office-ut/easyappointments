@@ -161,19 +161,208 @@ window.BackendSettings = window.BackendSettings || {};
             $link.tab('show');
         }
 
-        // Apply Privileges
-        if (GlobalVariables.user.privileges.system_settings.edit === false) {
-            $('#general, #business-logic').find('select, input, textarea').prop('readonly', true);
-            $('#general, #business-logic').find('button').prop('disabled', true);
-        }
-
-        if (GlobalVariables.user.privileges.user_settings.edit === false) {
-            $('#current-user').find('select, input, textarea').prop('readonly', true);
-            $('#current-user').find('button').prop('disabled', true);
-        }
+        // The settings page uses the common edit-save-abort workflow: everything starts in
+        // the locked read state and the Edit button of the active pane enables the widgets
+        // (the Cancel button restores the stored values without a request).
+        exports.lockSettingsPane('#general', 'system_settings');
+        exports.lockSettingsPane('#business-logic', 'system_settings');
+        exports.lockSettingsPane('#legal-contents', 'system_settings');
+        exports.lockSettingsPane('#current-user', 'user_settings');
 
         Backend.placeFooterToBottom();
     };
+
+    /**
+     * Lock one settings pane into its read state.
+     *
+     * The common edit-save-abort workflow keeps every input inert until the Edit button of
+     * the pane enables it. Widgets that act outside the workflow (the API token and the
+     * calendar feed tooling) are excluded via their `data-keep-enabled` attribute, so the
+     * generate/revoke handlers always stay available.
+     *
+     * @param {String} paneId Selector or id of the tab pane.
+     * @param {String} privilegeArea The privilege area that unlocks the edit state.
+     */
+    exports.lockSettingsPane = function (paneId, privilegeArea) {
+        var $pane = $(paneId);
+        var $paneChildren = $pane.find('input, select, textarea, button');
+
+        if (GlobalVariables.user.privileges[privilegeArea].edit === false) {
+            $paneChildren.prop('readonly', true).prop('disabled', true);
+
+            // Tools outside the workflow (e.g. the calendar feed and API token buttons)
+            // remain available even for read-only roles.
+            $pane.find('[data-keep-enabled]').prop('readonly', false).prop('disabled', false);
+
+            $pane.find('.edit-settings').hide();
+            $pane.find('.save-settings, .cancel-settings').hide();
+
+            return;
+        }
+
+        $paneChildren.prop('readonly', true).prop('disabled', true);
+
+        // Sticky-locked widgets (like the calendar feed and API token tooling) stay
+        // available in the read state, everything else keeps waiting for the Edit button.
+        $pane.find('[data-keep-enabled]').prop('readonly', false).prop('disabled', false);
+
+        $pane.find('.edit-settings').show();
+        $pane.find('.save-settings, .cancel-settings').hide();
+    };
+
+    /**
+     * Enable one settings pane for editing.
+     */
+    exports.editSettingsPane = function ($pane) {
+        $pane.find('input, select, textarea, button')
+            .not('[data-keep-enabled]')
+            .prop('readonly', false).prop('disabled', false);
+
+        $pane.find('.edit-settings').hide();
+        $pane.find('.save-settings, .cancel-settings').show();
+    };
+
+    /**
+     * Restore the stored values of one settings pane and lock it again (abort path).
+     */
+    exports.restoreSettingsPane = function ($pane) {
+        var paneId = $pane.attr('id');
+
+        switch (paneId) {
+            case 'general':
+                resetGeneralPane();
+                break;
+            case 'business-logic':
+                resetBusinessLogicPane();
+                break;
+            case 'legal-contents':
+                resetLegalContentsPane();
+                break;
+            case 'current-user':
+                resetCurrentUserPane();
+                break;
+        }
+
+        exports.lockSettingsPane('#' + paneId, paneId === 'current-user' ? 'user_settings' : 'system_settings');
+    };
+
+    /**
+     * Restore the values of the general pane from the stored settings (abort path).
+     */
+    function resetGeneralPane() {
+        GlobalVariables.settings.system.forEach(function (setting) {
+            var $field = $('#general').find('input[data-field="' + setting.name + '"], '
+                + 'select[data-field="' + setting.name + '"]');
+
+            if (!$field.length) {
+                return;
+            }
+
+            $field.val(setting.value);
+        });
+    }
+
+    /**
+     * Restore the values of the business logic pane from the stored settings (abort path).
+     */
+    function resetBusinessLogicPane() {
+        var bookAdvanceTimeout = (GlobalVariables.settings.system.find(function (setting) {
+            return setting.name === 'book_advance_timeout';
+        }) || {value: ''}).value;
+
+        $('#book-advance-timeout').val(bookAdvanceTimeout);
+
+        if (GlobalVariables.userSlug === 'provider') {
+            var userPlan = $.parseJSON(GlobalVariables.settings.user.settings.working_plan || '{}') || {};
+            var userPlanExceptions =
+                $.parseJSON(GlobalVariables.settings.user.settings.working_plan_exceptions || '{}') || {};
+
+            exports.wp.setup(userPlan);
+            exports.wp.setupWorkingPlanExceptions(userPlanExceptions);
+            exports.wp.displayWeekdayModes(GlobalVariables.settings.user.settings.weekday_modes);
+            exports.wp.syncWeekdayModeStates();
+
+            return;
+        }
+
+        var companyPlan = GlobalVariables.settings.system.find(function (setting) {
+            return setting.name === 'company_working_plan';
+        });
+
+        exports.wp.setup(companyPlan ? $.parseJSON(companyPlan.value || '{}') || {} : {});
+    }
+
+    /**
+     * Restore the values of the legal contents pane from the stored settings (abort path).
+     */
+    function resetLegalContentsPane() {
+        GlobalVariables.settings.system.forEach(function (setting) {
+            switch (setting.name) {
+                case 'display_cookie_notice':
+                    $('#display-cookie-notice').prop('checked', Boolean(Number(setting.value)));
+                    break;
+                case 'cookie_notice_content':
+                    $('#cookie-notice-content').trumbowyg('html', setting.value);
+                    break;
+                case 'display_terms_and_conditions':
+                    $('#display-terms-and-conditions').prop('checked', Boolean(Number(setting.value)));
+                    break;
+                case 'terms_and_conditions_content':
+                    $('#terms-and-conditions-content').trumbowyg('html', setting.value);
+                    break;
+                case 'display_privacy_policy':
+                    $('#display-privacy-policy').prop('checked', Boolean(Number(setting.value)));
+                    break;
+                case 'privacy_policy_content':
+                    $('#privacy-policy-content').trumbowyg('html', setting.value);
+                    break;
+                case 'record_retention_days':
+                    $('#data-retention-days').val(setting.value);
+                    break;
+            }
+        });
+    }
+
+    /**
+     * Restore the values of the current user pane (abort path).
+     */
+    function resetCurrentUserPane() {
+        resetCurrentUserFields();
+
+        if (GlobalVariables.userSlug === 'provider') {
+            var userPlan = $.parseJSON(GlobalVariables.settings.user.settings.working_plan || '{}') || {};
+            var userPlanExceptions =
+                $.parseJSON(GlobalVariables.settings.user.settings.working_plan_exceptions || '{}') || {};
+
+            exports.wp.setup(userPlan);
+            exports.wp.setupWorkingPlanExceptions(userPlanExceptions);
+            exports.wp.displayWeekdayModes(GlobalVariables.settings.user.settings.weekday_modes);
+            exports.wp.syncWeekdayModeStates();
+        }
+    }
+
+    /**
+     * Refill the personal and login fields of the current user pane from the stored record.
+     */
+    function resetCurrentUserFields() {
+        $('#user-id').val(GlobalVariables.settings.user.id);
+        $('#first-name').val(GlobalVariables.settings.user.first_name);
+        $('#last-name').val(GlobalVariables.settings.user.last_name);
+        $('#email').val(GlobalVariables.settings.user.email);
+        $('#mobile-number').val(GlobalVariables.settings.user.mobile_number);
+        $('#phone-number').val(GlobalVariables.settings.user.phone_number);
+        $('#address').val(GlobalVariables.settings.user.address);
+        $('#city').val(GlobalVariables.settings.user.city);
+        $('#state').val(GlobalVariables.settings.user.state);
+        $('#zip-code').val(GlobalVariables.settings.user.zip_code);
+        $('#notes').val(GlobalVariables.settings.user.notes);
+        $('#timezone').val(GlobalVariables.settings.user.timezone);
+        $('#username').val(GlobalVariables.settings.user.settings.username);
+        $('#password, #retype-password').val('');
+        $('#calendar-view').val(GlobalVariables.settings.user.settings.calendar_view);
+        $('#user-notifications').prop('checked',
+            Boolean(Number(GlobalVariables.settings.user.settings.notifications)));
+    }
 
     /**
      * Bind the backend/settings default event handlers.
@@ -182,6 +371,25 @@ window.BackendSettings = window.BackendSettings || {};
      */
     function bindEventHandlers() {
         exports.wp.bindEventHandlers();
+
+        /**
+         * Event: Edit Settings "Click"
+         *
+         * Enables the inputs of the active pane (the edit-save-abort workflow of the
+         * settings page).
+         */
+        $('#settings-page').on('click', '.edit-settings', function () {
+            exports.editSettingsPane($(this).closest('.tab-pane'));
+        });
+
+        /**
+         * Event: Cancel Settings "Click"
+         *
+         * Restores the stored values of the active pane and locks it again.
+         */
+        $('#settings-page').on('click', '.cancel-settings', function () {
+            exports.restoreSettingsPane($(this).closest('.tab-pane'));
+        });
 
         /**
          * Event: Tab "Click"

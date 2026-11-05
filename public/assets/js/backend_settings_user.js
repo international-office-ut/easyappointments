@@ -94,6 +94,12 @@
 
                 // Update footer greetings.
                 $('#footer-user-display-name').text('Hello, ' + $('#first-name').val() + ' ' + $('#last-name').val() + '!');
+
+                // Keep the saved payload as the revert anchor for the cancel path.
+                GlobalVariables.settings.user = settings;
+
+                // The edit-save-abort workflow locks the pane again after the successful save.
+                BackendSettings.lockSettingsPane('#current-user', 'user_settings');
             });
     };
 

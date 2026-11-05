@@ -70,11 +70,19 @@
                     <legend class="border-bottom mb-4">
                         <?= lang('general_settings') ?>
                         <?php if ($privileges[PRIV_SYSTEM_SETTINGS]['edit'] == TRUE): ?>
-                            <button type="button" class="save-settings btn btn-primary btn-sm mb-2"
-                                    data-tippy-content="<?= lang('save') ?>">
-                                <i class="fas fa-check-square mr-2"></i>
-                                <?= lang('save') ?>
-                            </button>
+                            <div class="btn-group float-md-right">
+                                <button type="button" class="edit-settings btn btn-outline-secondary">
+                                    <i class="fas fa-edit mr-2"></i><?= lang('edit') ?>
+                                </button>
+                                <button type="button" class="save-settings btn btn-primary"
+                                        data-tippy-content="<?= lang('save') ?>">
+                                    <i class="fas fa-check-square mr-2"></i>
+                                    <?= lang('save') ?>
+                                </button>
+                                <button type="button" class="cancel-settings btn btn-outline-secondary">
+                                    <i class="fas fa-ban mr-2"></i><?= lang('cancel') ?>
+                                </button>
+                            </div>
                         <?php endif ?>
                     </legend>
 
@@ -152,21 +160,21 @@
                                 <div class="form-group">
                                     <label for="api-token-value">API Token</label>
                                     <div class="input-group">
-                                        <input id="api-token-value" class="form-control" readonly>
+                                        <input id="api-token-value" data-keep-enabled="true" class="form-control" readonly>
                                         <div class="input-group-append">
-                                            <button type="button" id="api-token-copy" class="btn btn-outline-secondary"
+                                            <button type="button" id="api-token-copy" data-keep-enabled="true" class="btn btn-outline-secondary"
                                                     title="Copy">
                                                 <i class="fas fa-copy"></i>
                                             </button>
                                         </div>
                                     </div>
                                     <small id="api-token-state" class="form-text text-muted"></small>
-                                    <button type="button" id="api-token-generate"
+                                    <button type="button" id="api-token-generate" data-keep-enabled="true"
                                             class="btn btn-outline-secondary btn-sm mr-2">
                                         <i class="fas fa-key mr-2"></i>
                                         <?= lang('generate_api_token') ?>
                                     </button>
-                                    <button type="button" id="api-token-revoke" class="btn btn-outline-danger btn-sm">
+                                    <button type="button" id="api-token-revoke" data-keep-enabled="true" class="btn btn-outline-danger btn-sm">
                                         <i class="fas fa-trash mr-2"></i>
                                         <?= lang('revoke_api_token') ?>
                                     </button>
@@ -232,11 +240,19 @@
                     <legend class="border-bottom mb-4">
                         <?= lang('business_logic') ?>
                         <?php if ($privileges[PRIV_SYSTEM_SETTINGS]['edit'] == TRUE): ?>
-                            <button type="button" class="save-settings btn btn-primary btn-sm mb-2"
-                                    data-tippy-content="<?= lang('save') ?>">
-                                <i class="fas fa-check-square mr-2"></i>
-                                <?= lang('save') ?>
-                            </button>
+                            <div class="btn-group float-md-right">
+                                <button type="button" class="edit-settings btn btn-outline-secondary">
+                                    <i class="fas fa-edit mr-2"></i><?= lang('edit') ?>
+                                </button>
+                                <button type="button" class="save-settings btn btn-primary"
+                                        data-tippy-content="<?= lang('save') ?>">
+                                    <i class="fas fa-check-square mr-2"></i>
+                                    <?= lang('save') ?>
+                                </button>
+                                <button type="button" class="cancel-settings btn btn-outline-secondary">
+                                    <i class="fas fa-ban mr-2"></i><?= lang('cancel') ?>
+                                </button>
+                            </div>
                         <?php endif ?>
                     </legend>
 
@@ -322,11 +338,19 @@
                     <legend class="border-bottom mb-4">
                         <?= lang('legal_contents') ?>
                         <?php if ($privileges[PRIV_SYSTEM_SETTINGS]['edit'] == TRUE): ?>
-                            <button type="button" class="save-settings btn btn-primary btn-sm mb-2"
-                                    data-tippy-content="<?= lang('save') ?>">
-                                <i class="fas fa-check-square mr-2"></i>
-                                <?= lang('save') ?>
-                            </button>
+                            <div class="btn-group float-md-right">
+                                <button type="button" class="edit-settings btn btn-outline-secondary">
+                                    <i class="fas fa-edit mr-2"></i><?= lang('edit') ?>
+                                </button>
+                                <button type="button" class="save-settings btn btn-primary"
+                                        data-tippy-content="<?= lang('save') ?>">
+                                    <i class="fas fa-check-square mr-2"></i>
+                                    <?= lang('save') ?>
+                                </button>
+                                <button type="button" class="cancel-settings btn btn-outline-secondary">
+                                    <i class="fas fa-ban mr-2"></i><?= lang('cancel') ?>
+                                </button>
+                            </div>
                         <?php endif ?>
                     </legend>
 
@@ -429,11 +453,19 @@
                         <legend class="border-bottom mb-4">
                             <?= lang('personal_information') ?>
                             <?php if ($privileges[PRIV_USER_SETTINGS]['edit'] == TRUE): ?>
-                                <button type="button" class="save-settings btn btn-primary btn-sm mb-2"
-                                        data-tippy-content="<?= lang('save') ?>">
-                                    <i class="fas fa-check-square mr-2"></i>
-                                    <?= lang('save') ?>
-                                </button>
+                                <div class="btn-group float-md-right">
+                                    <button type="button" class="edit-settings btn btn-outline-secondary">
+                                        <i class="fas fa-edit mr-2"></i><?= lang('edit') ?>
+                                    </button>
+                                    <button type="button" class="save-settings btn btn-primary"
+                                            data-tippy-content="<?= lang('save') ?>">
+                                        <i class="fas fa-check-square mr-2"></i>
+                                        <?= lang('save') ?>
+                                    </button>
+                                    <button type="button" class="cancel-settings btn btn-outline-secondary">
+                                        <i class="fas fa-ban mr-2"></i><?= lang('cancel') ?>
+                                    </button>
+                                </div>
                             <?php endif ?>
                         </legend>
 
@@ -533,22 +565,22 @@
                             <div class="form-group mt-2">
                                 <label for="feed-url"><?= lang('ical_feed') ?></label>
                                 <div class="input-group">
-                                    <input id="feed-url" class="form-control" readonly
+                                    <input id="feed-url" data-keep-enabled="true" class="form-control" readonly
                                            placeholder="<?= lang('ical_feed_hint') ?>">
                                     <div class="input-group-append">
-                                        <button type="button" id="feed-copy" class="btn btn-outline-secondary"
+                                        <button type="button" id="feed-copy" data-keep-enabled="true" class="btn btn-outline-secondary"
                                                 title="Copy">
                                             <i class="fas fa-copy"></i>
                                         </button>
                                     </div>
                                 </div>
                                 <small id="feed-state" class="form-text text-muted"></small>
-                                <button type="button" id="feed-generate"
+                                <button type="button" id="feed-generate" data-keep-enabled="true"
                                         class="btn btn-outline-secondary btn-sm mr-2">
                                     <i class="fas fa-key mr-2"></i>
                                     <?= lang('generate_feed') ?>
                                 </button>
-                                <button type="button" id="feed-revoke" class="btn btn-outline-danger btn-sm">
+                                <button type="button" id="feed-revoke" data-keep-enabled="true" class="btn btn-outline-danger btn-sm">
                                     <i class="fas fa-trash mr-2"></i>
                                     <?= lang('revoke_feed') ?>
                                 </button>

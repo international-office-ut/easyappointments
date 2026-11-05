@@ -59,6 +59,12 @@
                 var workingPlan = BackendSettings.wp.get();
                 BackendSettings.wp.setup(workingPlan);
                 BackendSettings.wp.timepickers(false);
+
+                // Keep the saved payload as the revert anchor for the cancel path.
+                GlobalVariables.settings.system = settings;
+
+                // The edit-save-abort workflow locks the pane again after the successful save.
+                BackendSettings.lockSettingsPane($('#save-settings').closest('.tab-pane'), 'system_settings');
             });
     };
 

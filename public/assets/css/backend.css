@@ -300,6 +300,12 @@ body legend {
         padding-bottom: 8px;
     }
 
+    /* Standalone buttons inside the legend: every button keeps its full corner
+       radius, because the group markup would depent on hidden siblings. */
+    .settings-legend-buttons > .btn:not(:last-child) {
+        margin-right: 0.5rem;
+    }
+
     /* Align the description zone of all four working-plan columns so the buttons and
        tables of every column start at the same position. */
     .working-plan-column p,

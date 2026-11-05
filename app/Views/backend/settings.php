@@ -70,7 +70,7 @@
                     <legend class="border-bottom mb-4 settings-legend">
                         <span><?= lang('general_settings') ?></span>
                         <?php if ($privileges[PRIV_SYSTEM_SETTINGS]['edit'] == TRUE): ?>
-                            <div class="btn-group">
+                            <div class="settings-legend-buttons">
                                 <button type="button" class="edit-settings btn btn-outline-secondary">
                                     <i class="fas fa-edit mr-2"></i><?= lang('edit') ?>
                                 </button>
@@ -240,7 +240,7 @@
                     <legend class="border-bottom mb-4 settings-legend">
                         <span><?= lang('business_logic') ?></span>
                         <?php if ($privileges[PRIV_SYSTEM_SETTINGS]['edit'] == TRUE): ?>
-                            <div class="btn-group">
+                            <div class="settings-legend-buttons">
                                 <button type="button" class="edit-settings btn btn-outline-secondary">
                                     <i class="fas fa-edit mr-2"></i><?= lang('edit') ?>
                                 </button>
@@ -338,7 +338,7 @@
                     <legend class="border-bottom mb-4 settings-legend">
                         <span><?= lang('legal_contents') ?></span>
                         <?php if ($privileges[PRIV_SYSTEM_SETTINGS]['edit'] == TRUE): ?>
-                            <div class="btn-group">
+                            <div class="settings-legend-buttons">
                                 <button type="button" class="edit-settings btn btn-outline-secondary">
                                     <i class="fas fa-edit mr-2"></i><?= lang('edit') ?>
                                 </button>
@@ -453,7 +453,7 @@
                         <legend class="border-bottom mb-4 settings-legend">
                             <span><?= lang('personal_information') ?></span>
                             <?php if ($privileges[PRIV_USER_SETTINGS]['edit'] == TRUE): ?>
-                                <div class="btn-group">
+                                <div class="settings-legend-buttons">
                                     <button type="button" class="edit-settings btn btn-outline-secondary">
                                         <i class="fas fa-edit mr-2"></i><?= lang('edit') ?>
                                     </button>

@@ -390,6 +390,10 @@ class Backend extends BaseController {
 
         $view['system_settings'] = $system_settings;
 
+        // The provider plan editor resets back to the company default, so the reference
+        // plan is needed on the page globals regardless of the settings privileges.
+        $view['company_working_plan'] = $this->settings_model->get_setting('company_working_plan');
+
         // book_advance_timeout preview
         $book_advance_timeout = $this->settings_model->get_setting('book_advance_timeout');
         $hours = floor($book_advance_timeout / 60);

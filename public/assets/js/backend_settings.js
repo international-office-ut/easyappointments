@@ -122,6 +122,12 @@ window.BackendSettings = window.BackendSettings || {};
             exports.wp.setupWorkingPlanExceptions(userPlanExceptions);
             exports.wp.displayWeekdayModes(GlobalVariables.settings.user.settings.weekday_modes);
             exports.wp.syncWeekdayModeStates();
+
+            // The self service plan editor includes the unavailability period management:
+            // the provider id anchors the modal and the listing to the own record.
+            $('#provider-id').val(GlobalVariables.settings.user.id);
+            BackendCalendarUnavailabilityEventsModal.initialize();
+            $('#manage-unavailable #unavailable-provider').closest('.form-group').hide();
         } else {
             exports.wp.setup(workingPlan);
         }
@@ -435,6 +441,22 @@ window.BackendSettings = window.BackendSettings || {};
          */
         $('#settings-page').on('click', '.cancel-settings', function () {
             exports.restoreSettingsPane($(this).closest('.tab-pane'));
+        });
+
+        /**
+         * Event: Reset Working Plan "Click"
+         *
+         * Applies the company default plan (the same reference the users page offers) to
+         * the self service plan editor; nothing posts until the user presses Save.
+         */
+        $('#settings-page').on('click', '#reset-working-plan', function () {
+            var companyPlan = $.parseJSON(GlobalVariables.companyWorkingPlan || '{}') || {};
+
+            exports.wp.setup(companyPlan);
+            exports.wp.setupWorkingPlanExceptions({});
+            exports.wp.displayWeekdayModes(null);
+            exports.wp.syncWeekdayModeStates();
+            exports.wp.timepickers(false);
         });
 
         /**

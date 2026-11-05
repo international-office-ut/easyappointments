@@ -276,4 +276,102 @@
         });
     });
 
+    /**
+     * Unavailability period management of the provider settings tab: the listing mirrors
+     * the users-page work plan editor and reuses the shared calendar API and dialog.
+     */
+    var currentPeriods = [];
+
+    $('#settings-page').on('click', '.edit-settings', function () {
+        if (GlobalVariables.userSlug === 'provider') {
+            window.renderUnavailabilityPeriods($('#provider-id').val());
+        }
+    });
+
+    window.renderUnavailabilityPeriods = function (providerId) {
+        if (!providerId || GlobalVariables.userSlug !== 'provider') {
+            return;
+        }
+
+        var $table = $('.unavailability-periods tbody');
+
+        BackendCalendarApi.getProviderUnavailabilityPeriods(providerId)
+            .done(function (periods) {
+                $table.empty();
+
+                currentPeriods = periods || [];
+
+                currentPeriods.forEach(function (period) {
+                    var $row = $('<tr/>');
+
+                    $row.append(
+                        $('<td/>', {text: GeneralFunctions.formatDate(
+                            period.start_datetime, GlobalVariables.dateFormat, true)}),
+                        $('<td/>', {text: GeneralFunctions.formatDate(
+                            period.end_datetime, GlobalVariables.dateFormat, true)}),
+                        $('<td/>', {text: period.notes || '-'}),
+                        $('<td/>', {'data-id': period.id})
+                    );
+
+                    var $editButton = $('<button/>', {
+                        'type': 'button',
+                        'class': 'btn btn-outline-secondary btn-sm edit-period',
+                        'title': EALang.edit,
+                        'html': [$('<span/>', {'class': 'fas fa-edit'})]
+                    });
+
+                    var $deleteButton = $('<button/>', {
+                        'type': 'button',
+                        'class': 'btn btn-outline-secondary btn-sm delete-period',
+                        'title': EALang.delete,
+                        'html': [$('<span/>', {'class': 'fas fa-trash-alt'})]
+                    });
+
+                    $row.find('td:last').append($editButton, $deleteButton);
+
+                    $table.append($row);
+                });
+            });
+    };
+
+    $(document).on('click', '.edit-period', function () {
+        var periodId = $(this).closest('td').data('id');
+        var period = currentPeriods.find(function (candidate) {
+            return Number(candidate.id) === Number(periodId);
+        });
+
+        if (!period) {
+            return;
+        }
+
+        BackendCalendarUnavailabilityEventsModal.resetUnavailableDialog();
+
+        var $dialog = $('#manage-unavailable');
+
+        $dialog.find('#unavailable-id').val(period.id);
+        $dialog.find('#unavailable-provider').val(period.id_users_provider);
+        $dialog.find('#unavailable-start').datetimepicker(
+            'setDate', Date.parseExact(period.start_datetime, 'yyyy-MM-dd HH:mm:ss'));
+        $dialog.find('#unavailable-end').datetimepicker(
+            'setDate', Date.parseExact(period.end_datetime, 'yyyy-MM-dd HH:mm:ss'));
+        $dialog.find('#unavailable-notes').val(period.notes || '');
+        $dialog.find('.modal-header h3').text(EALang.edit_unavailable_title);
+        $dialog.modal('show');
+    });
+
+    $(document).on('click', '.delete-period', function () {
+        var providerId = $('#provider-id').val();
+        var periodId = $(this).closest('td').data('id');
+        var $row = $(this).closest('tr');
+
+        $row.css('opacity', '0.5');
+
+        BackendCalendarApi.deleteUnavailable(periodId, function () {
+            Backend.displayNotification(EALang.delete_unavailable);
+            window.renderUnavailabilityPeriods(providerId);
+        }, function () {
+            $row.css('opacity', '');
+            Backend.displayNotification(EALang.unexpected_issues_message);
+        });
+    });
 })();

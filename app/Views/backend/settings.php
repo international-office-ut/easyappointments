@@ -1,6 +1,8 @@
 <script src="<?= asset_url('assets/js/backend_settings_system.js') ?>"></script>
 <script src="<?= asset_url('assets/js/backend_settings_user.js') ?>"></script>
 <script src="<?= asset_url('assets/js/backend_settings.js') ?>"></script>
+<script src="<?= asset_url('assets/js/backend_calendar_api.js') ?>" defer></script>
+<script src="<?= asset_url('assets/js/backend_calendar_unavailability_events_modal.js') ?>" defer></script>
 <script src="<?= asset_url('assets/js/working_plan.js') ?>"></script>
 <script src="<?= asset_url('assets/js/working_plan_exceptions_modal.js') ?>"></script>
 <script src="<?= asset_url('assets/ext/jquery-ui/jquery-ui-timepicker-addon.min.js') ?>"></script>
@@ -14,6 +16,7 @@
         timeFormat: <?= json_data($time_format) ?>,
         userSlug: <?= json_data($role_slug) ?>,
         timezones: <?= json_data($timezones) ?>,
+        companyWorkingPlan: <?= json_data($company_working_plan) ?>,
         settings: {
             system: <?= json_data($system_settings) ?>,
             user: <?= json_data($user_settings) ?>
@@ -584,6 +587,13 @@
                                                         <p class="form-text text-muted">
                                                             <?= lang('working_plan_description') ?>
                                                         </p>
+                                                        <div class="mb-2">
+                                                            <button id="reset-working-plan" class="btn btn-primary"
+                                                                    data-tippy-content="<?= lang('reset_working_plan') ?>">
+                                                                <i class="fas fa-redo-alt mr-2"></i>
+                                                                <?= lang('reset_plan') ?>
+                                                            </button>
+                                                        </div>
                                                         <table class="working-plan table table-striped mt-2">
                                                             <thead>
                                                             <tr>
@@ -619,7 +629,34 @@
                                                             <tbody><!-- Dynamic Content --></tbody>
                                                         </table>
                                                     </fieldset>
-                                                    <fieldset class="col-12 working-plan-exceptions-column">
+                                                    <fieldset class="col-12 col-md-6 unavailability-periods-column">
+                                                        <h3><?= lang('unavailable_periods') ?></h3>
+
+                                                        <p class="form-text text-muted">
+                                                            <?= lang('unavailable_periods_description') ?>
+                                                        </p>
+
+                                                        <div class="mb-2">
+                                                            <button type="button" id="insert-unavailable" class="btn btn-primary mr-2">
+                                                                <i class="fas fa-plus-square mr-2"></i>
+                                                                <?= lang('add_unavailable') ?>
+                                                            </button>
+                                                        </div>
+
+                                                        <table class="unavailability-periods table table-striped mt-2">
+                                                            <thead>
+                                                            <tr>
+                                                                <th><?= lang('start') ?></th>
+                                                                <th><?= lang('end') ?></th>
+                                                                <th><?= lang('notes') ?></th>
+                                                                <th><?= lang('actions') ?></th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody><!-- Dynamic Content --></tbody>
+                                                        </table>
+                                                    </fieldset>
+
+                                                    <fieldset class="col-12 col-md-6 working-plan-exceptions-column">
                                                         <h3><?= lang('working_plan_exceptions') ?></h3>
                                                         <p class="form-text text-muted">
                                                             <?= lang('add_working_plan_exceptions_during_each_day') ?>
@@ -646,6 +683,11 @@
                                                     </fieldset>
                 </div>
             </form>
+
+        <?php if ($role_slug === DB_SLUG_PROVIDER): ?>
+            <input type="hidden" id="provider-id" value="1">
+            <?php require __DIR__ . '/manage_unavailable_modal.php' ?>
+        <?php endif ?>
         </div>
 
         <!-- ABOUT TAB -->

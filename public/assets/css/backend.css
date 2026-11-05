@@ -306,6 +306,25 @@ body legend {
         margin-right: 0.5rem;
     }
 
+    /* Contain the working plan editor tables and the wysiwyg boxes inside their
+       columns: wide content gets its own inner scroll instead of widening the
+       pane (the vertical workflow rows keep overflow visible for the scroll fix). */
+    #settings-page table.working-plan,
+    #settings-page table.breaks,
+    #settings-page table.working-plan-exceptions {
+        display: block;
+        overflow-x: auto;
+        max-width: 100%;
+    }
+
+    #legal-contents .trumbowyg-box {
+        max-width: 100%;
+    }
+
+    #settings-page .tab-content {
+        overflow-x: hidden;
+    }
+
     /* Align the description zone of all four working-plan columns so the buttons and
        tables of every column start at the same position. */
     .working-plan-column p,

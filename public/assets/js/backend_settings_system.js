@@ -28,7 +28,9 @@
      *
      * @param {Array} settings Contains the system settings data.
      */
-    SystemSettings.prototype.save = function (settings) {        var url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_save_settings';
+    SystemSettings.prototype.save = function (settings, $pane) {        var url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_save_settings';
+
+        $pane = $pane || $('#save-settings').closest('.tab-pane');
 
         var data = {
             csrfToken: GlobalVariables.csrfToken,
@@ -64,7 +66,7 @@
                 GlobalVariables.settings.system = settings;
 
                 // The edit-save-abort workflow locks the pane again after the successful save.
-                BackendSettings.lockSettingsPane($('#save-settings').closest('.tab-pane'), 'system_settings');
+                BackendSettings.lockSettingsPane($pane, 'system_settings');
             });
     };
 

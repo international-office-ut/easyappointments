@@ -122,6 +122,41 @@ class Backend_api extends BaseController {
     }
 
     /**
+     * Reject working plan breaks that do not belong to days with working hours.
+     *
+     * Breaks are stored inside the weekday entry of the plan, so a plan that carries breaks
+     * for a day without a start/end pair is a broken payload: silently accepting it would
+     * drop those breaks on every read.
+     *
+     * @param string|array $working_plan Raw JSON string or already decoded plan.
+     * @throws Exception
+     */
+    protected function assert_breaks_belong_to_working_days($working_plan): void
+    {
+        $plan = is_string($working_plan)
+            ? json_decode($working_plan, TRUE)
+            : $working_plan;
+
+        if ( ! is_array($plan))
+        {
+            return; // The plain shape of the plan stays at the model layer.
+        }
+
+        foreach ($plan as $week_day => $entry)
+        {
+            if ( ! is_array($entry) || empty($entry['breaks']) || ! is_array($entry['breaks']))
+            {
+                continue;
+            }
+
+            if (empty($entry['start']) || empty($entry['end']))
+            {
+                throw new Exception('Breaks must belong to days with working hours: ' . $week_day);
+            }
+        }
+    }
+
+    /**
      * Keep only the appointment rows that belong to the current session's provider scope.
      *
      * The returned array is re-indexed, so that no filtered response can ever contain sparse
@@ -1264,6 +1299,11 @@ class Backend_api extends BaseController {
                     ->get_setting('company_working_plan');
             }
 
+            if (isset($provider['settings']['working_plan']))
+            {
+                $this->assert_breaks_belong_to_working_days($provider['settings']['working_plan']);
+            }
+
             $provider_id = $this->providers_model->add($provider);
 
             $response = [
@@ -1486,6 +1526,14 @@ class Backend_api extends BaseController {
 
                 $settings = json_decode($this->request->getPost('settings'), TRUE);
 
+                foreach ($settings as $setting)
+                {
+                    if (($setting['name'] ?? NULL) === 'company_working_plan')
+                    {
+                        $this->assert_breaks_belong_to_working_days($setting['value'] ?? NULL);
+                    }
+                }
+
                 $this->settings_model->save_settings($settings);
             }
             else
@@ -1498,6 +1546,11 @@ class Backend_api extends BaseController {
                     }
 
                     $settings = json_decode($this->request->getPost('settings'), TRUE);
+
+                    if (isset($settings['settings']['working_plan']))
+                    {
+                        $this->assert_breaks_belong_to_working_days($settings['settings']['working_plan']);
+                    }
 
                     // Users are only allowed to save their own user row, otherwise roles that
                     // hold the user-settings edit slot could take over any other account.
@@ -1642,6 +1695,8 @@ class Backend_api extends BaseController {
             }
 
             $working_plan = $this->request->getPost('working_plan');
+
+            $this->assert_breaks_belong_to_working_days($working_plan);
 
             $providers = $this->providers_model->get_batch();
 

@@ -323,6 +323,10 @@ $lang["personal_information"] = "Personal Information";
 $lang["user_settings_are_invalid"] =
     "User settings are invalid! Please review your settings and try again.";
 $lang["add_break"] = "Add Break";
+$lang["breaks_require_active_days"] =
+    'Breaks must belong to active working days: {$days}. Re-enable those days or remove their breaks.';
+$lang["no_active_working_days"] =
+    'Enable at least one working day before adding breaks.';
 $lang["january"] = "January";
 $lang["february"] = "February";
 $lang["march"] = "March";

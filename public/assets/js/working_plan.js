@@ -249,23 +249,99 @@
      *
      * This method makes editable the break day cells.
      *
+    /**
+     * Active working days of the current plan context.
+     *
+     * Breaks may only cover days with working hours, so the day select of break rows and the
+     * save validation both derive from this map. The list follows the "First day of week"
+     * setting always: it walks a rotated weekday id list instead of the table markup, so the
+     * browser state (stale table rows, unrelated panes) can never reorder the dropdown.
+     *
+     * @return {Object} Returns the week day display names of the days with working hours.
+     */
+    WorkingPlan.prototype.getActiveDays = function () {
+        var instance = this;
+        var activeDays = {};
+
+        this.getWeekDayIds().forEach(function (dayId) {
+            var $checkbox = $('#' + dayId, instance.$root);
+
+            if ($checkbox.length && $checkbox.prop('checked')) {
+                var dayName = EALang[dayId];
+
+                if (dayName) {
+                    activeDays[dayName] = dayName;
+                }
+            }
+        });
+
+        return activeDays;
+    };
+
+    /**
+     * Weekday ids of the plan, ordered by the "First day of week" setting.
+     *
+     * @return {Array} Returns the weekday ids ("monday" first when monday is the start day).
+     */
+    WorkingPlan.prototype.getWeekDayIds = function () {
+        var weekDayIds = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+        var startId = GeneralFunctions.getWeekDayId(GlobalVariables.firstWeekday);
+
+        if (typeof startId !== 'number' || startId < 0 || startId > 6) {
+            return weekDayIds;
+        }
+
+        return weekDayIds.slice(startId).concat(weekDayIds.slice(0, startId));
+    };
+
+    /**
+     * Days that carry break rows while their weekday has no working hours.
+     *
+     * Such rows are never dropped silently: the day select cannot create them anymore, but
+     * they can still emerge when a working day gets unchecked afterwards or through manual
+     * requests. The save flows block on this list and ask the user to resolve it.
+     *
+     * @return {Array} Returns the week day display names of the diverging breaks.
+     */
+    WorkingPlan.prototype.getOrphanBreakDays = function () {
+        var instance = this;
+        var activeDays = this.getActiveDays();
+        var orphans = [];
+
+        this.$root.find('.breaks tbody tr').each(function (index, row) {
+            var dayName = $(row).find('.break-day').text();
+
+            // An open row editor whose select is being built keeps the concatenated option
+            // labels in the cell: only real day names count for the validation.
+            if (dayName && !instance.convertDayToValue(dayName)) {
+                return;
+            }
+
+            if (dayName && activeDays[dayName] === undefined && orphans.indexOf(dayName) === -1) {
+                orphans.push(dayName);
+            }
+        });
+
+        return orphans;
+    };
+
+    /**
+     * Make break cells editable.
+     *
      * @param {Object} $selector The jquery selector ready for use.
      */
     WorkingPlan.prototype.editableDayCell = function ($selector) {
-        var weekDays = {};
-        weekDays[EALang.sunday] = EALang.sunday; //'Sunday';
-        weekDays[EALang.monday] = EALang.monday; //'Monday';
-        weekDays[EALang.tuesday] = EALang.tuesday; //'Tuesday';
-        weekDays[EALang.wednesday] = EALang.wednesday; //'Wednesday';
-        weekDays[EALang.thursday] = EALang.thursday; //'Thursday';
-        weekDays[EALang.friday] = EALang.friday; //'Friday';
-        weekDays[EALang.saturday] = EALang.saturday; //'Saturday';
+        var instance = this;
 
         $selector.editable(function (value, settings) {
             return value;
         }, {
             type: 'select',
-            data: weekDays,
+            // Re-evaluated on every edit: the list follows the checked working
+            // days, so breaks can never be attached to an inactive day.
+            data: function () {
+                return instance.getActiveDays();
+            },
             event: 'edit',
             height: '30px',
             submit: '<button type="button" class="d-none submit-editable">Submit</button>',
@@ -486,13 +562,24 @@
          * data. After that he can either press the save or cancel button.
          */
         this.$root.on('click', '.add-break', function () {
+            var activeDays = instance.getActiveDays();
+
+            if ($.isEmptyObject(activeDays)) {
+                Backend.displayNotification(EALang.no_active_working_days);
+                return;
+            }
+
+            // The new break starts on the first working day of the week as configured by the
+            // "First day of week" setting, instead of the hardcoded Sunday.
+            var defaultDay = Object.keys(activeDays)[0];
+
             var timeFormat = GlobalVariables.timeFormat === 'regular' ? 'h:mm tt' : 'HH:mm';
 
             var $newBreak = $('<tr/>', {
                 'html': [
                     $('<td/>', {
                         'class': 'break-day editable',
-                        'text': EALang.sunday
+                        'text': defaultDay
                     }),
                     $('<td/>', {
                         'class': 'break-start editable',
@@ -712,9 +799,16 @@
         var instance = this;
         var workingPlan = {};
 
-        this.$root.find('.working-plan input:checkbox').each(function (index, checkbox) {
-            var id = $(checkbox).attr('id');
-            if ($(checkbox).prop('checked') === true) {
+        // Walk the "First day of week" rotated weekday list so the returned plan keeps one
+        // stable ordering scheme, independent of the table markup.
+        this.getWeekDayIds().forEach(function (id) {
+            var $checkbox = $('#' + id, instance.$root);
+
+            if ($checkbox.length === 0) {
+                return;
+            }
+
+            if ($checkbox.prop('checked') === true) {
                 workingPlan[id] = {
                     start: Date.parse($('#' + id + '-start', instance.$root).val()).toString('HH:mm'),
                     end: Date.parse($('#' + id + '-end', instance.$root).val()).toString('HH:mm'),
@@ -733,7 +827,7 @@
                             end: Date.parse(end).toString('HH:mm')
                         });
                     }
-                }.bind(this));
+                });
 
                 // Sort breaks increasingly by hour within day
                 workingPlan[id].breaks.sort(function (break1, break2) {

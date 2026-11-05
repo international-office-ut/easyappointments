@@ -325,6 +325,10 @@ $lang["personal_information"] = "Persönliche Informationen";
 $lang["user_settings_are_invalid"] =
     "Benutzereinstellungen sind ungültig! Bitte überprüfen Sie Ihre Einstellungen und wiederholen Sie den Vorgang.";
 $lang["add_break"] = "Interval Hinzufügen";
+$lang["breaks_require_active_days"] =
+    'Intervalle müssen zu aktiven Arbeitstagen gehören: {$days}. Aktivieren Sie diese Tage erneut oder entfernen Sie die entsprechenden Intervalle.';
+$lang["no_active_working_days"] =
+    'Aktivieren Sie mindestens einen Arbeitstag, bevor Sie Intervalle hinzufügen.';
 $lang["january"] = "Januar";
 $lang["february"] = "Februar";
 $lang["march"] = "März";

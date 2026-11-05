@@ -505,8 +505,20 @@ window.BackendSettings = window.BackendSettings || {};
         });
 
         $('.save-settings').on('click', function () {
+            var $pane = $(this).closest('.tab-pane');
+
+            if ($pane.find('.working-plan').length) {
+                var orphanBreakDays = BackendSettings.wp.getOrphanBreakDays();
+
+                if (orphanBreakDays.length) {
+                    Backend.displayNotification(
+                        EALang.breaks_require_active_days.replace('{$days}', orphanBreakDays.join(', ')));
+                    return;
+                }
+            }
+
             var data = settings.get();
-            settings.save(data);
+            settings.save(data, $pane);
         });
 
         /**

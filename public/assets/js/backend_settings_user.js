@@ -152,6 +152,13 @@
             if (GlobalVariables.userSlug === 'provider') {
                 var providerFieldsInvalid = false;
                 var weekdayModes = BackendSettings.wp.getWeekdayModes() || {};
+
+                var orphanBreakDays = BackendSettings.wp.getOrphanBreakDays();
+
+                if (orphanBreakDays.length) {
+                    throw new Error(
+                        EALang.breaks_require_active_days.replace('{$days}', orphanBreakDays.join(', ')));
+                }
                 var weekdayValues = Object.keys(weekdayModes).map(function (weekday) {
                     return weekdayModes[weekday];
                 });

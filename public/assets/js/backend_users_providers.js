@@ -157,6 +157,14 @@
          * Event: Save Provider Button "Click"
          */
         $('#providers').on('click', '#save-provider', function () {
+            var orphanBreakDays = BackendUsers.wp.getOrphanBreakDays();
+
+            if (orphanBreakDays.length) {
+                Backend.displayNotification(
+                    EALang.breaks_require_active_days.replace('{$days}', orphanBreakDays.join(', ')));
+                return;
+            }
+
             var provider = {
                 first_name: $('#provider-first-name').val(),
                 last_name: $('#provider-last-name').val(),

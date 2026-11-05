@@ -319,7 +319,7 @@ $lang["password_length_notice"] =
     'Password must be at least $number characters long.';
 $lang["general_settings"] = "General Settings";
 $lang["personal_information"] = "Personal Information";
-$lang["system_login"] = "System Login";
+
 $lang["user_settings_are_invalid"] =
     "User settings are invalid! Please review your settings and try again.";
 $lang["add_break"] = "Add Break";

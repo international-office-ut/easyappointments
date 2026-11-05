@@ -322,7 +322,6 @@ $lang["password_length_notice"] =
     'Das Passwort muss mindestens $number Zeichen lang sein.';
 $lang["general_settings"] = "Allgemeine Einstellungen";
 $lang["personal_information"] = "Persönliche Informationen";
-$lang["system_login"] = "Anmeldung am System";
 $lang["user_settings_are_invalid"] =
     "Benutzereinstellungen sind ungültig! Bitte überprüfen Sie Ihre Einstellungen und wiederholen Sie den Vorgang.";
 $lang["add_break"] = "Interval Hinzufügen";

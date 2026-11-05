@@ -418,17 +418,27 @@
         <?php $hidden = ($privileges[PRIV_USER_SETTINGS]['view'] == TRUE) ? '' : 'd-none' ?>
         <div class="tab-pane <?= $hidden ?>" id="current-user">
             <form>
+                <legend class="border-bottom mb-4 settings-legend">
+                    <span><?= lang('current_user') ?></span>
+                    <?php if ($privileges[PRIV_USER_SETTINGS]['edit'] == TRUE): ?>
+                        <div class="btn-group" data-display="none">
+                            <button type="button" class="save-settings btn btn-primary"
+                                    data-tippy-content="<?= lang('save') ?>">
+                                <i class="fas fa-check-square mr-2"></i>
+                                <?= lang('save') ?>
+                            </button>
+                            <button type="button" class="cancel-settings btn btn-outline-secondary">
+                                <i class="fas fa-ban mr-2"></i><?= lang('cancel') ?>
+                            </button>
+                        </div>
+                        <button type="button" class="edit-settings btn btn-outline-secondary">
+                            <i class="fas fa-edit mr-2"></i><?= lang('edit') ?>
+                        </button>
+                    <?php endif ?>
+                </legend>
+
                 <div class="row">
                     <fieldset class="col-12 col-sm-6 personal-info-wrapper">
-                        <legend class="border-bottom mb-4 settings-legend">
-                            <span><?= lang('personal_information') ?></span>
-                            <?php if ($privileges[PRIV_USER_SETTINGS]['edit'] == TRUE): ?>
-                                                                <div class="btn-group" data-display="none"><button type="button" class="save-settings btn btn-primary"                       data-tippy-content="<?= lang('save') ?>">                     <i class="fas fa-check-square mr-2"></i>                     <?= lang('save') ?>                   </button>                   <button type="button" class="cancel-settings btn btn-outline-secondary">                     <i class="fas fa-ban mr-2"></i><?= lang('cancel') ?>                   </button>                 </div>
-                                <button type="button" class="edit-settings btn btn-outline-secondary">                   <i class="fas fa-edit mr-2"></i><?= lang('edit') ?>                 </button>                  
-                                
-                            <?php endif ?>
-                        </legend>
-
                         <input type="hidden" id="user-id">
 
                         <div class="form-group">
@@ -480,26 +490,6 @@
                             <label for="notes"><?= lang('notes') ?></label>
                             <textarea id="notes" class="form-control" rows="3"></textarea>
                         </div>
-                    </fieldset>
-
-                    <fieldset class="col-12 col-sm-6 miscellaneous-wrapper">
-                        <legend class="border-bottom mb-4"><?= lang('system_login') ?></legend>
-
-                        <div class="form-group">
-                            <label for="username"><?= lang('username') ?> *</label>
-                            <input id="username" class="form-control required">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="password"><?= lang('password') ?></label>
-                            <input type="password" id="password" class="form-control" autocomplete="new-password">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="retype-password"><?= lang('retype_password') ?></label>
-                            <input type="password" id="retype-password" class="form-control"
-                                   autocomplete="new-password">
-                        </div>
 
                         <div class="form-group">
                             <label for="calendar-view"><?= lang('calendar') ?> *</label>
@@ -525,6 +515,24 @@
                                 <?= lang('receive_notifications_hint') ?>
                             </span>
                         <?php endif ?>
+                    </fieldset>
+
+                    <fieldset class="col-12 col-sm-6 miscellaneous-wrapper">
+                        <div class="form-group">
+                            <label for="username"><?= lang('username') ?> *</label>
+                            <input id="username" class="form-control required">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password"><?= lang('password') ?></label>
+                            <input type="password" id="password" class="form-control" autocomplete="new-password">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="retype-password"><?= lang('retype_password') ?></label>
+                            <input type="password" id="retype-password" class="form-control"
+                                   autocomplete="new-password">
+                        </div>
 
                         <?php if ($role_slug === DB_SLUG_PROVIDER): ?>
                             <div class="form-group mt-2">

@@ -415,6 +415,7 @@
                                             <th><?= lang('day') ?></th>
                                             <th><?= lang('start') ?></th>
                                             <th><?= lang('end') ?></th>
+                                            <th><?= lang('mode') ?></th>
                                             <th><?= lang('actions') ?></th>
                                         </tr>
                                         </thead>

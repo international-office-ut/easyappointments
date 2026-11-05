@@ -346,6 +346,16 @@
                     'text': Date.parse(workingPlanException.end).toString(timeFormat).toLowerCase()
                 }),
                 $('<td/>', {
+                    'class': 'working-plan-exception--mode',
+                    'text': workingPlanException.mode
+                        ? EALang[{
+                            ONLINE: 'mode_online',
+                            ON_PREMISE: 'mode_on_premise',
+                            BOTH: 'mode_both'
+                        }[workingPlanException.mode]] || workingPlanException.mode
+                        : EALang.mode_follow_defaults
+                }),
+                $('<td/>', {
                     'html': [
                         $('<button/>', {
                             'type': 'button',

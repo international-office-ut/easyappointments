@@ -5,6 +5,7 @@ $(function () {
     var $date = $('#working-plan-exceptions-date');
     var $start = $('#working-plan-exceptions-start');
     var $end = $('#working-plan-exceptions-end');
+    var $mode = $('#working-plan-exceptions-mode');
     var $breaks = $('#working-plan-exceptions-breaks');
     var $save = $('#working-plan-exceptions-save');
     var deferred = null;
@@ -15,6 +16,7 @@ $(function () {
         $date.val('');
         $start.val('');
         $end.val('');
+        $mode.val('');
         $breaks.find('tbody').empty();
         $('.working-plan-exceptions-add-break').prop('disabled', false);
     }
@@ -92,6 +94,10 @@ $(function () {
             breaks: getBreaks()
         };
 
+        if ($mode.val()) {
+            workingPlanException.mode = $mode.val();
+        }
+
         deferred.resolve(date, workingPlanException);
 
         $modal.modal('hide');
@@ -151,6 +157,7 @@ $(function () {
         $date.datepicker('setDate', moment(date, 'YYYY-MM-DD').toDate());
         $start.timepicker('setDate', moment(workingPlanException.start, 'HH:mm').toDate());
         $end.timepicker('setDate', moment(workingPlanException.end, 'HH:mm').toDate());
+        $mode.val(workingPlanException.mode || '');
 
         workingPlanException.breaks.forEach(function (workingPlanExceptionBreak) {
             renderBreakRow(workingPlanExceptionBreak)

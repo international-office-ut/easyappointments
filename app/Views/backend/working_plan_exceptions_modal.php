@@ -23,6 +23,19 @@
                     <input class="form-control" id="working-plan-exceptions-end">
                 </div>
 
+                <div class="form-group">
+                    <label for="working-plan-exceptions-mode"><?= lang('appointment_mode') ?></label>
+                    <select class="form-control" id="working-plan-exceptions-mode">
+                        <option value=""><?= lang('mode_follow_defaults') ?></option>
+                        <option value="BOTH"><?= lang('mode_both') ?></option>
+                        <option value="ONLINE"><?= lang('mode_online') ?></option>
+                        <option value="ON_PREMISE"><?= lang('mode_on_premise') ?></option>
+                    </select>
+                    <span class="form-text text-muted">
+                        <?= lang('appointment_mode_hint') ?>
+                    </span>
+                </div>
+
                 <h3><?= lang('breaks') ?></h3>
 
                 <p>

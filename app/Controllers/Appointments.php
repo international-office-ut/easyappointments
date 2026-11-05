@@ -612,12 +612,15 @@ class Appointments extends BaseController {
 
             // The assigned provider's per-day rules may differ from the customer's selection
             // (e.g. the "any provider" flow resolves the provider only at this point), so the
-            // effective appointment mode is re-resolved server-side before saving.
+            // effective appointment mode is re-resolved server-side before saving. Working
+            // plan exceptions can override the weekday chain for their own date.
             if (in_array($appointment['location'] ?? NULL,
                 [APPOINTMENT_MODE_ONLINE, APPOINTMENT_MODE_ON_PREMISE], TRUE))
             {
-                $selected_weekday = (int)date('w', strtotime(substr($appointment['start_datetime'], 0, 10)));
-                $effective_mode = resolve_appointment_mode($provider['settings'] ?? [], $selected_weekday);
+                $selected_date = substr($appointment['start_datetime'], 0, 10);
+                $selected_weekday = (int)date('w', strtotime($selected_date));
+                $effective_mode = resolve_appointment_mode_for_date(
+                    $provider['settings'] ?? [], $selected_date, $selected_weekday);
 
                 if (in_array($effective_mode,
                     [APPOINTMENT_MODE_ONLINE, APPOINTMENT_MODE_ON_PREMISE], TRUE))

@@ -439,6 +439,10 @@ $lang["appointment_mode"] = "Standort-Typ";
 $lang["mode_online"] = "Online";
 $lang["mode_on_premise"] = "Vor Ort";
 $lang["mode_both"] = "Online oder Vor Ort";
+$lang["mode_follow_defaults"] = "Den Wochentag-Standardeinstellungen folgen";
+$lang["appointment_mode_hint"] =
+    "Die Ort-Option gilt nur für dieses Datum: Online, Vor Ort oder beide. Wenn leer, gelten die Wochentag- und
+     Provider-Standardeinstellungen.";
 $lang["weekday_mode_overrides"] = "Wochentag-Modus-Überschreibungen";
 $lang["zoom_link"] = "Zoom-Link";
 $lang["other"] = "Andere";

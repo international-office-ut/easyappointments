@@ -251,10 +251,15 @@ if ( ! function_exists('resolve_appointment_mode'))
             }
         }
 
+        // The UI stores the overrides keyed by the weekday name (e.g. "monday"), while the
+        // callers pass the weekday index (0 = Sunday ... 6 = Saturday). Accept both formats.
+        $weekday_names = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+
         // First non-empty value wins: the per-day provider override has precedence over the
         // provider default and everything else falls back to "BOTH".
         foreach ([
             $provider_weekday_modes[$weekday] ?? NULL,
+            $provider_weekday_modes[$weekday_names[$weekday]] ?? NULL,
             $provider_settings['appointment_mode'] ?? NULL
         ] as $candidate)
         {
@@ -265,5 +270,44 @@ if ( ! function_exists('resolve_appointment_mode'))
         }
 
         return APPOINTMENT_MODE_BOTH;
+    }
+}
+
+if ( ! function_exists('resolve_appointment_mode_for_date'))
+{
+    /**
+     * Resolve the effective appointment mode of a specific date.
+     *
+     * Upscaled exceptions can turn a normally closed weekday into a working day, so the
+     * mode override of the exception (when one is set) wins before the weekday chain of
+     * `resolve_appointment_mode` applies.
+     *
+     * @param array $provider_settings The provider settings record (working plan exceptions
+     * as JSON string and weekday modes as JSON string).
+     * @param string $date Appointment date in "Y-m-d" format.
+     * @param int $weekday Weekday index (0 = Sunday ... 6 = Saturday).
+     * @return string Returns one of the APPOINTMENT_MODE_* values.
+     */
+    function resolve_appointment_mode_for_date(array $provider_settings, string $date, int $weekday): string
+    {
+        $exception_mode = NULL;
+
+        if ( ! empty($provider_settings['working_plan_exceptions']))
+        {
+            $exceptions = json_decode((string)$provider_settings['working_plan_exceptions'], TRUE) ?: [];
+
+            if (is_array($exceptions)
+                && is_array($exceptions[$date] ?? NULL))
+            {
+                $exception_mode = $exceptions[$date]['mode'] ?? NULL;
+            }
+        }
+
+        if ($exception_mode !== NULL && $exception_mode !== '')
+        {
+            return $exception_mode;
+        }
+
+        return resolve_appointment_mode($provider_settings, $weekday);
     }
 }

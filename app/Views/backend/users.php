@@ -109,8 +109,7 @@
                             <button id="save-provider" class="btn btn-primary">
                                 <i class="fas fa-check-square mr-2"></i>
                                 <?= lang('save') ?>
-                            </button>
-                            <button id="cancel-provider" class="btn btn-outline-secondary">
+                            </button><button id="cancel-provider" class="btn btn-outline-secondary">
                                 <i class="fas fa-ban mr-2"></i>
                                 <?= lang('cancel') ?>
                             </button>
@@ -480,8 +479,7 @@
                             <button id="save-secretary" class="btn btn-primary">
                                 <i class="fas fa-check-square mr-2"></i>
                                 <?= lang('save') ?>
-                            </button>
-                            <button id="cancel-secretary" class="btn btn-outline-secondary">
+                            </button><button id="cancel-secretary" class="btn btn-outline-secondary">
                                 <i class="fas fa-ban mr-2"></i>
                                 <?= lang('cancel') ?>
                             </button>
@@ -686,8 +684,7 @@
                             <button id="save-admin" class="btn btn-primary">
                                 <i class="fas fa-check-square mr-2"></i>
                                 <?= lang('save') ?>
-                            </button>
-                            <button id="cancel-admin" class="btn btn-outline-secondary">
+                            </button><button id="cancel-admin" class="btn btn-outline-secondary">
                                 <i class="fas fa-ban mr-2"></i>
                                 <?= lang('cancel') ?>
                             </button>

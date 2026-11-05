@@ -80,8 +80,7 @@
                     <button id="save-customer" class="btn btn-primary">
                         <i class="fas fa-check-square mr-2"></i>
                         <?= lang('save') ?>
-                    </button>
-                    <button id="cancel-customer" class="btn btn-outline-secondary">
+                    </button><button id="cancel-customer" class="btn btn-outline-secondary">
                         <i class="fas fa-ban mr-2"></i>
                         <?= lang('cancel') ?>
                     </button>

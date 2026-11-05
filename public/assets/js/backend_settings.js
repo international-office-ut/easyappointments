@@ -152,6 +152,14 @@ window.BackendSettings = window.BackendSettings || {};
         $('#calendar-view').val(GlobalVariables.settings.user.settings.calendar_view);
         $('#user-notifications').prop('checked', Boolean(Number(GlobalVariables.settings.user.settings.notifications)));
 
+        // The provider record fields (mode + zoom link) only show on the provider page: the
+        // users-page editor stores them as regular user_settings columns.
+        if (GlobalVariables.userSlug === 'provider') {
+            $('#provider-appointment-mode').val(
+                GlobalVariables.settings.user.settings.appointment_mode || 'BOTH');
+            $('#provider-zoom-link').val(GlobalVariables.settings.user.settings.zoom_link || '');
+        }
+
         // Set default settings helper.
         settings = new SystemSettings();
 
@@ -394,6 +402,12 @@ window.BackendSettings = window.BackendSettings || {};
         $('#calendar-view').val(GlobalVariables.settings.user.settings.calendar_view);
         $('#user-notifications').prop('checked',
             Boolean(Number(GlobalVariables.settings.user.settings.notifications)));
+
+        if (GlobalVariables.userSlug === 'provider') {
+            $('#provider-appointment-mode').val(
+                GlobalVariables.settings.user.settings.appointment_mode || 'BOTH');
+            $('#provider-zoom-link').val(GlobalVariables.settings.user.settings.zoom_link || '');
+        }
     }
 
     /**

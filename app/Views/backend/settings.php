@@ -536,6 +536,25 @@
 
                         <?php if ($role_slug === DB_SLUG_PROVIDER): ?>
                             <div class="form-group mt-2">
+                                <label for="provider-appointment-mode">
+                                    <?= lang('appointment_mode') ?>
+                                </label>
+                                <select id="provider-appointment-mode" class="form-control">
+                                    <option value="<?= APPOINTMENT_MODE_BOTH ?>"><?= lang('mode_both') ?></option>
+                                    <option value="<?= APPOINTMENT_MODE_ONLINE ?>"><?= lang('mode_online') ?></option>
+                                    <option value="<?= APPOINTMENT_MODE_ON_PREMISE ?>"><?= lang('mode_on_premise') ?></option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="provider-zoom-link">
+                                    <?= lang('zoom_link') ?>
+                                </label>
+                                <input id="provider-zoom-link" class="form-control" maxlength="512"
+                                       placeholder="https://...">
+                            </div>
+
+                            <div class="form-group mt-2">
                                 <label for="feed-url"><?= lang('ical_feed') ?></label>
                                 <div class="input-group">
                                     <input id="feed-url" data-keep-enabled="true" class="form-control" readonly
@@ -562,78 +581,84 @@
                     </fieldset>
 
                     <?php if ($role_slug === DB_SLUG_PROVIDER): ?>
-                        <fieldset class="col-12 col-sm-6 working-plan-wrapper">
-                            <legend class="border-bottom mb-4"><?= lang('working_plan') ?></legend>
+                        <div class="row">
+                            <fieldset class="col-12 col-lg-6 working-plan-column">
+                                <h3><?= lang('working_plan') ?></h3>
 
-                            <p class="form-text text-muted">
-                                <?= lang('working_plan_description') ?>
-                            </p>
+                                <p class="form-text text-muted">
+                                    <?= lang('working_plan_description') ?>
+                                </p>
 
-                            <table class="working-plan table table-striped">
-                                <thead>
-                                <tr>
-                                    <th><?= lang('day') ?></th>
-                                    <th><?= lang('start') ?></th>
-                                    <th><?= lang('end') ?></th>
-                                    <th><?= lang('mode') ?></th>
-                                </tr>
-                                </thead>
-                                <tbody><!-- Dynamic Content --></tbody>
-                            </table>
+                                <table class="working-plan table table-striped mt-2">
+                                    <thead>
+                                    <tr>
+                                        <th><?= lang('day') ?></th>
+                                        <th><?= lang('start') ?></th>
+                                        <th><?= lang('end') ?></th>
+                                        <th><?= lang('mode') ?></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody><!-- Dynamic Content --></tbody>
+                                </table>
+                            </fieldset>
 
-                            <h4 class="mt-4"><?= lang('breaks') ?></h4>
+                            <fieldset class="col-12 col-lg-6 breaks-column">
+                                <h3><?= lang('breaks') ?></h3>
 
-                            <p class="form-text text-muted">
-                                <?= lang('add_breaks_during_each_day') ?>
-                            </p>
+                                <p class="form-text text-muted">
+                                    <?= lang('add_breaks_during_each_day') ?>
+                                </p>
 
-                            <div class="mb-2">
-                                <button type="button" class="add-break btn btn-outline-secondary">
-                                    <i class="fas fa-plus-square mr-2"></i>
-                                    <?= lang('add_break') ?>
-                                </button>
-                            </div>
+                                <div class="mb-2">
+                                    <button type="button" class="add-break btn btn-primary">
+                                        <i class="fas fa-plus-square mr-2"></i>
+                                        <?= lang('add_break') ?>
+                                    </button>
+                                </div>
 
-                            <table class="breaks table table-striped">
-                                <thead>
-                                <tr>
-                                    <th><?= lang('day') ?></th>
-                                    <th><?= lang('start') ?></th>
-                                    <th><?= lang('end') ?></th>
-                                    <th><?= lang('actions') ?></th>
-                                </tr>
-                                </thead>
-                                <tbody><!-- Dynamic Content --></tbody>
-                            </table>
+                                <table class="breaks table table-striped mt-2">
+                                    <thead>
+                                    <tr>
+                                        <th><?= lang('day') ?></th>
+                                        <th><?= lang('start') ?></th>
+                                        <th><?= lang('end') ?></th>
+                                        <th><?= lang('actions') ?></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody><!-- Dynamic Content --></tbody>
+                                </table>
+                            </fieldset>
 
-                            <h4 class="mt-4"><?= lang('working_plan_exceptions') ?></h4>
+                            <fieldset class="col-12 col-lg-6 working-plan-exceptions-column">
+                                <h3><?= lang('working_plan_exceptions') ?></h3>
 
-                            <p class="form-text text-muted">
-                                <?= lang('add_working_plan_exceptions_during_each_day') ?>
-                            </p>
+                                <p class="form-text text-muted">
+                                    <?= lang('add_working_plan_exceptions_during_each_day') ?>
+                                </p>
 
-                            <div class="mb-2">
-                                <button type="button" class="add-working-plan-exception btn btn-outline-secondary">
-                                    <i class="fas fa-plus-square mr-2"></i>
-                                    <?= lang('add_working_plan_exception') ?>
-                                </button>
-                            </div>
+                                <div class="mb-2">
+                                    <button type="button" class="add-working-plan-exception btn btn-primary">
+                                        <i class="fas fa-plus-square mr-2"></i>
+                                        <?= lang('add_working_plan_exception') ?>
+                                    </button>
+                                </div>
 
-                            <table class="working-plan-exceptions table table-striped">
-                                <thead>
-                                <tr>
-                                    <th><?= lang('day') ?></th>
-                                    <th><?= lang('start') ?></th>
-                                    <th><?= lang('end') ?></th>
-                                    <th><?= lang('mode') ?></th>
-                                    <th><?= lang('actions') ?></th>
-                                </tr>
-                                </thead>
-                                <tbody><!-- Dynamic Content --></tbody>
-                            </table>
+                                <table class="working-plan-exceptions table table-striped mt-2">
+                                    <thead>
+                                    <tr>
+                                        <th><?= lang('day') ?></th>
+                                        <th><?= lang('start') ?></th>
+                                        <th><?= lang('end') ?></th>
+                                        <th><?= lang('mode') ?></th>
+                                        <th><?= lang('actions') ?></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody><!-- Dynamic Content --></tbody>
+                                </table>
 
-                            <?php require __DIR__ . '/working_plan_exceptions_modal.php' ?>
-                        </fieldset>
+                                <?php require __DIR__ . '/working_plan_exceptions_modal.php' ?>
+                            </fieldset>
+                        </div>
                     <?php endif ?>
                 </div>
             </form>

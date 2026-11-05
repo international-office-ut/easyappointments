@@ -103,6 +103,9 @@ class User_Model extends Ea_Model {
      */
     public function save_user($user)
     {
+        log_message('error', 'save_user entry: id=' . var_export($user['id'] ?? NULL, TRUE)
+            . ' keys=' . implode(',', array_keys($user)));
+
         $user_settings = $user['settings'];
         $user_settings['id_users'] = $user['id'];
         unset($user['settings']);
@@ -118,6 +121,48 @@ class User_Model extends Ea_Model {
         {
             $user_settings['salt'] = '';
             $user_settings['password'] = Passwords::hash($new_password);
+        }
+
+        // Provider rows carry the appointment settings (area type and its links): the
+        // settings page must mirror the users-page validation for them. Modes use the
+        // shared constants and an ONLINE mode or an ONLINE weekday override always
+        // requires a configured zoom link.
+        $provider_row = $this->db->table('users')
+            ->select('roles.slug')
+            ->join('roles', 'roles.id = users.id_roles', 'inner')
+            ->where(['users.id' => $user['id']])
+            ->get()->getRowArray();
+
+        if ($provider_row !== NULL && $provider_row['slug'] === DB_SLUG_PROVIDER)
+        {
+            $appointment_mode = $user_settings['appointment_mode'] ?? NULL;
+
+            log_message('error', 'save_user provider check: mode=' . var_export($appointment_mode, TRUE)
+                . ' zoom=' . var_export($user_settings['zoom_link'] ?? NULL, TRUE));
+
+            if ($appointment_mode !== NULL
+                && ! in_array($appointment_mode,
+                    [APPOINTMENT_MODE_ONLINE, APPOINTMENT_MODE_ON_PREMISE, APPOINTMENT_MODE_BOTH], TRUE))
+            {
+                throw new Exception('The appointment mode setting must be either "' . APPOINTMENT_MODE_ONLINE
+                    . '", "' . APPOINTMENT_MODE_ON_PREMISE . '" or "' . APPOINTMENT_MODE_BOTH . '", given: '
+                    . $appointment_mode);
+            }
+
+            $requires_zoom = $appointment_mode === APPOINTMENT_MODE_ONLINE;
+
+            if ( ! $requires_zoom && isset($user_settings['weekday_modes']))
+            {
+                $weekday_modes = json_decode((string)$user_settings['weekday_modes'], TRUE) ?: [];
+                $requires_zoom = in_array(APPOINTMENT_MODE_ONLINE, array_values($weekday_modes), TRUE);
+            }
+
+            if ($requires_zoom && empty($user_settings['zoom_link'])
+                && empty($old_settings['zoom_link']))
+            {
+                throw new Exception('The "' . APPOINTMENT_MODE_ONLINE . '" appointment mode requires '
+                    . 'a configured zoom link (see the appointment settings of the provider).');
+            }
         }
 
         if ( ! $this->db->table('users')->where(['id' => $user['id']])->update($user))

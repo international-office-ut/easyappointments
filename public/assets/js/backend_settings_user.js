@@ -60,6 +60,9 @@
             if (weekdayModes) {
                 user.settings.weekday_modes = JSON.stringify(weekdayModes);
             }
+
+            user.settings.appointment_mode = $('#provider-appointment-mode').val() || null;
+            user.settings.zoom_link = $('#provider-zoom-link').val();
         }
 
         if ($('#password').val()) {
@@ -142,6 +145,29 @@
             if ($('#username').attr('already-exists') === 'true') {
                 $('#username').closest('.form-group').addClass('has-error');
                 throw new Error(EALang.username_already_exists);
+            }
+
+            // Provider record rules mirror the users-page validation: the online mode and
+            // its weekday overrides only work with a configured zoom link.
+            if (GlobalVariables.userSlug === 'provider') {
+                var providerFieldsInvalid = false;
+                var weekdayModes = BackendSettings.wp.getWeekdayModes() || {};
+                var weekdayValues = Object.keys(weekdayModes).map(function (weekday) {
+                    return weekdayModes[weekday];
+                });
+
+                if ($('#provider-appointment-mode').val() === 'ONLINE' && !$('#provider-zoom-link').val()) {
+                    providerFieldsInvalid = true;
+                }
+
+                if (weekdayValues.indexOf('ONLINE') !== -1 && !$('#provider-zoom-link').val()) {
+                    providerFieldsInvalid = true;
+                }
+
+                if (providerFieldsInvalid) {
+                    $('#provider-zoom-link').closest('.form-group').addClass('has-error');
+                    throw new Error(EALang.zoom_link_required);
+                }
             }
 
             return true;

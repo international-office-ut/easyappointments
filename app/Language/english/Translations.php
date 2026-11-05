@@ -435,6 +435,7 @@ $lang["appointment_mode"] = "Location Type";
 $lang["mode_online"] = "Online";
 $lang["mode_on_premise"] = "On Site";
 $lang["mode_both"] = "Online or On Site";
+$lang["mode_provider_default"] = "Provider Default";
 $lang["mode_follow_defaults"] = "Follow the weekly defaults";
 $lang["appointment_mode_hint"] =
     "The mode applies to this date only: online, on site or both. When empty, the weekly and "

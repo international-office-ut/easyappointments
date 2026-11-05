@@ -118,7 +118,7 @@
                             'class': 'weekday-mode form-control form-control-sm',
                             'data-weekday': GeneralFunctions.getWeekDayId(dayDisplayName),
                             'html': [
-                                new Option('—', ''),
+                                new Option(EALang.mode_provider_default || 'Provider Default', ''),
                                 new Option(EALang.mode_online || 'Online', 'ONLINE'),
                                 new Option(EALang.mode_on_premise || 'On Site', 'ON_PREMISE'),
                                 new Option(EALang.mode_both || 'BOTH - Online or On Site', 'BOTH')

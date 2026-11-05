@@ -15,7 +15,6 @@ namespace App\Libraries;
 
 use Exception;
 
-use App\Models\Admins_Model;
 use App\Models\Appointments_Model;
 use App\Models\Providers_Model;
 use App\Models\Secretaries_Model;
@@ -136,21 +135,6 @@ class Notifications {
                     $provider_message, $provider_link, new Email($provider['email']), new Text($ics_stream), $provider['timezone']);
             }
 
-            // Notify admins
-            $admins = (new Admins_Model)->get_batch();
-
-            foreach ($admins as $admin)
-            {
-                if ($admin['settings']['notifications'] === '0')
-                {
-                    continue;
-                }
-
-                $email->send_appointment_details($appointment, $provider,
-                    $service, $customer, $settings, $provider_title,
-                    $provider_message, $provider_link, new Email($admin['email']), new Text($ics_stream), $admin['timezone']);
-            }
-
             // Notify secretaries
             $secretaries = (new Secretaries_Model)->get_batch();
 
@@ -214,21 +198,6 @@ class Notifications {
             {
                 $email->send_delete_appointment($appointment, $provider,
                     $service, $customer, $settings, new Email($customer['email']),
-                    new Text($cancel_reason));
-            }
-
-            // Notify admins
-            $admins = (new Admins_Model)->get_batch();
-
-            foreach ($admins as $admin)
-            {
-                if ($admin['settings']['notifications'] === '0')
-                {
-                    continue;
-                }
-
-                $email->send_delete_appointment($appointment, $provider,
-                    $service, $customer, $settings, new Email($admin['email']),
                     new Text($cancel_reason));
             }
 

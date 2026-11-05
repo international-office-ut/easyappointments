@@ -149,6 +149,8 @@ $lang["username"] = "Username";
 $lang["password"] = "Password";
 $lang["retype_password"] = "Retype Password";
 $lang["receive_notifications"] = "Receive Notifications";
+$lang["receive_notifications_hint"] =
+    "Receive email notifications when one of your appointments is created, updated or canceled.";
 $lang["passwords_mismatch"] = "Passwords mismatch.";
 $lang["admin_saved"] = "Admin saved successfully.";
 $lang["provider_saved"] = "Provider saved successfully.";

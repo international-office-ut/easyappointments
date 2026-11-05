@@ -514,12 +514,17 @@
                             <?= render_timezone_dropdown('id="timezone" class="form-control"') ?>
                         </div>
 
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" class="custom-control-input" id="user-notifications">
-                            <label class="custom-control-label" for="user-notifications">
-                                <?= lang('receive_notifications') ?>
-                            </label>
-                        </div>
+                        <?php if ($role_slug !== DB_SLUG_ADMIN): ?>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="user-notifications">
+                                <label class="custom-control-label" for="user-notifications">
+                                    <?= lang('receive_notifications') ?>
+                                </label>
+                            </div>
+                            <span class="form-text text-muted mb-2">
+                                <?= lang('receive_notifications_hint') ?>
+                            </span>
+                        <?php endif ?>
 
                         <?php if ($role_slug === DB_SLUG_PROVIDER): ?>
                             <div class="form-group mt-2">

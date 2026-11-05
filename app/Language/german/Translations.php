@@ -148,6 +148,8 @@ $lang["username"] = "Nutzername";
 $lang["password"] = "Passwort";
 $lang["retype_password"] = "Passwort erneut eingeben";
 $lang["receive_notifications"] = "Nachrichtenempfang";
+$lang["receive_notifications_hint"] =
+    "E-Mail-Benachrichtigungen erhalten, wenn einer Ihrer Termine angelegt, aktualisiert oder storniert wird.";
 $lang["passwords_mismatch"] = "Passwort ungültig.";
 $lang["admin_saved"] = "Administrator erfolgreich gesichert.";
 $lang["provider_saved"] = "Anbieter erfolgreich gesichert.";

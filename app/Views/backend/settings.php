@@ -439,235 +439,216 @@
 
                 <div class="row">
                     <fieldset class="col-12 col-md-4 personal-info-wrapper">
-                        <input type="hidden" id="user-id">
+                                            <input type="hidden" id="user-id">
 
-                        <div class="form-group">
-                            <label for="first-name"><?= lang('first_name') ?> *</label>
-                            <input id="first-name" class="form-control required">
-                        </div>
+                                            <div class="form-group">
+                                                <label for="first-name"><?= lang('first_name') ?> *</label>
+                                                <input id="first-name" class="form-control required">
+                                            </div>
 
-                        <div class="form-group">
-                            <label for="last-name"><?= lang('last_name') ?> *</label>
-                            <input id="last-name" class="form-control required">
-                        </div>
+                                            <div class="form-group">
+                                                <label for="last-name"><?= lang('last_name') ?> *</label>
+                                                <input id="last-name" class="form-control required">
+                                            </div>
 
-                        <div class="form-group">
-                            <label for="email"><?= lang('email') ?> *</label>
-                            <input id="email" class="form-control required">
-                        </div>
+                                            <div class="form-group">
+                                                <label for="email"><?= lang('email') ?> *</label>
+                                                <input id="email" class="form-control required">
+                                            </div>
 
-                        <div class="form-group">
-                            <label for="phone-number"><?= lang('phone_number') ?> *</label>
-                            <input id="phone-number" class="form-control required">
-                        </div>
+                                            <div class="form-group">
+                                                <label for="phone-number"><?= lang('phone_number') ?> *</label>
+                                                <input id="phone-number" class="form-control required">
+                                            </div>
 
-                        <div class="form-group">
-                            <label for="mobile-number"><?= lang('mobile_number') ?></label>
-                            <input id="mobile-number" class="form-control">
-                        </div>
+                                            <div class="form-group">
+                                                <label for="mobile-number"><?= lang('mobile_number') ?></label>
+                                                <input id="mobile-number" class="form-control">
+                                            </div>
 
-                        <div class="form-group">
-                            <label for="address"><?= lang('address') ?></label>
-                            <input id="address" class="form-control">
-                        </div>
+                                            <div class="form-group">
+                                                <label for="address"><?= lang('address') ?></label>
+                                                <input id="address" class="form-control">
+                                            </div>
 
-                        <div class="form-group">
-                            <label for="city"><?= lang('city') ?></label>
-                            <input id="city" class="form-control">
-                        </div>
+                                            <div class="form-group">
+                                                <label for="city"><?= lang('city') ?></label>
+                                                <input id="city" class="form-control">
+                                            </div>
 
-                        <div class="form-group">
-                            <label for="state"><?= lang('state') ?></label>
-                            <input id="state" class="form-control">
-                        </div>
+                                            <div class="form-group">
+                                                <label for="state"><?= lang('state') ?></label>
+                                                <input id="state" class="form-control">
+                                            </div>
 
-                        <div class="form-group">
-                            <label for="zip-code"><?= lang('zip_code') ?></label>
-                            <input id="zip-code" class="form-control">
-                        </div>
+                                            <div class="form-group">
+                                                <label for="zip-code"><?= lang('zip_code') ?></label>
+                                                <input id="zip-code" class="form-control">
+                                            </div>
 
-                    </fieldset>
-
-                    <?php if ($role_slug === DB_SLUG_PROVIDER): ?>
+                                        </fieldset>
                     <fieldset class="col-12 col-md-4 provider-channel-wrapper">
-                        <div class="form-group">
-                            <label for="provider-appointment-mode">
-                                <?= lang('appointment_mode') ?>
-                            </label>
-                            <select id="provider-appointment-mode" class="form-control">
-                                <option value="<?= APPOINTMENT_MODE_BOTH ?>"><?= lang('mode_both') ?></option>
-                                <option value="<?= APPOINTMENT_MODE_ONLINE ?>"><?= lang('mode_online') ?></option>
-                                <option value="<?= APPOINTMENT_MODE_ON_PREMISE ?>"><?= lang('mode_on_premise') ?></option>
-                            </select>
-                        </div>
+                                            <div class="form-group">
+                                                <label for="provider-appointment-mode">
+                                                    <?= lang('appointment_mode') ?>
+                                                </label>
+                                                <select id="provider-appointment-mode" class="form-control">
+                                                    <option value="<?= APPOINTMENT_MODE_BOTH ?>"><?= lang('mode_both') ?></option>
+                                                    <option value="<?= APPOINTMENT_MODE_ONLINE ?>"><?= lang('mode_online') ?></option>
+                                                    <option value="<?= APPOINTMENT_MODE_ON_PREMISE ?>"><?= lang('mode_on_premise') ?></option>
+                                                </select>
+                                            </div>
 
-                        <div class="form-group">
-                            <label for="provider-zoom-link">
-                                <?= lang('zoom_link') ?>
-                            </label>
-                            <input id="provider-zoom-link" class="form-control" maxlength="512"
-                                   placeholder="https://...">
-                        </div>
+                                            <div class="form-group">
+                                                <label for="provider-zoom-link">
+                                                    <?= lang('zoom_link') ?>
+                                                </label>
+                                                <input id="provider-zoom-link" class="form-control" maxlength="512"
+                                                       placeholder="https://...">
+                                            </div>
 
-                        <div class="form-group">
-                            <label for="notes"><?= lang('notes') ?></label>
-                            <textarea id="notes" class="form-control" rows="3"></textarea>
-                        </div>
+                                            <div class="form-group">
+                                                <label for="notes"><?= lang('notes') ?></label>
+                                                <textarea id="notes" class="form-control" rows="3"></textarea>
+                                            </div>
 
-                        <div class="form-group">
-                            <label for="calendar-view"><?= lang('calendar') ?> *</label>
-                            <select id="calendar-view" class="form-control required">
-                                <option value="default"><?= lang('default') ?></option>
-                                <option value="table"><?= lang('table') ?></option>
-                            </select>
-                        </div>
+                                            <div class="form-group">
+                                                <label for="calendar-view"><?= lang('calendar') ?> *</label>
+                                                <select id="calendar-view" class="form-control required">
+                                                    <option value="default"><?= lang('default') ?></option>
+                                                    <option value="table"><?= lang('table') ?></option>
+                                                </select>
+                                            </div>
 
-                        <div class="form-group">
-                            <label for="timezone"><?= lang('timezone') ?></label>
-                            <?= render_timezone_dropdown('id="timezone" class="form-control"') ?>
-                        </div>
+                                            <div class="form-group">
+                                                <label for="timezone"><?= lang('timezone') ?></label>
+                                                <?= render_timezone_dropdown('id="timezone" class="form-control"') ?>
+                                            </div>
 
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" class="custom-control-input" id="user-notifications">
-                            <label class="custom-control-label" for="user-notifications">
-                                <?= lang('receive_notifications') ?>
-                            </label>
-                        </div>
-                        <span class="form-text text-muted mb-2">
-                            <?= lang('receive_notifications_hint') ?>
-                        </span>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="user-notifications">
+                                                <label class="custom-control-label" for="user-notifications">
+                                                    <?= lang('receive_notifications') ?>
+                                                </label>
+                                            </div>
+                                            <span class="form-text text-muted mb-2">
+                                                <?= lang('receive_notifications_hint') ?>
+                                            </span>
 
-                        <div class="form-group mt-2">
-                            <label for="feed-url"><?= lang('ical_feed') ?></label>
-                            <div class="input-group">
-                                <input id="feed-url" data-keep-enabled="true" class="form-control" readonly
-                                       placeholder="<?= lang('ical_feed_hint') ?>">
-                                <div class="input-group-append">
-                                    <button type="button" id="feed-copy" data-keep-enabled="true" class="btn btn-outline-secondary"
-                                            title="Copy">
-                                        <i class="fas fa-copy"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <small id="feed-state" class="form-text text-muted"></small>
-                            <button type="button" id="feed-generate" data-keep-enabled="true"
-                                    class="btn btn-outline-secondary btn-sm mr-2">
-                                <i class="fas fa-key mr-2"></i>
-                                <?= lang('generate_feed') ?>
-                            </button>
-                            <button type="button" id="feed-revoke" data-keep-enabled="true" class="btn btn-outline-danger btn-sm">
-                                <i class="fas fa-trash mr-2"></i>
-                                <?= lang('revoke_feed') ?>
-                            </button>
-                        </div>
-                    </fieldset>
-                    <?php endif ?>
-
+                                            <div class="form-group mt-2">
+                                                <label for="feed-url"><?= lang('ical_feed') ?></label>
+                                                <div class="input-group">
+                                                    <input id="feed-url" data-keep-enabled="true" class="form-control" readonly
+                                                           placeholder="<?= lang('ical_feed_hint') ?>">
+                                                    <div class="input-group-append">
+                                                        <button type="button" id="feed-copy" data-keep-enabled="true" class="btn btn-outline-secondary"
+                                                                title="Copy">
+                                                            <i class="fas fa-copy"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <small id="feed-state" class="form-text text-muted"></small>
+                                                <button type="button" id="feed-generate" data-keep-enabled="true"
+                                                        class="btn btn-outline-secondary btn-sm mr-2">
+                                                    <i class="fas fa-key mr-2"></i>
+                                                    <?= lang('generate_feed') ?>
+                                                </button>
+                                                <button type="button" id="feed-revoke" data-keep-enabled="true" class="btn btn-outline-danger btn-sm">
+                                                    <i class="fas fa-trash mr-2"></i>
+                                                    <?= lang('revoke_feed') ?>
+                                                </button>
+                                            </div>
+                                        </fieldset>
                     <fieldset class="col-12 col-md-4 miscellaneous-wrapper">
-                        <div class="form-group">
-                            <label for="username"><?= lang('username') ?> *</label>
-                            <input id="username" class="form-control required">
-                        </div>
+                                    <div class="form-group">
+                                    <label for="username"><?= lang('username') ?> *</label>
+                                    <input id="username" class="form-control required">
+                                    </div>
 
-                        <div class="form-group">
-                            <label for="password"><?= lang('password') ?></label>
-                            <input type="password" id="password" class="form-control" autocomplete="new-password">
-                        </div>
+                                    <div class="form-group">
+                                    <label for="password"><?= lang('password') ?></label>
+                                    <input type="password" id="password" class="form-control" autocomplete="new-password">
+                                    </div>
 
-                        <div class="form-group">
-                            <label for="retype-password"><?= lang('retype_password') ?></label>
-                            <input type="password" id="retype-password" class="form-control"
-                                   autocomplete="new-password">
-                        </div>
+                                    <div class="form-group">
+                                    <label for="retype-password"><?= lang('retype_password') ?></label>
+                                    <input type="password" id="retype-password" class="form-control"
+                                    autocomplete="new-password">
+                                    </div>
 
-                    </fieldset>
-
-                    <?php if ($role_slug === DB_SLUG_PROVIDER): ?>
-                        <div class="row">
-                            <fieldset class="col-12 col-md-6 working-plan-column">
-                                <h3><?= lang('working_plan') ?></h3>
-
-                                <p class="form-text text-muted">
-                                    <?= lang('working_plan_description') ?>
-                                </p>
-
-                                <table class="working-plan table table-striped mt-2">
-                                    <thead>
-                                    <tr>
-                                        <th><?= lang('day') ?></th>
-                                        <th><?= lang('start') ?></th>
-                                        <th><?= lang('end') ?></th>
-                                        <th><?= lang('mode') ?></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody><!-- Dynamic Content --></tbody>
-                                </table>
-                            </fieldset>
-
-                            <fieldset class="col-12 col-md-6 breaks-column">
-                                <h3><?= lang('breaks') ?></h3>
-
-                                <p class="form-text text-muted">
-                                    <?= lang('add_breaks_during_each_day') ?>
-                                </p>
-
-                                <div class="mb-2">
-                                    <button type="button" class="add-break btn btn-primary">
-                                        <i class="fas fa-plus-square mr-2"></i>
-                                        <?= lang('add_break') ?>
-                                    </button>
-                                </div>
-
-                                <table class="breaks table table-striped mt-2">
-                                    <thead>
-                                    <tr>
-                                        <th><?= lang('day') ?></th>
-                                        <th><?= lang('start') ?></th>
-                                        <th><?= lang('end') ?></th>
-                                        <th><?= lang('actions') ?></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody><!-- Dynamic Content --></tbody>
-                                </table>
-                            </fieldset>
-
-                            <fieldset class="col-12 working-plan-exceptions-column">
-                                <h3><?= lang('working_plan_exceptions') ?></h3>
-
-                                <p class="form-text text-muted">
-                                    <?= lang('add_working_plan_exceptions_during_each_day') ?>
-                                </p>
-
-                                <div class="mb-2">
-                                    <button type="button" class="add-working-plan-exception btn btn-primary">
-                                        <i class="fas fa-plus-square mr-2"></i>
-                                        <?= lang('add_working_plan_exception') ?>
-                                    </button>
-                                </div>
-
-                                <table class="working-plan-exceptions table table-striped mt-2">
-                                    <thead>
-                                    <tr>
-                                        <th><?= lang('day') ?></th>
-                                        <th><?= lang('start') ?></th>
-                                        <th><?= lang('end') ?></th>
-                                        <th><?= lang('mode') ?></th>
-                                        <th><?= lang('actions') ?></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody><!-- Dynamic Content --></tbody>
-                                </table>
-
-                                <?php require __DIR__ . '/working_plan_exceptions_modal.php' ?>
-                            </fieldset>
-                        </div>
-                    <?php endif ?>
+                                    </fieldset>
+                </div>
+                <div class="row">
+                                                        <fieldset class="col-12 col-md-6 working-plan-column">
+                                                        <h3><?= lang('working_plan') ?></h3>
+                                                        <p class="form-text text-muted">
+                                                            <?= lang('working_plan_description') ?>
+                                                        </p>
+                                                        <table class="working-plan table table-striped mt-2">
+                                                            <thead>
+                                                            <tr>
+                                                                <th><?= lang('day') ?></th>
+                                                                <th><?= lang('start') ?></th>
+                                                                <th><?= lang('end') ?></th>
+                                                                <th><?= lang('mode') ?></th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody><!-- Dynamic Content --></tbody>
+                                                        </table>
+                                                    </fieldset>
+                                                                    <fieldset class="col-12 col-md-6 breaks-column">
+                                                        <h3><?= lang('breaks') ?></h3>
+                                                        <p class="form-text text-muted">
+                                                            <?= lang('add_breaks_during_each_day') ?>
+                                                        </p>
+                                                        <div class="mb-2">
+                                                            <button type="button" class="add-break btn btn-primary">
+                                                                <i class="fas fa-plus-square mr-2"></i>
+                                                                <?= lang('add_break') ?>
+                                                            </button>
+                                                        </div>
+                                                        <table class="breaks table table-striped mt-2">
+                                                            <thead>
+                                                            <tr>
+                                                                <th><?= lang('day') ?></th>
+                                                                <th><?= lang('start') ?></th>
+                                                                <th><?= lang('end') ?></th>
+                                                                <th><?= lang('actions') ?></th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody><!-- Dynamic Content --></tbody>
+                                                        </table>
+                                                    </fieldset>
+                                                    <fieldset class="col-12 working-plan-exceptions-column">
+                                                        <h3><?= lang('working_plan_exceptions') ?></h3>
+                                                        <p class="form-text text-muted">
+                                                            <?= lang('add_working_plan_exceptions_during_each_day') ?>
+                                                        </p>
+                                                        <div class="mb-2">
+                                                            <button type="button" class="add-working-plan-exception btn btn-primary">
+                                                                <i class="fas fa-plus-square mr-2"></i>
+                                                                <?= lang('add_working_plan_exception') ?>
+                                                            </button>
+                                                        </div>
+                                                        <table class="working-plan-exceptions table table-striped mt-2">
+                                                            <thead>
+                                                            <tr>
+                                                                <th><?= lang('day') ?></th>
+                                                                <th><?= lang('start') ?></th>
+                                                                <th><?= lang('end') ?></th>
+                                                                <th><?= lang('mode') ?></th>
+                                                                <th><?= lang('actions') ?></th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody><!-- Dynamic Content --></tbody>
+                                                        </table>
+                                                        <?php require __DIR__ . '/working_plan_exceptions_modal.php' ?>
+                                                    </fieldset>
                 </div>
             </form>
         </div>
 
         <!-- ABOUT TAB -->
-
         <div class="tab-pane" id="about-app">
             <h3>Easy!Appointments</h3>
 

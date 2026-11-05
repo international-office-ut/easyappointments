@@ -89,7 +89,7 @@
                 </div>
 
                 <div class="record-details column col-12 col-md-7">
-                    <div class="float-md-left mb-4 mr-4">
+                    <div class="record-details-header">
                         <div class="add-edit-delete-group btn-group">
                             <button id="add-provider" class="btn btn-primary">
                                 <i class="fas fa-plus-square mr-2"></i>
@@ -115,9 +115,8 @@
                                 <?= lang('cancel') ?>
                             </button>
                         </div>
-                    </div>
 
-                    <ul class="nav nav-pills switch-view">
+                        <ul class="nav nav-pills switch-view">
                         <li class="nav-item">
                             <a class="nav-link active" href="#details" data-toggle="tab">
                                 <?= lang('details') ?>
@@ -133,7 +132,8 @@
                                 <?= lang('working_plan') ?>
                             </a>
                         </li>
-                    </ul>
+                        </ul>
+                    </div>
 
                     <?php
                     // This form message is outside the details view, so that it can be
@@ -459,7 +459,7 @@
                 </div>
 
                 <div class="record-details column col-12 col-md-7">
-                    <div class="btn-toolbar mb-4">
+                    <div class="record-details-header btn-toolbar">
                         <div class="add-edit-delete-group btn-group">
                             <button id="add-secretary" class="btn btn-primary">
                                 <i class="fas fa-plus-square mr-2"></i>
@@ -665,7 +665,7 @@
                 </div>
 
                 <div class="record-details column col-12 col-md-7">
-                    <div class="btn-toolbar mb-4">
+                    <div class="record-details-header btn-toolbar">
                         <div class="add-edit-delete-group btn-group">
                             <button id="add-admin" class="btn btn-primary">
                                 <i class="fas fa-plus-square mr-2"></i>

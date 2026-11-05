@@ -275,6 +275,23 @@ body legend {
         min-width: 0; /* allow the inner tables to shrink instead of overflowing */
     }
 
+    /* Pin the action buttons and the record tabs over the scrolling content. */
+    .record-details-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 15px;
+    }
+
+    .record-details > .record-details-header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background-color: #fff;
+        border-bottom: 1px solid #DDD;
+        padding: 8px 0;
+    }
+
     /* Align the description zone of all four working-plan columns so the buttons and
        tables of every column start at the same position. */
     .working-plan-column p,

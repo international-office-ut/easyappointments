@@ -52,7 +52,7 @@
         </div>
 
         <div class="record-details col-12 col-md-7">
-            <div class="btn-toolbar mb-4">
+            <div class="record-details-header btn-toolbar">
                 <div id="add-edit-delete-group" class="btn-group">
                     <?php if ($privileges[PRIV_CUSTOMERS]['add'] === TRUE): ?>
                         <button id="add-customer" class="btn btn-primary">

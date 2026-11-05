@@ -286,7 +286,7 @@
                 </div>
 
                 <div class="record-details col-12 col-md-5">
-                    <div class="btn-toolbar mb-4">
+                    <div class="record-details-header btn-toolbar">
                         <div class="add-edit-delete-group btn-group">
                             <button id="add-category" class="btn btn-primary">
                                 <i class="fas fa-plus-square mr-2"></i>

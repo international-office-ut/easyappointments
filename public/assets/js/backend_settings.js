@@ -210,20 +210,44 @@ window.BackendSettings = window.BackendSettings || {};
         // save/cancel group stays hidden through its data-display state.
         $pane.find('.edit-settings').show().prop('disabled', false);
         $pane.find('.btn-group[data-display]').attr('data-display', 'none');
+
+        exports.toggleLegalContentsEditors(paneId, false);
     };
 
     /**
      * Enable one settings pane for editing.
      */
     exports.editSettingsPane = function ($pane) {
+        var paneId = $pane.attr('id');
+
         $pane.find('input, select, textarea, button')
             .not('[data-keep-enabled]')
             .prop('readonly', false).prop('disabled', false);
+
+        // The trumbowyg editors need the vendored enable call (see the lock function).
+        exports.toggleLegalContentsEditors(paneId, true);
 
         // The workflow toggle moves the attribute instead of inline styles: the group
         // keeps its inline-flex layout and the internal button radii work without gaps.
         $pane.find('.btn-group[data-display]').attr('data-display', 'inline-flex');
         $pane.find('.edit-settings').hide();
+    };
+
+    /**
+     * Toggle the trumbowyg editors of the legal contents pane.
+     *
+     * The visual editors rebuild their own toolbar and editing surface, so the pane wide
+     * readonly sweep cannot reach their contenteditable containers: the lock and the edit
+     * state have to address the vendored API directly.
+     */
+    exports.toggleLegalContentsEditors = function (paneId, enabled) {
+        // The lock method receives the pane selector, the edit method the pane id.
+        if (String(paneId).replace('#', '') !== 'legal-contents') {
+            return;
+        }
+
+        $('#cookie-notice-content, #terms-and-conditions-content, '
+            + '#privacy-policy-content').trumbowyg(enabled ? 'enable' : 'disable');
     };
 
     /**

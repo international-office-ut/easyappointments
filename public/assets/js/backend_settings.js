@@ -107,7 +107,9 @@ window.BackendSettings = window.BackendSettings || {};
             }
         });
 
-        exports.wp = new WorkingPlan();
+        exports.wp = new WorkingPlan({
+            weekdayModes: GlobalVariables.userSlug === 'provider'
+        });
 
         // The provider work plan editor shows the provider's own availability settings, the
         // general users keep the company plan context of the business logic tab.
@@ -118,11 +120,19 @@ window.BackendSettings = window.BackendSettings || {};
 
             exports.wp.setup(userPlan);
             exports.wp.setupWorkingPlanExceptions(userPlanExceptions);
+            exports.wp.displayWeekdayModes(GlobalVariables.settings.user.settings.weekday_modes);
+            exports.wp.syncWeekdayModeStates();
         } else {
             exports.wp.setup(workingPlan);
         }
 
         exports.wp.timepickers(false);
+
+        // The weekday appointment mode applies only to selected working days: sync the
+        // select states whenever a checkbox toggles.
+        $('#settings-page').on('change', '.working-plan .form-check-input', function () {
+            exports.wp.syncWeekdayModeStates();
+        });
 
         // Load user settings into form
         $('#user-id').val(GlobalVariables.settings.user.id);

@@ -54,6 +54,12 @@
             user.settings.working_plan = JSON.stringify(BackendSettings.wp.get());
             user.settings.working_plan_exceptions =
                 JSON.stringify(BackendSettings.wp.getWorkingPlanExceptions());
+
+            var weekdayModes = BackendSettings.wp.getWeekdayModes();
+
+            if (weekdayModes) {
+                user.settings.weekday_modes = JSON.stringify(weekdayModes);
+            }
         }
 
         if ($('#password').val()) {

@@ -1480,10 +1480,12 @@ class Backend_api extends BaseController {
 
                     $this->user_model->save_user($settings);
 
+                    // The session refresh keeps working when partial payloads update single
+                    // settings of an identity (e.g. the work plan editor alone).
                     session()->set([
-                        'user_email' => $settings['email'],
-                        'username' => $settings['settings']['username'],
-                        'timezone' => $settings['timezone'],
+                        'user_email' => $settings['email'] ?? session()->get('user_email'),
+                        'username' => $settings['settings']['username'] ?? session()->get('username'),
+                        'timezone' => $settings['timezone'] ?? session()->get('timezone'),
                     ]);
                 }
             }

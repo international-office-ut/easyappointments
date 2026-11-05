@@ -570,6 +570,7 @@
                                     <th><?= lang('day') ?></th>
                                     <th><?= lang('start') ?></th>
                                     <th><?= lang('end') ?></th>
+                                    <th><?= lang('mode') ?></th>
                                 </tr>
                                 </thead>
                                 <tbody><!-- Dynamic Content --></tbody>

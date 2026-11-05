@@ -374,6 +374,67 @@
     };
 
     /**
+     * Read the weekday appointment mode overrides of the editor.
+     *
+     * Days without working hours cannot have an appointment mode override, so their select
+     * fields are disabled.
+     *
+     * @return {Object|null} Returns the weekday modes map or NULL when no override is set.
+     */
+    WorkingPlan.prototype.getWeekdayModes = function () {
+        var weekdayModes = {};
+
+        $('.working-plan .weekday-mode').each(function (index, select) {
+            var weekday = $(select).attr('data-weekday');
+            var mode = $(select).val();
+            var dayId = $(select).attr('id') ? $(select).attr('id').replace('-mode', '') : null;
+
+            if (weekday && mode && (!dayId || $('#' + dayId).prop('checked'))) {
+                weekdayModes[weekday] = mode;
+            }
+        });
+
+        return Object.keys(weekdayModes).length ? weekdayModes : null;
+    };
+
+    /**
+     * Apply weekday appointment mode overrides to the editor.
+     *
+     * @param {String|null} weekdayModes JSON encoded weekday modes map of the record settings.
+     */
+    WorkingPlan.prototype.displayWeekdayModes = function (weekdayModes) {
+        $('.working-plan .weekday-mode').val('');
+
+        try {
+            var modes = weekdayModes ? JSON.parse(weekdayModes) : {};
+        } catch (error) {
+            return;
+        }
+
+        if (typeof modes !== 'object' || modes === null) {
+            return;
+        }
+
+        Object.keys(modes).forEach(function (weekday) {
+            $('.working-plan .weekday-mode[data-weekday="' + weekday + '"]').val(modes[weekday]);
+        });
+    };
+
+    /**
+     * Sync the weekday-override select states with the working days of the plan.
+     *
+     * Days without working hours cannot have an appointment mode override, so their select
+     * fields are disabled.
+     */
+    WorkingPlan.prototype.syncWeekdayModeStates = function () {
+        $('.working-plan .form-check-input').each(function (index, checkbox) {
+            var dayId = $(checkbox).attr('id');
+
+            $('#' + dayId + '-mode').prop('disabled', !$(checkbox).prop('checked'));
+        });
+    };
+
+    /**
      * Binds the event handlers for the working plan dom elements.
      */
     WorkingPlan.prototype.bindEventHandlers = function () {

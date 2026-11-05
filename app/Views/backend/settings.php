@@ -307,9 +307,8 @@
                                 <tbody><!-- Dynamic Content --></tbody>
                             </table>
                         </div>
-                            <?php endif ?>
-                        </div>
                     </div>
+                    <?php endif ?>
                 </fieldset>
             </form>
         </div>

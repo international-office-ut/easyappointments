@@ -321,6 +321,11 @@ body legend {
     #settings-page.content-scroll .tab-pane {
         height: auto;
     }
+
+    #settings-page.content-scroll .tab-pane .row {
+        height: auto;
+        overflow: visible;
+    }
 }
 
 .backend-page .filter-records {

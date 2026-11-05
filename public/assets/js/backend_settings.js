@@ -246,8 +246,12 @@ window.BackendSettings = window.BackendSettings || {};
             return;
         }
 
-        $('#cookie-notice-content, #terms-and-conditions-content, '
-            + '#privacy-policy-content').trumbowyg(enabled ? 'enable' : 'disable');
+        // The vendored wrapper processes exactly one element per call, so the editors
+        // are addressed individually.
+        ['#cookie-notice-content', '#terms-and-conditions-content', '#privacy-policy-content']
+            .forEach(function (id) {
+                $(id).trumbowyg(enabled ? 'enable' : 'disable');
+            });
     };
 
     /**

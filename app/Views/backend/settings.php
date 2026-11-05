@@ -438,7 +438,7 @@
                 </legend>
 
                 <div class="row">
-                    <fieldset class="col-12 col-sm-6 personal-info-wrapper">
+                    <fieldset class="col-12 col-md-4 personal-info-wrapper">
                         <input type="hidden" id="user-id">
 
                         <div class="form-group">
@@ -517,7 +517,54 @@
                         <?php endif ?>
                     </fieldset>
 
-                    <fieldset class="col-12 col-sm-6 miscellaneous-wrapper">
+                    <?php if ($role_slug === DB_SLUG_PROVIDER): ?>
+                    <fieldset class="col-12 col-md-4 provider-channel-wrapper">
+                        <div class="form-group">
+                            <label for="provider-appointment-mode">
+                                <?= lang('appointment_mode') ?>
+                            </label>
+                            <select id="provider-appointment-mode" class="form-control">
+                                <option value="<?= APPOINTMENT_MODE_BOTH ?>"><?= lang('mode_both') ?></option>
+                                <option value="<?= APPOINTMENT_MODE_ONLINE ?>"><?= lang('mode_online') ?></option>
+                                <option value="<?= APPOINTMENT_MODE_ON_PREMISE ?>"><?= lang('mode_on_premise') ?></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="provider-zoom-link">
+                                <?= lang('zoom_link') ?>
+                            </label>
+                            <input id="provider-zoom-link" class="form-control" maxlength="512"
+                                   placeholder="https://...">
+                        </div>
+
+                        <div class="form-group mt-2">
+                            <label for="feed-url"><?= lang('ical_feed') ?></label>
+                            <div class="input-group">
+                                <input id="feed-url" data-keep-enabled="true" class="form-control" readonly
+                                       placeholder="<?= lang('ical_feed_hint') ?>">
+                                <div class="input-group-append">
+                                    <button type="button" id="feed-copy" data-keep-enabled="true" class="btn btn-outline-secondary"
+                                            title="Copy">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <small id="feed-state" class="form-text text-muted"></small>
+                            <button type="button" id="feed-generate" data-keep-enabled="true"
+                                    class="btn btn-outline-secondary btn-sm mr-2">
+                                <i class="fas fa-key mr-2"></i>
+                                <?= lang('generate_feed') ?>
+                            </button>
+                            <button type="button" id="feed-revoke" data-keep-enabled="true" class="btn btn-outline-danger btn-sm">
+                                <i class="fas fa-trash mr-2"></i>
+                                <?= lang('revoke_feed') ?>
+                            </button>
+                        </div>
+                    </fieldset>
+                    <?php endif ?>
+
+                    <fieldset class="col-12 col-md-4 miscellaneous-wrapper">
                         <div class="form-group">
                             <label for="username"><?= lang('username') ?> *</label>
                             <input id="username" class="form-control required">
@@ -534,55 +581,11 @@
                                    autocomplete="new-password">
                         </div>
 
-                        <?php if ($role_slug === DB_SLUG_PROVIDER): ?>
-                            <div class="form-group mt-2">
-                                <label for="provider-appointment-mode">
-                                    <?= lang('appointment_mode') ?>
-                                </label>
-                                <select id="provider-appointment-mode" class="form-control">
-                                    <option value="<?= APPOINTMENT_MODE_BOTH ?>"><?= lang('mode_both') ?></option>
-                                    <option value="<?= APPOINTMENT_MODE_ONLINE ?>"><?= lang('mode_online') ?></option>
-                                    <option value="<?= APPOINTMENT_MODE_ON_PREMISE ?>"><?= lang('mode_on_premise') ?></option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="provider-zoom-link">
-                                    <?= lang('zoom_link') ?>
-                                </label>
-                                <input id="provider-zoom-link" class="form-control" maxlength="512"
-                                       placeholder="https://...">
-                            </div>
-
-                            <div class="form-group mt-2">
-                                <label for="feed-url"><?= lang('ical_feed') ?></label>
-                                <div class="input-group">
-                                    <input id="feed-url" data-keep-enabled="true" class="form-control" readonly
-                                           placeholder="<?= lang('ical_feed_hint') ?>">
-                                    <div class="input-group-append">
-                                        <button type="button" id="feed-copy" data-keep-enabled="true" class="btn btn-outline-secondary"
-                                                title="Copy">
-                                            <i class="fas fa-copy"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <small id="feed-state" class="form-text text-muted"></small>
-                                <button type="button" id="feed-generate" data-keep-enabled="true"
-                                        class="btn btn-outline-secondary btn-sm mr-2">
-                                    <i class="fas fa-key mr-2"></i>
-                                    <?= lang('generate_feed') ?>
-                                </button>
-                                <button type="button" id="feed-revoke" data-keep-enabled="true" class="btn btn-outline-danger btn-sm">
-                                    <i class="fas fa-trash mr-2"></i>
-                                    <?= lang('revoke_feed') ?>
-                                </button>
-                            </div>
-                        <?php endif ?>
                     </fieldset>
 
                     <?php if ($role_slug === DB_SLUG_PROVIDER): ?>
                         <div class="row">
-                            <fieldset class="col-12 col-lg-6 working-plan-column">
+                            <fieldset class="col-12 col-md-6 working-plan-column">
                                 <h3><?= lang('working_plan') ?></h3>
 
                                 <p class="form-text text-muted">
@@ -602,7 +605,7 @@
                                 </table>
                             </fieldset>
 
-                            <fieldset class="col-12 col-lg-6 breaks-column">
+                            <fieldset class="col-12 col-md-6 breaks-column">
                                 <h3><?= lang('breaks') ?></h3>
 
                                 <p class="form-text text-muted">
@@ -629,7 +632,7 @@
                                 </table>
                             </fieldset>
 
-                            <fieldset class="col-12 col-lg-6 working-plan-exceptions-column">
+                            <fieldset class="col-12 working-plan-exceptions-column">
                                 <h3><?= lang('working_plan_exceptions') ?></h3>
 
                                 <p class="form-text text-muted">

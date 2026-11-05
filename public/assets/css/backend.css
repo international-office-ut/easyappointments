@@ -309,8 +309,6 @@ body legend {
     /* Contain the working plan editor tables and the wysiwyg boxes inside their
        columns: wide content gets its own inner scroll instead of widening the
        pane (the vertical workflow rows keep overflow visible for the scroll fix). */
-    #settings-page table.working-plan,
-    #settings-page table.breaks,
     #settings-page table.working-plan-exceptions {
         display: block;
         overflow-x: auto;
@@ -1066,28 +1064,6 @@ body .form-horizontal .controls {
 #settings-page #require-phone-number.active,
 #settings-page #require-captcha.active {
     background: #B6DCFF;
-}
-
-#settings-page #general fieldset .wrapper {
-    max-width: 1024px;
-}
-
-#settings-page .working-plan-wrapper {
-    max-width: 600px;
-}
-
-#settings-page .breaks-wrapper {
-    max-width: 500px;
-}
-
-#settings-page .personal-info-wrapper {
-    max-width: 450px;
-    margin-bottom: 20px;
-}
-
-#settings-page .miscellaneous-wrapper {
-    max-width: 450px;
-    margin-bottom: 20px;
 }
 
 #settings-page #about {

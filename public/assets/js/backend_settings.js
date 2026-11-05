@@ -195,7 +195,7 @@ window.BackendSettings = window.BackendSettings || {};
             $pane.find('[data-keep-enabled]').prop('readonly', false).prop('disabled', false);
 
             $pane.find('.edit-settings').hide();
-            $pane.find('.save-settings, .cancel-settings').hide();
+            $pane.find('.btn-group[data-display]').attr('data-display', 'none');
 
             return;
         }
@@ -206,9 +206,10 @@ window.BackendSettings = window.BackendSettings || {};
         // available in the read state, everything else keeps waiting for the Edit button.
         $pane.find('[data-keep-enabled]').prop('readonly', false).prop('disabled', false);
 
-        // The workflow-own edit button stays clickable in the read state.
+        // The workflow-own edit button stays clickable in the read state, the joint
+        // save/cancel group stays hidden through its data-display state.
         $pane.find('.edit-settings').show().prop('disabled', false);
-        $pane.find('.save-settings, .cancel-settings').hide();
+        $pane.find('.btn-group[data-display]').attr('data-display', 'none');
     };
 
     /**
@@ -219,8 +220,10 @@ window.BackendSettings = window.BackendSettings || {};
             .not('[data-keep-enabled]')
             .prop('readonly', false).prop('disabled', false);
 
+        // The workflow toggle moves the attribute instead of inline styles: the group
+        // keeps its inline-flex layout and the internal button radii work without gaps.
+        $pane.find('.btn-group[data-display]').attr('data-display', 'inline-flex');
         $pane.find('.edit-settings').hide();
-        $pane.find('.save-settings, .cancel-settings').show();
     };
 
     /**

@@ -441,6 +441,10 @@ body .clearfix {
     display: block;
 }
 
+[data-display="inline-flex"] {
+    display: inline-flex;
+}
+
 .margin-10 {
     margin: 10px;
 }

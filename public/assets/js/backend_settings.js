@@ -107,8 +107,11 @@ window.BackendSettings = window.BackendSettings || {};
             }
         });
 
+        var wpRoot = GlobalVariables.userSlug === 'provider' ? '#current-user' : '#business-logic';
+
         exports.wp = new WorkingPlan({
-            weekdayModes: GlobalVariables.userSlug === 'provider'
+            weekdayModes: GlobalVariables.userSlug === 'provider',
+            root: wpRoot
         });
 
         // The provider work plan editor shows the provider's own availability settings, the

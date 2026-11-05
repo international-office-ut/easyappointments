@@ -55,7 +55,7 @@ class Deployment extends BaseConfig
     public string $release_label = '';
 
     /** Asset cache-busting token, bumped per release. */
-    public string $cache_busting_token = 'ZW018';
+    public string $cache_busting_token = 'ZW020';
 
     /** Languages that the frontends and the backend user settings expose. */
     public array $available_languages = ['english', 'german'];

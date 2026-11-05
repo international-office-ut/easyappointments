@@ -575,6 +575,13 @@ class Backend_api extends BaseController {
             // Check privileges
             $unavailable = json_decode($this->request->getPost('unavailable'), TRUE);
 
+            if ( ! is_array($unavailable)
+                || empty($unavailable['start_datetime'])
+                || empty($unavailable['end_datetime']))
+            {
+                throw new Exception('Invalid unavailable period data provided.');
+            }
+
             $required_privileges = ( ! isset($unavailable['id']))
                 ? $this->privileges[PRIV_APPOINTMENTS]['add']
                 : $this->privileges[PRIV_APPOINTMENTS]['edit'];
@@ -584,21 +591,36 @@ class Backend_api extends BaseController {
                 throw new Exception('You do not have the required privileges for this task.');
             }
 
-            // Unavailable periods may point to another provider on update, so both the final
-            // provider and the original record's provider need to be in scope.
-            $this->assert_provider_in_scope($unavailable['id_users_provider']);
+            $provider_id = $unavailable['id_users_provider'] ?? NULL;
 
             if (isset($unavailable['id']))
             {
-                $this->assert_provider_in_scope(
-                    $this->appointments_model->get_row($unavailable['id'])['id_users_provider']);
+                $existing_unavailable = $this->appointments_model->get_row($unavailable['id']);
+
+                if (empty($existing_unavailable))
+                {
+                    throw new Exception('The unavailable period was not found in the database.');
+                }
+
+                // Unavailable periods may point to another provider on update, so both the
+                // final provider and the original record's provider need to be in scope.
+                $this->assert_provider_in_scope($existing_unavailable['id_users_provider']);
+
+                $provider_id = $provider_id ?: $existing_unavailable['id_users_provider'];
+            }
+            else
+            {
+                if (empty($provider_id))
+                {
+                    throw new Exception('No provider was selected for the unavailable period.');
+                }
             }
 
-            $provider = $this->providers_model->get_row($unavailable['id_users_provider']);
+            $this->assert_provider_in_scope($provider_id);
 
             // Add appointment
+            $unavailable['id_users_provider'] = $provider_id;
             $unavailable['id'] = $this->appointments_model->add_unavailable($unavailable);
-            $unavailable = $this->appointments_model->get_row($unavailable['id']); // fetch all inserted data
 
             return $this->response->setContentType('application/json')->setBody(json_encode(AJAX_SUCCESS));
         }
@@ -625,6 +647,12 @@ class Backend_api extends BaseController {
             }
 
             $unavailable = $this->appointments_model->get_row($this->request->getPost('unavailable_id'));
+
+            if (empty($unavailable))
+            {
+                throw new Exception('The unavailable period was not found in the database.');
+            }
+
             $this->assert_provider_in_scope($unavailable['id_users_provider']);
             $provider = $this->providers_model->get_row($unavailable['id_users_provider']);
 

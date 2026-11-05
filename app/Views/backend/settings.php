@@ -581,8 +581,10 @@
 
                                     </fieldset>
                 </div>
+
+        <?php if ($role_slug === DB_SLUG_PROVIDER): ?>
                 <div class="row">
-                                                        <fieldset class="col-12 col-md-6 working-plan-column">
+                    <fieldset class="col-12 col-md-6 working-plan-column">
                                                         <h3><?= lang('working_plan') ?></h3>
                                                         <p class="form-text text-muted">
                                                             <?= lang('working_plan_description') ?>
@@ -684,7 +686,6 @@
                 </div>
             </form>
 
-        <?php if ($role_slug === DB_SLUG_PROVIDER): ?>
             <input type="hidden" id="provider-id" value="1">
             <?php require __DIR__ . '/manage_unavailable_modal.php' ?>
         <?php endif ?>

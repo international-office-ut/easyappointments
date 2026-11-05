@@ -82,7 +82,10 @@ window.BackendUsers = window.BackendUsers || {};
     exports.initialize = function (defaultEventHandlers) {
         defaultEventHandlers = defaultEventHandlers || true;
 
-        exports.wp = new WorkingPlan({weekdayModes: true});
+        exports.wp = new WorkingPlan({
+            weekdayModes: true,
+            root: '#working-plan'
+        });
         exports.wp.bindEventHandlers();
 
         /**

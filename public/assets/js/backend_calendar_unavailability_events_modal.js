@@ -96,7 +96,7 @@ window.BackendCalendarUnavailabilityEventsModal = window.BackendCalendarUnavaila
                 start_datetime: start.toString('yyyy-MM-dd HH:mm'),
                 end_datetime: end.toString('yyyy-MM-dd HH:mm'),
                 notes: $dialog.find('#unavailable-notes').val(),
-                id_users_provider: $('#unavailable-provider').val() // curr provider
+                id_users_provider: $('#unavailable-provider').val() || $('#provider-id').val()
             };
 
             if ($dialog.find('#unavailable-id').val() !== '') {
@@ -146,12 +146,24 @@ window.BackendCalendarUnavailabilityEventsModal = window.BackendCalendarUnavaila
                 start.addHours(1).set({'minute': 0});
             }
 
-            if ($('.calendar-view').length === 0) {
+            // The settings and users pages anchor the dialog to the persona record via the
+            // hidden "provider-id" field; the calendar pages preselect the shown provider.
+            var $providerId = $('#provider-id');
+
+            if ($providerId.length) {
                 $dialog.find('#unavailable-provider')
-                    .val($('#provider-id').val())
+                    .val($providerId.val())
                     .closest('.form-group')
                     .hide();
+            } else {
+                var filterProvider = $('#select-filter-item option[type="provider"]:selected').val();
+
+                if (filterProvider) {
+                    $dialog.find('#unavailable-provider').val(filterProvider);
+                }
             }
+
+            fillProviderTimezone($dialog.find('#unavailable-provider').val());
 
             $dialog.find('#unavailable-start').val(GeneralFunctions.formatDate(start, GlobalVariables.dateFormat, true));
             $dialog.find('#unavailable-end').val(GeneralFunctions.formatDate(start.addHours(1), GlobalVariables.dateFormat, true));
@@ -261,13 +273,45 @@ window.BackendCalendarUnavailabilityEventsModal = window.BackendCalendarUnavaila
         $dialog.find('#unavailable-notes').val('');
     };
 
+    /**
+     * Providers the current user may attach unavailable periods to.
+     *
+     * Keeps the dialog options in line with the provider scope that the backend
+     * enforces on save, so provider and secretary sessions cannot pick a foreign
+     * provider and then fail with an out-of-scope error.
+     *
+     * @return {Array}
+     */
+    function roleScopedProviders() {
+        var providers = GlobalVariables.availableProviders || [];
+        var roleSlug = GlobalVariables.user && GlobalVariables.user.role_slug;
+
+        if (roleSlug === Backend.DB_SLUG_PROVIDER) {
+            return providers.filter(function (provider) {
+                return Number(provider.id) === Number(GlobalVariables.user.id);
+            });
+        }
+
+        if (roleSlug !== Backend.DB_SLUG_SECRETARY) {
+            return providers;
+        }
+
+        var secretaryProviders = GlobalVariables.secretaryProviders || [];
+
+        return providers.filter(function (provider) {
+            return secretaryProviders.some(function (providerId) {
+                return Number(providerId) === Number(provider.id);
+            });
+        });
+    }
+
     exports.initialize = function () {
-        var $unavailabilityProvider = $('#unavailable-provider');
+        var providers = roleScopedProviders();
 
-        for (var index in GlobalVariables.availableProviders) {
-            var provider = GlobalVariables.availableProviders[index];
+        for (var index in providers) {
+            var provider = providers[index];
 
-            $unavailabilityProvider.append(new Option(provider.first_name + ' ' + provider.last_name, provider.id));
+            $('#unavailable-provider').append(new Option(provider.first_name + ' ' + provider.last_name, provider.id));
         }
 
         bindEventHandlers();

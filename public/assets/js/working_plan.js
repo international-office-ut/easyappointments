@@ -33,6 +33,16 @@
         this.weekdayModes = Boolean(config.weekdayModes);
 
         /**
+         * Context node every selector runs against. Pages may host more than one working plan
+         * markup (e.g. the settings page renders the company plan and, for providers, the own
+         * plan), so a captured root keeps setup, save and break management from bleeding into
+         * the other set.
+         *
+         * @type {jQuery}
+         */
+        this.$root = config.root ? $(config.root) : $(document.body);
+
+        /**
          * This flag is used when trying to cancel row editing. It is
          * true only whenever the user presses the cancel button.
          *
@@ -55,11 +65,12 @@
      * @param {Object} workingPlan Contains the working hours and breaks for each day of the week.
      */
     WorkingPlan.prototype.setup = function (workingPlan) {
+        var self = this;
         var weekDayId = GeneralFunctions.getWeekDayId(GlobalVariables.firstWeekday);
         var workingPlanSorted = GeneralFunctions.sortWeekDictionary(workingPlan, weekDayId);
 
-        $('.working-plan tbody').empty();
-        $('.breaks tbody').empty();
+        this.$root.find('.working-plan tbody').empty();
+        this.$root.find('.breaks tbody').empty();
 
         // Build working plan day list starting with the first weekday as set in the General settings
         var timeFormat = GlobalVariables.timeFormat === 'regular' ? 'h:mm tt' : 'HH:mm';
@@ -129,13 +140,13 @@
             }
 
             $dayRow
-                .appendTo('.working-plan tbody');
+                .appendTo(this.$root.find('.working-plan tbody'));
 
             if (workingDay) {
-                $('#' + index).prop('checked', true);
-                $('#' + index + '-start').val(Date.parse(workingDay.start).toString(timeFormat).toLowerCase());
-                $('#' + index + '-end').val(Date.parse(workingDay.end).toString(timeFormat).toLowerCase());
-                $('#providers .record-details #' + index + '-mode').prop('disabled', false);
+                $('#' + index, this.$root).prop('checked', true);
+                $('#' + index + '-start', this.$root).val(Date.parse(workingDay.start).toString(timeFormat).toLowerCase());
+                $('#' + index + '-end', this.$root).val(Date.parse(workingDay.end).toString(timeFormat).toLowerCase());
+                $('#' + index + '-mode', this.$root).prop('disabled', false);
 
                 // Sort day's breaks according to the starting hour
                 workingDay.breaks.sort(function (break1, break2) {
@@ -144,8 +155,7 @@
                 });
 
                 workingDay.breaks.forEach(function (workingDayBreak) {
-                    $('<tr/>', {
-                        'html': [
+                    $('<tr/>', {                        'html': [
                             $('<td/>', {
                                 'class': 'break-day editable',
                                 'text': dayDisplayName
@@ -204,19 +214,19 @@
                             })
                         ]
                     })
-                        .appendTo('.breaks tbody');
+                        .appendTo(self.$root.find('.breaks tbody'));
                 });
             } else {
-                $('#' + index).prop('checked', false);
-                $('#' + index + '-start').prop('disabled', true);
-                $('#' + index + '-end').prop('disabled', true);
-                $('#providers .record-details #' + index + '-mode').prop('disabled', true);
+                $('#' + index, self.$root).prop('checked', false);
+                $('#' + index + '-start', self.$root).prop('disabled', true);
+                $('#' + index + '-end', self.$root).prop('disabled', true);
+                $('#' + index + '-mode', self.$root).prop('disabled', true);
             }
         }.bind(this));
 
         // Make break cells editable.
-        this.editableDayCell($('.breaks .break-day'));
-        this.editableTimeCell($('.breaks').find('.break-start, .break-end'));
+        this.editableDayCell(this.$root.find('.breaks .break-day'));
+        this.editableTimeCell(this.$root.find('.breaks').find('.break-start, .break-end'));
     };
 
     /**
@@ -230,7 +240,7 @@
 
             this
                 .renderWorkingPlanExceptionRow(date, workingPlanException)
-                .appendTo('.working-plan-exceptions tbody');
+                .appendTo(this.$root.find('.working-plan-exceptions tbody'));
         }
     };
 
@@ -394,15 +404,15 @@
     WorkingPlan.prototype.getWeekdayModes = function () {
         var weekdayModes = {};
 
-        $('.working-plan .weekday-mode').each(function (index, select) {
+        this.$root.find('.working-plan .weekday-mode').each(function (index, select) {
             var weekday = $(select).attr('data-weekday');
             var mode = $(select).val();
             var dayId = $(select).attr('id') ? $(select).attr('id').replace('-mode', '') : null;
 
-            if (weekday && mode && (!dayId || $('#' + dayId).prop('checked'))) {
+            if (weekday && mode && (!dayId || $('#' + dayId, this.$root).prop('checked'))) {
                 weekdayModes[weekday] = mode;
             }
-        });
+        }.bind(this));
 
         return Object.keys(weekdayModes).length ? weekdayModes : null;
     };
@@ -413,7 +423,7 @@
      * @param {String|null} weekdayModes JSON encoded weekday modes map of the record settings.
      */
     WorkingPlan.prototype.displayWeekdayModes = function (weekdayModes) {
-        $('.working-plan .weekday-mode').val('');
+        this.$root.find('.working-plan .weekday-mode').val('');
 
         try {
             var modes = weekdayModes ? JSON.parse(weekdayModes) : {};
@@ -426,8 +436,10 @@
         }
 
         Object.keys(modes).forEach(function (weekday) {
-            $('.working-plan .weekday-mode[data-weekday="' + weekday + '"]').val(modes[weekday]);
-        });
+            this.$root
+                .find('.working-plan .weekday-mode[data-weekday="' + weekday + '"]')
+                .val(modes[weekday]);
+        }.bind(this));
     };
 
     /**
@@ -437,31 +449,33 @@
      * fields are disabled.
      */
     WorkingPlan.prototype.syncWeekdayModeStates = function () {
-        $('.working-plan .form-check-input').each(function (index, checkbox) {
+        this.$root.find('.working-plan .form-check-input').each(function (index, checkbox) {
             var dayId = $(checkbox).attr('id');
 
-            $('#' + dayId + '-mode').prop('disabled', !$(checkbox).prop('checked'));
-        });
+            $('#' + dayId + '-mode', this.$root).prop('disabled', !$(checkbox).prop('checked'));
+        }.bind(this));
     };
 
     /**
      * Binds the event handlers for the working plan dom elements.
      */
     WorkingPlan.prototype.bindEventHandlers = function () {
+        var instance = this;
+
         /**
          * Event: Day Checkbox "Click"
          *
          * Enable or disable the time selection for each day.
          */
-        $('.working-plan tbody').on('click', 'input:checkbox', function () {
+        this.$root.on('click', '.working-plan tbody input:checkbox', function () {
             var id = $(this).attr('id');
 
             if ($(this).prop('checked') === true) {
-                $('#' + id + '-start').prop('disabled', false).val('09:00');
-                $('#' + id + '-end').prop('disabled', false).val('18:00');
+                $('#' + id + '-start', instance.$root).prop('disabled', false).val('09:00');
+                $('#' + id + '-end', instance.$root).prop('disabled', false).val('18:00');
             } else {
-                $('#' + id + '-start').prop('disabled', true).val('');
-                $('#' + id + '-end').prop('disabled', true).val('');
+                $('#' + id + '-start', instance.$root).prop('disabled', true).val('');
+                $('#' + id + '-end', instance.$root).prop('disabled', true).val('');
             }
         });
 
@@ -471,7 +485,7 @@
          * A new row is added on the table and the user can enter the new break
          * data. After that he can either press the save or cancel button.
          */
-        $('.add-break').on('click', function () {
+        this.$root.on('click', '.add-break', function () {
             var timeFormat = GlobalVariables.timeFormat === 'regular' ? 'h:mm tt' : 'HH:mm';
 
             var $newBreak = $('<tr/>', {
@@ -534,13 +548,13 @@
                     })
                 ]
             })
-                .appendTo('.breaks tbody');
+                .appendTo(instance.$root.find('.breaks tbody'));
 
             // Bind editable and event handlers.
-            this.editableDayCell($newBreak.find('.break-day'));
-            this.editableTimeCell($newBreak.find('.break-start, .break-end'));
+            instance.editableDayCell($newBreak.find('.break-day'));
+            instance.editableTimeCell($newBreak.find('.break-start, .break-end'));
             $newBreak.find('.edit-break').trigger('click');
-        }.bind(this));
+        });
 
         /**
          * Event: Edit Break Button "Click"
@@ -635,28 +649,28 @@
          *
          * A new row is added on the table and the user can enter the new working plan exception.
          */
-        $(document).on('click', '.add-working-plan-exception', function () {
+        this.$root.on('click', '.add-working-plan-exception', function () {
             WorkingPlanExceptionsModal
                 .add()
                 .done(function (date, workingPlanException) {
                     var $tr = null;
 
-                    $('.working-plan-exceptions tbody tr').each(function (index, tr) {
+                    instance.$root.find('.working-plan-exceptions tbody tr').each(function (index, tr) {
                         if (date === $(tr).data('date')) {
                             $tr = $(tr);
                             return false;
                         }
                     });
 
-                    var $newTr = this.renderWorkingPlanExceptionRow(date, workingPlanException);
+                    var $newTr = instance.renderWorkingPlanExceptionRow(date, workingPlanException);
 
                     if ($tr) {
                         $tr.replaceWith($newTr);
                     } else {
-                        $newTr.appendTo('.working-plan-exceptions tbody');
+                        $newTr.appendTo(instance.$root.find('.working-plan-exceptions tbody'));
                     }
-                }.bind(this));
-        }.bind(this));
+                });
+        });
 
         /**
          * Event: Edit working plan exception Button "Click"
@@ -695,19 +709,20 @@
      * @return {Object} Returns the working plan settings object.
      */
     WorkingPlan.prototype.get = function () {
+        var instance = this;
         var workingPlan = {};
 
-        $('.working-plan input:checkbox').each(function (index, checkbox) {
+        this.$root.find('.working-plan input:checkbox').each(function (index, checkbox) {
             var id = $(checkbox).attr('id');
             if ($(checkbox).prop('checked') === true) {
                 workingPlan[id] = {
-                    start: Date.parse($('#' + id + '-start').val()).toString('HH:mm'),
-                    end: Date.parse($('#' + id + '-end').val()).toString('HH:mm'),
+                    start: Date.parse($('#' + id + '-start', instance.$root).val()).toString('HH:mm'),
+                    end: Date.parse($('#' + id + '-end', instance.$root).val()).toString('HH:mm'),
                     breaks: []
                 };
 
-                $('.breaks tr').each(function (index, tr) {
-                    var day = this.convertDayToValue($(tr).find('.break-day').text());
+                instance.$root.find('.breaks tr').each(function (index, tr) {
+                    var day = instance.convertDayToValue($(tr).find('.break-day').text());
 
                     if (day === id) {
                         var start = $(tr).find('.break-start').text();
@@ -728,7 +743,7 @@
             } else {
                 workingPlan[id] = null;
             }
-        }.bind(this));
+        });
 
         return workingPlan;
     };
@@ -741,7 +756,7 @@
     WorkingPlan.prototype.getWorkingPlanExceptions = function () {
         var workingPlanExceptions = {};
 
-        $('.working-plan-exceptions tbody tr').each(function (index, tr) {
+        this.$root.find('.working-plan-exceptions tbody tr').each(function (index, tr) {
             var $tr = $(tr);
             var date = $tr.data('date');
             workingPlanExceptions[date] = $tr.data('workingPlanException');
@@ -760,7 +775,7 @@
 
         if (disabled === false) {
             // Set timepickers where needed.
-            $('.working-plan input:text').timepicker({
+            this.$root.find('.working-plan input:text').timepicker({
                 timeFormat: GlobalVariables.timeFormat === 'regular' ? 'h:mm tt' : 'HH:mm',
                 currentText: EALang.now,
                 closeText: EALang.close,
@@ -780,7 +795,7 @@
                 }
             });
         } else {
-            $('.working-plan input').timepicker('destroy');
+            this.$root.find('.working-plan input').timepicker('destroy');
         }
     };
 

@@ -75,8 +75,16 @@
         // General Settings Tab
 
         $('#general').find('input, select').not('input:checkbox').each(function (index, field) {
+            // Widgets without a settings binding (e.g. the API token display) do not ride
+            // the save payload.
+            var dataField = $(field).attr('data-field');
+
+            if (!dataField) {
+                return;
+            }
+
             settings.push({
-                name: $(field).attr('data-field'),
+                name: dataField,
                 value: $(field).val()
             });
         });

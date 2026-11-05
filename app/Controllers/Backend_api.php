@@ -1494,6 +1494,8 @@ class Backend_api extends BaseController {
         }
         catch (Exception $exception)
         {
+            log_message('error', 'ajax_save_settings failed: ' . $exception->getMessage());
+
             $this->response->setStatusCode(500);
 
             $response = $this->ajax_exception($exception);

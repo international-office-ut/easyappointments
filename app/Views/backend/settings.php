@@ -67,10 +67,10 @@
         <div class="tab-pane active <?= $hidden ?>" id="general">
             <form>
                 <fieldset>
-                    <legend class="border-bottom mb-4">
-                        <?= lang('general_settings') ?>
+                    <legend class="border-bottom mb-4 settings-legend">
+                        <span><?= lang('general_settings') ?></span>
                         <?php if ($privileges[PRIV_SYSTEM_SETTINGS]['edit'] == TRUE): ?>
-                            <div class="btn-group float-md-right">
+                            <div class="btn-group">
                                 <button type="button" class="edit-settings btn btn-outline-secondary">
                                     <i class="fas fa-edit mr-2"></i><?= lang('edit') ?>
                                 </button>
@@ -237,10 +237,10 @@
         <div class="tab-pane <?= $hidden ?>" id="business-logic">
             <form>
                 <fieldset>
-                    <legend class="border-bottom mb-4">
-                        <?= lang('business_logic') ?>
+                    <legend class="border-bottom mb-4 settings-legend">
+                        <span><?= lang('business_logic') ?></span>
                         <?php if ($privileges[PRIV_SYSTEM_SETTINGS]['edit'] == TRUE): ?>
-                            <div class="btn-group float-md-right">
+                            <div class="btn-group">
                                 <button type="button" class="edit-settings btn btn-outline-secondary">
                                     <i class="fas fa-edit mr-2"></i><?= lang('edit') ?>
                                 </button>
@@ -335,10 +335,10 @@
         <div class="tab-pane <?= $hidden ?>" id="legal-contents">
             <form>
                 <fieldset>
-                    <legend class="border-bottom mb-4">
-                        <?= lang('legal_contents') ?>
+                    <legend class="border-bottom mb-4 settings-legend">
+                        <span><?= lang('legal_contents') ?></span>
                         <?php if ($privileges[PRIV_SYSTEM_SETTINGS]['edit'] == TRUE): ?>
-                            <div class="btn-group float-md-right">
+                            <div class="btn-group">
                                 <button type="button" class="edit-settings btn btn-outline-secondary">
                                     <i class="fas fa-edit mr-2"></i><?= lang('edit') ?>
                                 </button>
@@ -450,10 +450,10 @@
             <form>
                 <div class="row">
                     <fieldset class="col-12 col-sm-6 personal-info-wrapper">
-                        <legend class="border-bottom mb-4">
-                            <?= lang('personal_information') ?>
+                        <legend class="border-bottom mb-4 settings-legend">
+                            <span><?= lang('personal_information') ?></span>
                             <?php if ($privileges[PRIV_USER_SETTINGS]['edit'] == TRUE): ?>
-                                <div class="btn-group float-md-right">
+                                <div class="btn-group">
                                     <button type="button" class="edit-settings btn btn-outline-secondary">
                                         <i class="fas fa-edit mr-2"></i><?= lang('edit') ?>
                                     </button>

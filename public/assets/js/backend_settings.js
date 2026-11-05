@@ -206,7 +206,8 @@ window.BackendSettings = window.BackendSettings || {};
         // available in the read state, everything else keeps waiting for the Edit button.
         $pane.find('[data-keep-enabled]').prop('readonly', false).prop('disabled', false);
 
-        $pane.find('.edit-settings').show();
+        // The workflow-own edit button stays clickable in the read state.
+        $pane.find('.edit-settings').show().prop('disabled', false);
         $pane.find('.save-settings, .cancel-settings').hide();
     };
 
